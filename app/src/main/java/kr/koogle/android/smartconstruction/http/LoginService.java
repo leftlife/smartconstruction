@@ -11,7 +11,7 @@ import retrofit2.http.POST;
 public interface LoginService {
 
     @POST("login")
-    Call<User> basicLogin();
+    Call<AccessToken> getLoginToken();
 
     @FormUrlEncoded
     @POST("token")

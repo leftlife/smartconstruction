@@ -18,11 +18,11 @@ public class ServiceGenerator {
 
     public static final String API_BASE_URL = "http://www.architimes.co.kr/api/";
 
-    private static OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+    private static final OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
 
-    private static HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+    private static final HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
 
-    private static Retrofit.Builder builder =
+    private static final Retrofit.Builder builder =
             new Retrofit.Builder()
                     .baseUrl(API_BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create());
@@ -59,7 +59,7 @@ public class ServiceGenerator {
         }
 
         OkHttpClient client = httpClient.build();
-        Retrofit retrofit = builder.client(client).build();
+        final Retrofit retrofit = builder.client(client).build();
         return retrofit.create(serviceClass);
     }
 
@@ -84,7 +84,7 @@ public class ServiceGenerator {
         }
 
         OkHttpClient client = httpClient.build();
-        Retrofit retrofit = builder.client(client).build();
+        final Retrofit retrofit = builder.client(client).build();
         return retrofit.create(serviceClass);
     }
 

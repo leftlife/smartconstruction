@@ -332,6 +332,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             String code = "code"; //uri.getQueryParameter("code");
             if (code != null) {
 
+                /*
                 // get access token
                 Log.d(TAG, "loginService.getAccessToken 실행!!");
                 LoginService loginService =
@@ -361,6 +362,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         Log.d("Error", t.getMessage());
                     }
                 });
+                */
+
                 /*
                 try {
                     AccessToken accessToken = call.execute().body();

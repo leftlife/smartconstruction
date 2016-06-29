@@ -82,9 +82,8 @@ public class LoginActivity extends AppCompatActivity {
         // get access token
         String code = "code"; //uri.getQueryParameter("code");
         Log.d(TAG, "loginService.getAccessToken 실행!!");
-        LoginService loginService =
-                ServiceGenerator.createService(LoginService.class, email, password);
-        Call<AccessToken> call = loginService.getAccessToken(code, "authorization_code");
+        LoginService loginService = ServiceGenerator.createService(LoginService.class, email, password);
+        Call<AccessToken> call = loginService.getLoginToken();
 
         call.enqueue(new Callback<AccessToken>() {
             @Override
@@ -93,19 +92,23 @@ public class LoginActivity extends AppCompatActivity {
                 //get raw response
                 okhttp3.Response raw = response.raw();
 
-                if (response.isSuccessful()) {
+                if (response.isSuccessful() ) { //&& response.body() != null
 
+                    final AccessToken at = response.body();
+                    Log.d(TAG, "AccessToken : " + at.getAccessToken());
                     onLoginSuccess();
 
                     // tasks available
                     Toast.makeText(getBaseContext(), "success : " + response.toString() , Toast.LENGTH_SHORT).show();
                 } else {
+
                     // error response, no access to resource?
                     Toast.makeText(getBaseContext(), "failure : " + response.toString() , Toast.LENGTH_SHORT).show();
                 }
 
                 _loginButton.setEnabled(true);
                 progressDialog.dismiss();
+                call.cancel();
             }
 
             @Override
@@ -116,6 +119,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 _loginButton.setEnabled(true);
                 progressDialog.dismiss();
+                call.cancel();
             }
         });
 
