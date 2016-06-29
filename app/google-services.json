@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "809257747035",
+    "firebase_url": "https://smartconstruction-d3a9c.firebaseio.com",
+    "project_id": "smartconstruction-d3a9c",
+    "storage_bucket": "smartconstruction-d3a9c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:809257747035:android:c52210020c731f1a",
+        "android_client_info": {
+          "package_name": "kr.koogle.android.smartconstruction"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "809257747035-srmtknec43rb5h2lap6flbivvqv3e5hn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "kr.koogle.android.smartconstruction",
+            "certificate_hash": "44B9EE6D1E3045390D89ED3AF529A1AF1F3106E0"
+          }
+        },
+        {
+          "client_id": "809257747035-2js1gp6qipu0auagauc163el30svlt08.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDjqbWwFmUaB_eAWEPPGh_Myb7VjaBNBhs"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "809257747035-2js1gp6qipu0auagauc163el30svlt08.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
