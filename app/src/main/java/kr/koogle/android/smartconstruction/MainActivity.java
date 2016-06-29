@@ -71,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
         // 기본값 저장
         SharedPreferences setting = getSharedPreferences("setting", MODE_PRIVATE);
@@ -81,14 +82,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         String spPushBBS = setting.getString("pushBBS", "");
         // Toast.makeText(getBaseContext(), "spAuthToken : "+spAuthToken, Toast.LENGTH_SHORT).show();
 
+        /*
+        Intent intentLoading = new Intent(this, LoadingActivity.class);
+        startActivity(intentLoading);
+        */
+
         if (spAuthToken.equals("")) // AuthToken 값이 없으면 로그인 Activity 이동
         {
             Log.d(TAG, "로그인 창 열림!!");
-            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-            startActivity(intent);
+            Intent intentLogin = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivity(intentLogin);
             Log.d(TAG, "로그인 창 닫힘!!");
         }
-        setContentView(R.layout.activity_main);
         backPressCloseHandler = new BackPressCloseHandler(this);
 
         if (checkPlayServices()) {
