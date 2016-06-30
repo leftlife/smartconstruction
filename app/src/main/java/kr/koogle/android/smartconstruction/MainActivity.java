@@ -56,7 +56,6 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, OneFragment.OnHeadlineSelectedListener {
     private static final String TAG = "MainActivity";
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
-    private static final int REQ_CODE_PICK_IMAGE = 1001;
     private BackPressCloseHandler backPressCloseHandler;
 
     // viewPager 관련
@@ -123,7 +122,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
-
         // 닫힐때 한번 더 확인
         backPressCloseHandler = new BackPressCloseHandler(this);
 
@@ -172,7 +170,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-
         // 삼성런처에서만 가능한 벳지 카운트
         int badgeCount = 12;
         Intent intentBadge = new Intent("android.intent.action.BADGE_COUNT_UPDATE");
@@ -182,25 +179,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // 메인메뉴에 나타나는 어플의 클래스 명
         intentBadge.putExtra("badge_count_class_name", getComponentName().getClassName());
         sendBroadcast(intentBadge);
-
-        /*
-        // picasso 사용예
-        ImageView imageView = (ImageView) findViewById(R.id.imageView1);
-        Picasso.with(this)
-                .load("https://tpc.googlesyndication.com/simgad/11582263531426008338")
-                .placeholder(R.drawable.common_full_open_on_phone)
-                .error(R.drawable.common_plus_signin_btn_icon_dark)
-                .resize(100,100) // fit() 알아서 용량 줄여서 가져옴.  // centerCrop()
-                .rotate(90)
-                .into(imageView);
-        */
     }
 
-    //  ############## Fragment 통신 ##################  //
+    //  ############## Fragment 통신 ##################  // OneFragment 용
     public void onArticleSelected(int position) {
+        OneFragment oneFragment = (OneFragment) getSupportFragmentManager().findFragmentById(R.id.one_fragment);
+        if(oneFragment != null) {
+            // Framgment 통신 사용 !!! -> OneFragment
+            oneFragment.updateArticleView(position);
+        } else {
+            /*
+            OneFragment newFragment = new OneFragment();
+            Bundle args = new Bundle();
+            args.putString("strId", "leftlife");
+            newFragment.setArguments(args); // Fragment 생성시 데이타 넘길때 꼭 이렇게 !!
 
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.container, newFragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
+            */
+        }
     }
 
+    // GCM 이 가능한지 체크
     private boolean checkPlayServices() {
         GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
         int resultCode = apiAvailability.isGooglePlayServicesAvailable(this);
@@ -216,86 +218,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
-    // 실행중인 앱인지 체크하기
-    public static boolean isRunningProcess(Context context, String packageName) {
-
-        boolean isRunning = false;
-        ActivityManager actMng = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        List<ActivityManager.RunningAppProcessInfo> list = actMng.getRunningAppProcesses();
-
-        for(ActivityManager.RunningAppProcessInfo rap : list)
-        {
-            if (rap.processName.equals(packageName))
-            {
-                isRunning = true;
-                break;
-            }
-        }
-
-        return isRunning;
-    }
-
-    // 자식 엑티비티에서 결과값 받아 처리하기
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        //Toast.makeText(getBaseContext(), "resultCode : "+resultCode, Toast.LENGTH_SHORT).show();
-        switch (requestCode) {
-            case REQ_CODE_PICK_IMAGE:
-                if (resultCode == RESULT_OK) {
-                    try {
-                        // Uri에서 이미지 이름을 얻어온다.
-                        String name_Str = getImageNameToUri(data.getData());
-
-                        // 이미지 데이터를 비트맵으로 받아온다.
-                        Bitmap image_bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
-                        ImageView image = (ImageView)findViewById(R.id.imageView1);
-
-                        // 배치해놓은 ImageView에 set
-                        image.setImageBitmap(image_bitmap);
-
-
-                        final Uri selectImageUri = data.getData();
-                        final String[] filePathColumn = {MediaStore.Images.Media.DATA};
-
-                        final Cursor imageCursor = this.getContentResolver().query(selectImageUri, filePathColumn, null, null, null);
-                        imageCursor.moveToFirst();
-
-                        final int columnIndex = imageCursor.getColumnIndex(filePathColumn[0]);
-                        final String imagePath = imageCursor.getString(columnIndex);
-                        imageCursor.close();
-                        final Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
-
-                        // 서버에 업로드
-                        File fileImage = new File(imagePath);
-                        uploadFile(fileImage);
-
-                        //Toast.makeText(getBaseContext(), "name_Str + " + ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) , Toast.LENGTH_SHORT).show();
-                    } catch (FileNotFoundException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    } catch (Exception e)
-                    {
-                        e.printStackTrace();
-                    }
-
-                    if (data != null) {
-                        //String filePath = getExternalFilesDir(null).getAbsolutePath() + "/" + TEMP_PHOTO_FILE;
-                        //LogUtil.Logd("Profile Image Path", filePath);
-
-                        // File 객체로 만들어 byte[]로 변환 후 멀티파트를 이용해서 사진을 서버에 전송한다.
-                        //sendUpdateProfileImage(CommUtil.convertFileToByteArray(new File(filePath)));
-
-                        // 리턴받은 이미지 경로를 이용해서 비트맵으로 변환
-                        //Bitmap selectedImage = BitmapFactory.decodeFile(filePath);
-                    }
-                }
-                break;
-        }
-    }
 
     public String getImageNameToUri(Uri data)
     {
@@ -311,7 +233,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return imgName;
     }
 
-    private void uploadFile(File fileImage) {
+    public void uploadFile(File fileImage) {
         // create upload service client
         FileUploadService service =
                 ServiceGenerator.createService(FileUploadService.class);
@@ -363,39 +285,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             // use the parameter your API exposes for the code (mostly it's "code")
             String code = "code"; //uri.getQueryParameter("code");
             if (code != null) {
-
-                /*
-                // get access token
-                Log.d(TAG, "loginService.getAccessToken 실행!!");
-                LoginService loginService =
-                        ServiceGenerator.createService(LoginService.class, clientId, clientSecret);
-                Call<AccessToken> call = loginService.getAccessToken(code, "authorization_code");
-
-                call.enqueue(new Callback<AccessToken>() {
-                    @Override
-                    public void onResponse(Call<AccessToken> call, Response<AccessToken> response) {
-
-                        //get raw response
-                        okhttp3.Response raw = response.raw();
-
-                        if (response.isSuccessful()) {
-                            // tasks available
-                            Toast.makeText(getBaseContext(), "success : " + response.toString() , Toast.LENGTH_SHORT).show();
-                        } else {
-                            // error response, no access to resource?
-                            Toast.makeText(getBaseContext(), "failure : " + response.toString() , Toast.LENGTH_SHORT).show();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<AccessToken> call, Throwable t) {
-                        // something went completely south (like no internet connection)
-                        Toast.makeText(getBaseContext(), "error : " + t.getMessage() , Toast.LENGTH_SHORT).show();
-                        Log.d("Error", t.getMessage());
-                    }
-                });
-                */
-
                 /*
                 try {
                     AccessToken accessToken = call.execute().body();
@@ -434,7 +323,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
                 });
                 */
-
             } else if (uri.getQueryParameter("error") != null) {
                 // show an error message here
             }
@@ -564,7 +452,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     tempFragment = new TwoFragment();
                     break;
                 case 2:
-                    tempFragment = new OneFragment();
+                    tempFragment = new ThreeFragment();
                     break;
                 default:
                     Log.d("getFragment", "Unhandle Case");

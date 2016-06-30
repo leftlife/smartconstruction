@@ -14,14 +14,14 @@
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="60dp"
-        android:layout_height="77dp"
-        android:paddingTop="16dp"
+        android:layout_height="80dp"
+        android:paddingTop="20dp"
         android:src="@drawable/img_head" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="16dp"
+        android:paddingTop="10dp"
         android:text="이성우 실장"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 

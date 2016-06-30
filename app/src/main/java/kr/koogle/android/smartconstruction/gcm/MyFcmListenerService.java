@@ -100,4 +100,24 @@ public class MyFcmListenerService extends FirebaseMessagingService {
         return packageName;
         */
     }
+
+    // 실행중인 앱인지 체크하기
+    public static boolean isRunningProcess(Context context, String packageName) {
+
+        boolean isRunning = false;
+        ActivityManager actMng = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningAppProcessInfo> list = actMng.getRunningAppProcesses();
+
+        for(ActivityManager.RunningAppProcessInfo rap : list)
+        {
+            if (rap.processName.equals(packageName))
+            {
+                isRunning = true;
+                break;
+            }
+        }
+
+        return isRunning;
+    }
+
 }
