@@ -19,11 +19,9 @@ public class LoadingActivity extends Activity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-
-
                 finish();
             }
-        }, 3000);
+        }, 2000);
     }
 
 }

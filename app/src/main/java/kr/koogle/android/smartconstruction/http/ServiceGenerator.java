@@ -11,19 +11,12 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-/**
- * Created by LeeSungWoo on 2016-06-21.
- */
 public class ServiceGenerator {
-
     public static final String API_BASE_URL = "http://www.architimes.co.kr/api/";
-
     private static final OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-
     private static final HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
 
-    private static final Retrofit.Builder builder =
-            new Retrofit.Builder()
+    private static final Retrofit.Builder builder = new Retrofit.Builder()
                     .baseUrl(API_BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create());
 
@@ -64,6 +57,29 @@ public class ServiceGenerator {
     }
 
     // serviceClass , AccessToken
+    public static <S> S createService(Class<S> serviceClass, final String token) {
+        if (token != null) {
+            httpClient.addInterceptor(new Interceptor() {
+                @Override
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Request original = chain.request();
+
+                    Request.Builder requestBuilder = original.newBuilder()
+                            .header("Accept", "application/json")
+                            .header("Authorization", token)
+                            .method(original.method(), original.body());
+
+                    Request request = requestBuilder.build();
+                    return chain.proceed(request);
+                }
+            });
+        }
+
+        OkHttpClient client = httpClient.build();
+        final Retrofit retrofit = builder.client(client).build();
+        return retrofit.create(serviceClass);
+    }
+    /*
     public static <S> S createService(Class<S> serviceClass, final AccessToken token) {
         if (token != null) {
             httpClient.addInterceptor(new Interceptor() {
@@ -87,5 +103,5 @@ public class ServiceGenerator {
         final Retrofit retrofit = builder.client(client).build();
         return retrofit.create(serviceClass);
     }
-
+    */
 }

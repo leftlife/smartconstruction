@@ -18,6 +18,7 @@ import butterknife.Bind;
 import kr.koogle.android.smartconstruction.http.AccessToken;
 import kr.koogle.android.smartconstruction.http.LoginService;
 import kr.koogle.android.smartconstruction.http.ServiceGenerator;
+import kr.koogle.android.smartconstruction.http.User;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -37,18 +38,12 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
 
-        SharedPreferences setting = getSharedPreferences("setting", MODE_PRIVATE);
-        SharedPreferences.Editor spEditor = setting.edit();
-        spEditor.putString("authToken", "");
-        spEditor.commit();
-
         _loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 login();
             }
         });
-
         _signupLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -62,15 +57,14 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void login() {
-        String email = _emailText.getText().toString();
-        String password = _passwordText.getText().toString();
+        final String email = _emailText.getText().toString();
+        final String password = _passwordText.getText().toString();
         Log.d(TAG, "Login : " + email + "/" + password);
 
         if (!validate()) {
             onLoginFailed();
             return;
         }
-
         _loginButton.setEnabled(false);
 
         final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this,
@@ -80,50 +74,53 @@ public class LoginActivity extends AppCompatActivity {
         progressDialog.show();
 
         // get access token
-        String code = "code"; //uri.getQueryParameter("code");
         Log.d(TAG, "loginService.getAccessToken 실행!!");
         LoginService loginService = ServiceGenerator.createService(LoginService.class, email, password);
-        Call<AccessToken> call = loginService.getLoginToken();
+        Call<User> call = loginService.getLoginToken();
 
-        call.enqueue(new Callback<AccessToken>() {
+        call.enqueue(new Callback<User>() {
             @Override
-            public void onResponse(Call<AccessToken> call, Response<AccessToken> response) {
+            public void onResponse(Call<User> call, Response<User> response) {
+                // get raw response
+                // okhttp3.Response raw = response.raw();
+                if (response.isSuccessful() && response.body() != null ) {
+                    final User user = response.body();
+                    Log.d(TAG, "AccessToken : " + user.getAccessToken());
+                    // 폰에 accessToken 값 저장
+                    SharedPreferences settings = getSharedPreferences("settings", MODE_PRIVATE);
+                    SharedPreferences.Editor spEditor = settings.edit();
+                    spEditor.putString("code", user.getCode());
+                    spEditor.putString("id", user.getId());
+                    spEditor.putString("type", user.getType());
+                    spEditor.putString("group", user.getGroup());
+                    spEditor.putString("accessToken", user.getAccessToken());
+                    spEditor.putString("phone", user.getPhone());
+                    spEditor.commit();
 
-                //get raw response
-                okhttp3.Response raw = response.raw();
-
-                if (response.isSuccessful() ) { //&& response.body() != null
-
-                    final AccessToken at = response.body();
-                    Log.d(TAG, "AccessToken : " + at.getAccessToken());
                     onLoginSuccess();
 
                     // tasks available
-                    Toast.makeText(getBaseContext(), "success : " + response.toString() , Toast.LENGTH_SHORT).show();
+                    // Toast.makeText(getBaseContext(), "success : " + response.toString() , Toast.LENGTH_SHORT).show();
                 } else {
 
                     // error response, no access to resource?
-                    Toast.makeText(getBaseContext(), "failure : " + response.toString() , Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getBaseContext(), "로그인 정보가 정확하지 않습니다." , Toast.LENGTH_SHORT).show();
                 }
 
                 _loginButton.setEnabled(true);
                 progressDialog.dismiss();
-                call.cancel();
             }
 
             @Override
-            public void onFailure(Call<AccessToken> call, Throwable t) {
+            public void onFailure(Call<User> call, Throwable t) {
                 // something went completely south (like no internet connection)
-                Toast.makeText(getBaseContext(), "error : " + t.getMessage() , Toast.LENGTH_SHORT).show();
+                Toast.makeText(getBaseContext(), "네트워크 상태가 좋지 않습니다." , Toast.LENGTH_SHORT).show();
                 Log.d("Error", t.getMessage());
 
                 _loginButton.setEnabled(true);
                 progressDialog.dismiss();
-                call.cancel();
             }
         });
-
-
         // TODO: Implement your own authentication logic here.
         /*
         new android.os.Handler().postDelayed(
@@ -137,7 +134,6 @@ public class LoginActivity extends AppCompatActivity {
                 }, 3000);
          */
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

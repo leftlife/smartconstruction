@@ -12,6 +12,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -52,10 +53,10 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, OneFragment.OnHeadlineSelectedListener {
     private static final String TAG = "MainActivity";
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+    private static final int REQ_CODE_PICK_IMAGE = 1001;
     private BackPressCloseHandler backPressCloseHandler;
 
     // viewPager 관련
@@ -66,7 +67,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private final String clientId = "your-client-id";
     private final String clientSecret = "your-client-secret";
     private final String redirectUri = "your://redirecturi";
-    static final int REQ_CODE_PICK_IMAGE = 1001;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,26 +74,57 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
 
         // 기본값 저장
-        SharedPreferences setting = getSharedPreferences("setting", MODE_PRIVATE);
-        String spGCMToken = setting.getString("GCMToken", "");
-        String spAuthToken = setting.getString("authToken", "");
-        String spPushSmart = setting.getString("pushSmart", "");
-        String spPushWork = setting.getString("pushWork", "");
-        String spPushBBS = setting.getString("pushBBS", "");
+        SharedPreferences settings = getSharedPreferences("settings", MODE_PRIVATE);
+        final String spGCMToken = settings.getString("GCMToken", "");
+        final String spAccessToken = settings.getString("accessToken", "");
+        final String spPushWork = settings.getString("pushWork", "");
+        final String spPushMessage = settings.getString("pushMessage", "");
+        final String spPushBBS = settings.getString("pushBBS", "");
         // Toast.makeText(getBaseContext(), "spAuthToken : "+spAuthToken, Toast.LENGTH_SHORT).show();
 
-        /*
-        Intent intentLoading = new Intent(this, LoadingActivity.class);
-        startActivity(intentLoading);
-        */
-
-        if (spAuthToken.equals("")) // AuthToken 값이 없으면 로그인 Activity 이동
+        if (spAccessToken.equals("")) // AccessToken 값이 없으면 로그인 Activity 이동
         {
             Log.d(TAG, "로그인 창 열림!!");
             Intent intentLogin = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(intentLogin);
-            Log.d(TAG, "로그인 창 닫힘!!");
         }
+
+        Intent intentLoading = new Intent(getApplicationContext(), LoadingActivity.class);
+        startActivity(intentLoading);
+
+        // AccessToken 값이 일치하는지 메인에서 한번 확인
+        Log.d(TAG, "loginService.getAccessToken 실행!!");
+        LoginService loginService = ServiceGenerator.createService(LoginService.class);
+        Call<User> call = loginService.checkLoginToken(spAccessToken);
+
+        call.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                if (response.isSuccessful() && response.body() != null ) {
+                    final User user = response.body();
+                    Log.d(TAG, "AccessToken : " + user.getAccessToken());
+                } else {
+                    Toast.makeText(getBaseContext(), "로그인 정보가 정확하지 않습니다." , Toast.LENGTH_SHORT).show();
+
+                    Log.d(TAG, "로그인 창 열림!!");
+                    Intent intentLogin = new Intent(getApplicationContext(), LoginActivity.class);
+                    startActivity(intentLogin);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                Toast.makeText(getBaseContext(), "네트워크 상태가 좋지 않습니다." , Toast.LENGTH_SHORT).show();
+                Log.d("Error", t.getMessage());
+
+                Log.d(TAG, "로그인 창 열림!!");
+                Intent intentLogin = new Intent(getApplicationContext(), LoginActivity.class);
+                startActivity(intentLogin);
+            }
+        });
+
+
+        // 닫힐때 한번 더 확인
         backPressCloseHandler = new BackPressCloseHandler(this);
 
         if (checkPlayServices()) {
@@ -102,7 +133,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Log.d(TAG, "GCM 시작 / token : " + token);
             // 이 token을 서버에 전달 한다.
         }
-
 
         // Tool Bar 관련
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -125,10 +155,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         // Floating Action Button 관련
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setImageResource(R.drawable.img_camera_white);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, "사진촬영을 시작합니다.", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });
@@ -140,8 +171,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-
 
 
         // 삼성런처에서만 가능한 벳지 카운트
@@ -167,6 +196,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         */
     }
 
+    //  ############## Fragment 통신 ##################  //
+    public void onArticleSelected(int position) {
+
+    }
+
     private boolean checkPlayServices() {
         GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
         int resultCode = apiAvailability.isGooglePlayServicesAvailable(this);
@@ -181,8 +215,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         return true;
     }
-
-
 
     // 실행중인 앱인지 체크하기
     public static boolean isRunningProcess(Context context, String packageName) {
@@ -472,6 +504,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
+
+    public void replaceFragment(int reqNewFragmentIndex)
+    {
+        /*
+        Fragment newFragment = null;
+        newFragment = getFragment(reqNewFragmentIndex);
+
+        final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.container, newFragment);
+        transaction.commit();
+        */
+    }
 
     /*
      * viewPager 관련 Adapter 클래스 ##################################################################
