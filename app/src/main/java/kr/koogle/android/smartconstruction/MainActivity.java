@@ -446,7 +446,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             switch(idx) {
                 case 0:
-                    tempFragment = new OneFragment();
+                    tempFragment = new SmartFragment();
                     break;
                 case 1:
                     tempFragment = new TwoFragment();

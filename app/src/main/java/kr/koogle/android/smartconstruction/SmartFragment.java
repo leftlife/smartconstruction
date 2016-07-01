@@ -1,6 +1,5 @@
 package kr.koogle.android.smartconstruction;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -13,9 +12,9 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 
-public class TwoFragment extends Fragment implements AbsListView.OnScrollListener {
-    private static final String LOG = "TwoFragment";
-    private CustomAdapter mAdapter;
+public class SmartFragment extends Fragment implements AbsListView.OnScrollListener {
+    private static final String LOG = "SmartFragment";
+    private SmartAdapter mAdapter;
     private ListView mListView;
     private LayoutInflater mInflater;
     private ArrayList<String> mRowList;
@@ -24,15 +23,15 @@ public class TwoFragment extends Fragment implements AbsListView.OnScrollListene
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.fragment_two, container, false);
+        rootView = inflater.inflate(R.layout.fragment_smart, container, false);
 
         // 멤버 변수 초기화
         mRowList = new ArrayList<String>();
         mLockListView = true;
 
         // 어댑터와 리스트뷰 초기화
-        mAdapter = new CustomAdapter(getContext(), R.layout.row, mRowList);
-        mListView = (ListView) rootView.findViewById(R.id.lvTwo);
+        mAdapter = new SmartAdapter(getContext(), R.layout.row_smart, mRowList);
+        mListView = (ListView) rootView.findViewById(R.id.lvSmart);
 
         // 푸터를 등록합니다. setAdapter 이전에 해야 합니다.
         mInflater = inflater; //getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -94,63 +93,5 @@ public class TwoFragment extends Fragment implements AbsListView.OnScrollListene
         Handler handler = new Handler();
         handler.postDelayed(run, 500);
     }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-
-    }
-
-    /*
-    //Runnable to load the items
-    private Runnable loadMoreListItems = new Runnable() {
-        @Override
-        public void run() {
-            //Set flag so we cant load new items 2 at the same time
-            loadingMore = true;
-
-            //Reset the array that holds the new items
-            myListItems = new ArrayList();
-
-            //Simulate a delay, delete this on a production environment!
-            try { Thread.sleep(1000);
-            } catch (InterruptedException e) {}
-
-            //Get 15 new listitems
-            for (int i = 0; i < itemsPerPage; i++) {
-                //Fill the item with some bogus information
-                myListItems.add("Date: " + (d.get(Calendar.MONTH)+ 1) + "/" + d.get(Calendar.DATE) + "/" + d.get(Calendar.YEAR) );
-
-                // +1 day
-                d.add(Calendar.DATE, 1);
-            }
-            //Done! now continue on the UI thread
-            runOnUiThread(returnRes);
-        }
-    };
-
-    //Since we cant update our UI from a thread this Runnable takes care of that!
-    private Runnable returnRes = new Runnable() {
-        @Override
-        public void run() {
-
-            //Loop thru the new items and add them to the adapter
-            if(myListItems != null && myListItems.size() > 0){
-                for(int i=0;i < myListItems.size();i++)
-                    adapter.add(myListItems.get(i));
-            }
-
-            //Update the Application title
-            setTitle("Neverending List with " + String.valueOf(adapter.getCount()) + " items");
-
-            //Tell to the adapter that changes have been made, this will cause the list to refresh
-            adapter.notifyDataSetChanged();
-
-            //Done loading more.
-            loadingMore = false;
-        }
-    };
-*/
 
 }
