@@ -13,7 +13,7 @@ import android.widget.ListView;
 import java.util.ArrayList;
 
 public class SmartFragment extends Fragment implements AbsListView.OnScrollListener {
-    private static final String LOG = "SmartFragment";
+    private static final String TAG = "SmartFragment";
     private SmartAdapter mAdapter;
     private ListView mListView;
     private LayoutInflater mInflater;
@@ -24,6 +24,7 @@ public class SmartFragment extends Fragment implements AbsListView.OnScrollListe
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_smart, container, false);
+        mInflater = inflater; //getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         // 멤버 변수 초기화
         mRowList = new ArrayList<String>();
@@ -33,8 +34,18 @@ public class SmartFragment extends Fragment implements AbsListView.OnScrollListe
         mAdapter = new SmartAdapter(getContext(), R.layout.row_smart, mRowList);
         mListView = (ListView) rootView.findViewById(R.id.lvSmart);
 
+        // 헤더를 등록합니다. setAdapter 이전에 해야 합니다.
+        View header = mInflater.inflate(R.layout.list_header_smart, null);
+        mListView.addHeaderView(header);
+        header.findViewById(R.id.txt_dateStart).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG, "dateStart 클릭됨!!");
+            }
+        });
+
+
         // 푸터를 등록합니다. setAdapter 이전에 해야 합니다.
-        mInflater = inflater; //getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mListView.addFooterView(mInflater.inflate(R.layout.list_footer, null));
 
         // 스크롤 리스너를 등록합니다. onScroll에 추가구현을 해줍니다.
@@ -42,7 +53,7 @@ public class SmartFragment extends Fragment implements AbsListView.OnScrollListe
         mListView.setAdapter(mAdapter);
 
         // 데미데이터를 추가하기 위해 임의로 만든 메서드 호출
-        addItems(50);
+        addItems(10);
 
         return rootView;
     }
@@ -56,7 +67,7 @@ public class SmartFragment extends Fragment implements AbsListView.OnScrollListe
 
         if(firstVisibleItem >= count && totalItemCount != 0 && mLockListView == false)
         {
-            Log.i(LOG, "Loading next items");
+            Log.i(TAG, "Loading next items");
             addItems(50);
         }
     }

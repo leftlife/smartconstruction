@@ -4,19 +4,19 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_camera"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="스마트일보" />
+            android:icon="@drawable/ic_menu_manage"
+            android:title="스마트일보 등록" />
         <item
             android:id="@+id/nav_gallery"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="작업지시" />
+            android:title="건축주협의 등록" />
         <item
             android:id="@+id/nav_slideshow"
             android:icon="@drawable/ic_menu_slideshow"
-            android:title="공지사항" />
+            android:title="작업지시 등록" />
         <item
             android:id="@+id/nav_manage"
-            android:icon="@drawable/ic_menu_manage"
+            android:icon="@drawable/ic_menu_camera"
             android:title="사진관리" />
     </group>
 
@@ -25,7 +25,7 @@
             <item
                 android:id="@+id/nav_share"
                 android:icon="@drawable/ic_menu_share"
-                android:title="직원목록" />
+                android:title="사원리스트" />
             <item
                 android:id="@+id/nav_send"
                 android:icon="@drawable/ic_menu_send"

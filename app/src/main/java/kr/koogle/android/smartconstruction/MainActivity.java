@@ -135,6 +135,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Tool Bar 관련
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         // viewPager 관련
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -432,11 +433,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return "스마트일보";
+                    return "스마트현장";
                 case 1:
-                    return "작업지시";
+                    return "건축주협의";
                 case 2:
-                    return "공지사항";
+                    return "작업지시";
             }
             return null;
         }
