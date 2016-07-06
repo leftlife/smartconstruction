@@ -2,6 +2,7 @@ package kr.koogle.android.smartconstruction;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -141,9 +142,13 @@ public class SmartBuildFragment extends Fragment {
             @Override
             public void onItemClick(View view, int position) {
                 String name = SmartSingleton.arrSmartBuilds.get(position).strName;
-                SmartSingleton.arrSmartBuilds.get(position).strName = "변경되었습니다.";
+                // SmartSingleton.arrSmartBuilds.get(position).strName = "변경되었습니다.";
                 adapter.notifyItemChanged(position);
-                Toast.makeText(getContext(), name + " was clicked!", Toast.LENGTH_SHORT).show();
+
+                Intent intentWork = new Intent(getContext(), WorkActivity.class);
+                startActivity(intentWork);
+
+                // Toast.makeText(getContext(), name + " was clicked!", Toast.LENGTH_SHORT).show();
             }
         });
         /***************************************************************************/
@@ -178,6 +183,36 @@ public class SmartBuildFragment extends Fragment {
                 }
         );
          */
+
+        // 스크롤시 FAB 버튼 숨기기 !!
+        rvSmartBuilds.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            final FloatingActionButton fab = MainActivity.fab;
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx,int dy){
+                super.onScrolled(recyclerView, dx, dy);
+
+                if (dy > 3) {
+                    // Scroll Down
+                    if (fab.isShown()) {
+                        fab.hide();
+                    }
+                } else {
+                    // Scroll Up
+                    if (!fab.isShown()) {
+                        fab.show();
+                    }
+                }
+                Log.d(TAG, "dy : " + dy);
+            }
+
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+
+                if(newState == 0) fab.show();
+                Log.d(TAG, "newState : " + newState);
+            }
+        });
 
         return rootView;
     }

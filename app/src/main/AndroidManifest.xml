@@ -29,6 +29,7 @@
         <activity android:name=".IntroActivity" android:theme="@style/AppTheme.Dark" android:screenOrientation="portrait" />
         <activity android:name=".LoginActivity" android:theme="@style/AppTheme.Dark" android:windowSoftInputMode="stateHidden" android:screenOrientation="portrait" />
         <activity android:name=".SignupActivity" android:theme="@style/AppTheme.Dark" android:screenOrientation="portrait" />
+        <activity android:name=".WorkActivity" android:theme="@style/AppTheme.Dark" android:screenOrientation="portrait" />
 
         <service
             android:name=".gcm.MyFcmListenerService">

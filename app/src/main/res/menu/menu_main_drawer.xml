@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <group android:checkableBehavior="single">
+    <!--group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_camera"
             android:icon="@drawable/ic_menu_manage"
@@ -14,8 +13,23 @@
             android:id="@+id/nav_slideshow"
             android:icon="@drawable/ic_menu_slideshow"
             android:title="작업지시 등록" />
-    </group>
-
+    </group-->
+    <item android:title="Registration">
+        <menu>
+            <item
+                android:id="@+id/nav_camera"
+                android:icon="@drawable/ic_menu_manage"
+                android:title="스마트일보 등록" />
+            <item
+                android:id="@+id/nav_gallery"
+                android:icon="@drawable/ic_menu_gallery"
+                android:title="건축주협의 등록" />
+            <item
+                android:id="@+id/nav_slideshow"
+                android:icon="@drawable/ic_menu_slideshow"
+                android:title="작업지시 등록" />
+        </menu>
+    </item>
     <item android:title="Management">
         <menu>
             <item
@@ -28,5 +42,4 @@
                 android:title="사원목록" />
         </menu>
     </item>
-
 </menu>

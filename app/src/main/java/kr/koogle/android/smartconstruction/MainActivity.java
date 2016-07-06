@@ -19,6 +19,7 @@ import android.support.v4.widget.DrawerLayout;
 
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 
 import android.content.SharedPreferences;
@@ -27,10 +28,12 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -46,6 +49,7 @@ import java.util.List;
 import kr.koogle.android.smartconstruction.http.*;
 import kr.koogle.android.smartconstruction.util.BackPressCloseHandler;
 import kr.koogle.android.smartconstruction.util.RbPreference;
+import kr.koogle.android.smartconstruction.util.ScrollAwareFABBehavior;
 import me.leolin.shortcutbadger.ShortcutBadger;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -58,6 +62,7 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, OneFragment.OnHeadlineSelectedListener {
     private static final String TAG = "MainActivity";
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+    public static FloatingActionButton fab;
     private BackPressCloseHandler backPressCloseHandler;
 
     // viewPager 관련
@@ -142,7 +147,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         tabLayout.setupWithViewPager(mViewPager);
 
         // Floating Action Button 관련
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setImageResource(R.drawable.img_camera_white);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -166,6 +171,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // 닫힐때 한번 더 확인
         backPressCloseHandler = new BackPressCloseHandler(this);
 
+        //ScrollAwareFABBehavior scrollAwareFABBehavior = (ScrollAwareFABBehavior) new ScrollAwareFABBehavior(this);
     }
 
     //  ############## Fragment 통신 ##################  // OneFragment 용
@@ -396,7 +402,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     tempFragment = new TwoFragment();
                     break;
                 case 2:
-                    tempFragment = new ThreeFragment();
+                    tempFragment = new SmartBuildFragment();
                     break;
                 default:
                     Log.d("getFragment", "Unhandle Case");
