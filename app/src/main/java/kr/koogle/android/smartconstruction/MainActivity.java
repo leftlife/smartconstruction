@@ -45,6 +45,7 @@ import java.util.List;
 
 import kr.koogle.android.smartconstruction.http.*;
 import kr.koogle.android.smartconstruction.util.BackPressCloseHandler;
+import kr.koogle.android.smartconstruction.util.RbPreference;
 import me.leolin.shortcutbadger.ShortcutBadger;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -69,15 +70,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
 
         // SmartSingleton 생성 !!
-        SmartSingleton smart = SmartSingleton.getInstance();
+        SmartSingleton.getInstance();
+        // Settings 값 !!
+        RbPreference pref = new RbPreference(this);
 
-        SharedPreferences settings = getSharedPreferences("settings", MODE_PRIVATE);
-        final String spAccessToken = settings.getString("accessToken", "");
-        final String spGCMToken = settings.getString("GCMToken", "");
-        final String spPushWork = settings.getString("pushWork", "");
-        final String spPushMessage = settings.getString("pushMessage", "");
-        final String spPushBBS = settings.getString("pushBBS", "");
-        // Toast.makeText(getBaseContext(), "spAuthToken : "+spAuthToken, Toast.LENGTH_SHORT).show();
         /*
         if (spAccessToken.equals("")) // AccessToken 값이 없으면 로그인 Activity 이동
         {
@@ -90,10 +86,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Intent intentIntro = new Intent(getApplicationContext(), IntroActivity.class);
         startActivity(intentIntro);
 
+        /******************************************************************************************/
         // AccessToken 값이 일치하는지 메인에서 한번 확인
-        Log.d(TAG, "loginService.getAccessToken 실행!!");
-        LoginService loginService = ServiceGenerator.createService(LoginService.class);
-        Call<User> call = loginService.checkLoginToken(spAccessToken);
+        Log.d(TAG, "loginService.checkLoginToken 실행!!");
+        LoginService loginService = ServiceGenerator.createService(LoginService.class, pref.getValue("accessToken", ""));
+        Call<User> call = loginService.checkLoginToken( "token" );
 
         call.enqueue(new Callback<User>() {
             @Override
@@ -105,21 +102,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     Toast.makeText(getBaseContext(), "회원정보가 정확하지 않습니다." , Toast.LENGTH_SHORT).show();
 
                     Log.d(TAG, "로그인 창 열림!!");
-                    Intent intentLogin = new Intent(getApplicationContext(), LoginActivity.class);
+                    Intent intentLogin = new Intent(getBaseContext(), LoginActivity.class);
                     startActivity(intentLogin);
                 }
             }
 
             @Override
             public void onFailure(Call<User> call, Throwable t) {
-                Toast.makeText(getBaseContext(), "네트워크 상태가 좋지 않습니다." , Toast.LENGTH_SHORT).show();
+                Toast.makeText(getBaseContext(), "네트워크 상태가 좋지 않습니다!" , Toast.LENGTH_SHORT).show();
                 Log.d("Error", t.getMessage());
 
                 Log.d(TAG, "로그인 창 열림!!");
-                Intent intentLogin = new Intent(getApplicationContext(), LoginActivity.class);
+                Intent intentLogin = new Intent(getBaseContext(), LoginActivity.class);
                 startActivity(intentLogin);
             }
         });
+        /******************************************************************************************/
 
         if (checkPlayServices()) {
             // GCM 서비스 등록

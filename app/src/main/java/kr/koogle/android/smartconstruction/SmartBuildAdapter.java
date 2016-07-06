@@ -6,7 +6,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -16,7 +19,7 @@ import kr.koogle.android.smartconstruction.http.SmartBuild;
 // Note that we specify the custom ViewHolder which gives us access to our views
 public class SmartBuildAdapter extends RecyclerView.Adapter<SmartBuildAdapter.ViewHolder> {
     // Store a member variable for the smartBuilds
-    private static ArrayList<SmartBuild> mSmartBuilds;
+    private static ArrayList<SmartBuild> mSmartBuilds; // SmartSingleton.smartBuilds -> smartBuilds 변경 사용할 경우 !!
     // Store the context for easy access
     private Context mContext;
 
@@ -52,10 +55,23 @@ public class SmartBuildAdapter extends RecyclerView.Adapter<SmartBuildAdapter.Vi
         SmartBuild smartBuild = mSmartBuilds.get(position);
 
         // Set item views based on your views and data model
-        TextView textView = viewHolder.nameTextView;
-        textView.setText(smartBuild.strName);
-        Button button = viewHolder.messageButton;
-        button.setText("Message");
+        ImageView image = viewHolder.image;
+        TextView tvName = viewHolder.name;
+        TextView tvPeriod = viewHolder.period;
+        TextView tvAddress = viewHolder.address;
+        TextView tvSize = viewHolder.size;
+        TextView tvArea = viewHolder.area;
+
+        tvName.setText(smartBuild.strName);
+        tvPeriod.setText(smartBuild.strStartDate + " ~ " + smartBuild.strEndDate);
+        tvAddress.setText(smartBuild.strAddress);
+        tvSize.setText("지상 " + smartBuild.intBuildGround + "층 , 지하 " + smartBuild.intBuildBasement + "층");
+        tvArea.setText(smartBuild.strBuildArea11 + " 제곱미터");
+
+        Picasso.with(getContext())
+                .load(smartBuild.strImageURL)
+                .fit() // resize(700,400)
+                .into(image);
     }
 
     // Returns the total count of items in the list
@@ -82,8 +98,12 @@ public class SmartBuildAdapter extends RecyclerView.Adapter<SmartBuildAdapter.Vi
     public static class ViewHolder extends RecyclerView.ViewHolder  { // implements View.OnClickListener
         // Your holder should contain a member variable
         // for any view that will be set as you render a row
-        public TextView nameTextView;
-        public Button messageButton;
+        public ImageView image;
+        public TextView name;
+        public TextView period;
+        public TextView address;
+        public TextView size;
+        public TextView area;
 
         private Context context;
 
@@ -94,8 +114,12 @@ public class SmartBuildAdapter extends RecyclerView.Adapter<SmartBuildAdapter.Vi
             // to access the context from any ViewHolder instance.
             super(itemView);
 
-            nameTextView = (TextView) itemView.findViewById(R.id.contact_name);
-            messageButton = (Button) itemView.findViewById(R.id.message_button);
+            image = (ImageView) itemView.findViewById(R.id.r_sb_image);
+            name = (TextView) itemView.findViewById(R.id.r_sb_name);
+            period = (TextView) itemView.findViewById(R.id.r_sb_period);
+            address = (TextView) itemView.findViewById(R.id.r_sb_address);
+            size = (TextView) itemView.findViewById(R.id.r_sb_size);
+            area = (TextView) itemView.findViewById(R.id.r_sb_area);
 
             this.context = context;
 

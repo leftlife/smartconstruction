@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Base64;
 import android.util.Log;
 
 import android.content.Intent;
@@ -19,6 +20,7 @@ import kr.koogle.android.smartconstruction.http.AccessToken;
 import kr.koogle.android.smartconstruction.http.LoginService;
 import kr.koogle.android.smartconstruction.http.ServiceGenerator;
 import kr.koogle.android.smartconstruction.http.User;
+import kr.koogle.android.smartconstruction.util.RbPreference;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -47,11 +49,11 @@ public class LoginActivity extends AppCompatActivity {
         _signupLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*
-                // Start the Signup activity
-                Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
-                startActivityForResult(intent, REQUEST_SIGNUP);
-                */
+            /*
+            // Start the Signup activity
+            Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
+            startActivityForResult(intent, REQUEST_SIGNUP);
+            */
             }
         });
     }
@@ -67,14 +69,14 @@ public class LoginActivity extends AppCompatActivity {
         }
         _loginButton.setEnabled(false);
 
-        final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this,
-                R.style.AppTheme_Dark_Dialog);
+        final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this, R.style.AppTheme_Dark_Dialog);
         progressDialog.setIndeterminate(true);
         progressDialog.setMessage("로그인 중 입니다.");
         progressDialog.show();
 
+        /******************************************************************************************/
         // get access token
-        Log.d(TAG, "loginService.getAccessToken 실행!!");
+        Log.d(TAG, "loginService.getLoginToken 실행!!");
         LoginService loginService = ServiceGenerator.createService(LoginService.class, email, password);
         Call<User> call = loginService.getLoginToken();
 
@@ -85,24 +87,21 @@ public class LoginActivity extends AppCompatActivity {
                 // okhttp3.Response raw = response.raw();
                 if (response.isSuccessful() && response.body() != null ) {
                     final User user = response.body();
-                    Log.d(TAG, "AccessToken : " + user.getAccessToken());
                     // 폰에 accessToken 값 저장
-                    SharedPreferences settings = getSharedPreferences("settings", MODE_PRIVATE);
-                    SharedPreferences.Editor spEditor = settings.edit();
-                    spEditor.putString("code", user.getCode());
-                    spEditor.putString("id", user.getId());
-                    spEditor.putString("type", user.getType());
-                    spEditor.putString("group", user.getGroup());
-                    spEditor.putString("accessToken", user.getAccessToken());
-                    spEditor.putString("phone", user.getPhone());
-                    spEditor.commit();
+                    String credentials = user.getId() + ":" + user.getAccessToken();
+                    final String basicToken = "Basic " + Base64.encodeToString(credentials.getBytes(), Base64.NO_WRAP);
+
+                    Log.d(TAG, "AccessToken : " + basicToken);
+                    RbPreference pref = new RbPreference(getBaseContext());
+                    pref.put("code", user.getCode());
+                    pref.put("id", user.getId());
+                    pref.put("type", user.getType());
+                    pref.put("group", user.getGroup());
+                    pref.put("accessToken", basicToken);
+                    pref.put("phone", user.getPhone());
 
                     onLoginSuccess();
-
-                    // tasks available
-                    // Toast.makeText(getBaseContext(), "success : " + response.toString() , Toast.LENGTH_SHORT).show();
                 } else {
-
                     // error response, no access to resource?
                     Toast.makeText(getBaseContext(), "로그인 정보가 정확하지 않습니다." , Toast.LENGTH_SHORT).show();
                 }
@@ -114,13 +113,14 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<User> call, Throwable t) {
                 // something went completely south (like no internet connection)
-                Toast.makeText(getBaseContext(), "네트워크 상태가 좋지 않습니다." , Toast.LENGTH_SHORT).show();
+                Toast.makeText(getBaseContext(), "네트워크 상태가 좋지 않습니다!!" , Toast.LENGTH_SHORT).show();
                 Log.d("Error", t.getMessage());
 
                 _loginButton.setEnabled(true);
                 progressDialog.dismiss();
             }
         });
+        /******************************************************************************************/
         // TODO: Implement your own authentication logic here.
         /*
         new android.os.Handler().postDelayed(

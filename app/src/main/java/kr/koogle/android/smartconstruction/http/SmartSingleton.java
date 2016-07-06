@@ -14,6 +14,7 @@ public class SmartSingleton {
             synchronized (SmartSingleton.class) {
                 if (uniqueInstance == null) {
                     uniqueInstance = new SmartSingleton();
+                    arrSmartBuilds = new ArrayList<SmartBuild>();
                 }
             }
         }

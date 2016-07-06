@@ -9,11 +9,11 @@
         card:cardCornerRadius="0dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
+        android:background="?android:attr/selectableItemBackground"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
         android:layout_marginTop="8dp"
-        android:layout_marginBottom="0dp"
-        android:background="?android:attr/selectableItemBackground">
+        android:layout_marginBottom="2dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -22,39 +22,144 @@
             <ImageView
                 android:scaleType="fitXY"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:id="@+id/image"/>
+                android:layout_height="220dp"
+                android:id="@+id/r_sb_image"
+                android:background="#dddddd" />
             <TextView
-                android:id="@+id/contact_name"
+                android:id="@+id/r_sb_name"
                 android:gravity="center|left"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="10dp"/>
+                android:paddingLeft="10dp"
+                android:paddingTop="20dp"
+                android:autoText="false"
+                android:text="현장명"
+                android:paddingRight="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:textSize="15dp" />
 
-            <TextView
-                android:id="@+id/textView2"
-                android:gravity="center|left"
+            <LinearLayout
+                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="10dp"
-                android:text="2016.06.06 (화)" />
+                android:layout_height="match_parent"
+                android:layout_marginTop="15dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp">
 
-            <TextView
-                android:id="@+id/textView3"
-                android:gravity="center|left"
+                <TextView
+                    android:layout_width="90dp"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="공사기간"
+                    android:layout_weight="2"
+                    android:textSize="12dp"
+                    android:layout_marginLeft="10dp"
+                    android:textColor="@android:color/tertiary_text_light" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="0000.00.00 ~ 0000.00.00"
+                    android:id="@+id/r_sb_period"
+                    android:layout_weight="10"
+                    android:textSize="12dp"
+                    android:layout_marginRight="10dp"
+                    android:textColor="@android:color/tertiary_text_light" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="10dp"
-                android:text="현장관리 시스템 점검 및 보고" />
+                android:layout_height="match_parent"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp">
 
-            <Button
-                android:id="@+id/message_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
-                android:textSize="10sp"
-                />
+                <TextView
+                    android:layout_width="90dp"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="공사위치"
+                    android:layout_weight="2"
+                    android:textSize="12dp"
+                    android:layout_marginLeft="10dp"
+                    android:textColor="@android:color/tertiary_text_light" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="0000.00.00 ~ 0000.00.00"
+                    android:id="@+id/r_sb_address"
+                    android:layout_weight="10"
+                    android:textSize="12dp"
+                    android:layout_marginRight="10dp"
+                    android:textColor="@android:color/tertiary_text_light" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp">
+
+                <TextView
+                    android:layout_width="90dp"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="규모"
+                    android:layout_weight="2"
+                    android:textSize="12dp"
+                    android:layout_marginLeft="10dp"
+                    android:textColor="@android:color/tertiary_text_light" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="0000.00.00 ~ 0000.00.00"
+                    android:id="@+id/r_sb_size"
+                    android:layout_weight="10"
+                    android:textSize="12dp"
+                    android:layout_marginRight="10dp"
+                    android:textColor="@android:color/tertiary_text_light" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="30dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp">
+
+                <TextView
+                    android:layout_width="90dp"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="연면적"
+                    android:layout_weight="2"
+                    android:textSize="12dp"
+                    android:layout_marginLeft="10dp"
+                    android:textColor="@android:color/tertiary_text_light" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="0000.00.00 ~ 0000.00.00"
+                    android:id="@+id/r_sb_area"
+                    android:layout_weight="10"
+                    android:textSize="12dp"
+                    android:layout_marginRight="10dp"
+                    android:textColor="@android:color/tertiary_text_light" />
+            </LinearLayout>
+
         </LinearLayout>
 
         <View
