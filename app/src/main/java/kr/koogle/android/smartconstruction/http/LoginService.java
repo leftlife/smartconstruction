@@ -7,21 +7,18 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 
-/**
- * Created by LeeSungWoo on 2016-06-21.
- */
 public interface LoginService {
 
-    @POST("login")
+    @POST("logins")
     Call<User> getLoginToken();
 
-    @GET("login/{token}")
+    @GET("logins/{token}")
     Call<User> checkLoginToken(
             @Path("token") String token
     );
 
     @FormUrlEncoded
-    @POST("token")
+    @POST("tokens")
     Call<AccessToken> getAccessToken(
             @Field("code") String code,
             @Field("grant_type") String grantType);

@@ -45,6 +45,7 @@ import java.util.List;
 
 import kr.koogle.android.smartconstruction.http.*;
 import kr.koogle.android.smartconstruction.util.BackPressCloseHandler;
+import me.leolin.shortcutbadger.ShortcutBadger;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -62,34 +63,32 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
 
-    // you should either define client id and secret as constants or in string resources
-    private final String clientId = "your-client-id";
-    private final String clientSecret = "your-client-secret";
-    private final String redirectUri = "your://redirecturi";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // 기본값 저장
+        // SmartSingleton 생성 !!
+        SmartSingleton smart = SmartSingleton.getInstance();
+
         SharedPreferences settings = getSharedPreferences("settings", MODE_PRIVATE);
-        final String spGCMToken = settings.getString("GCMToken", "");
         final String spAccessToken = settings.getString("accessToken", "");
+        final String spGCMToken = settings.getString("GCMToken", "");
         final String spPushWork = settings.getString("pushWork", "");
         final String spPushMessage = settings.getString("pushMessage", "");
         final String spPushBBS = settings.getString("pushBBS", "");
         // Toast.makeText(getBaseContext(), "spAuthToken : "+spAuthToken, Toast.LENGTH_SHORT).show();
-
+        /*
         if (spAccessToken.equals("")) // AccessToken 값이 없으면 로그인 Activity 이동
         {
             Log.d(TAG, "로그인 창 열림!!");
             Intent intentLogin = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(intentLogin);
         }
+        */
 
-        Intent intentLoading = new Intent(getApplicationContext(), LoadingActivity.class);
-        startActivity(intentLoading);
+        Intent intentIntro = new Intent(getApplicationContext(), IntroActivity.class);
+        startActivity(intentIntro);
 
         // AccessToken 값이 일치하는지 메인에서 한번 확인
         Log.d(TAG, "loginService.getAccessToken 실행!!");
@@ -103,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     final User user = response.body();
                     Log.d(TAG, "AccessToken : " + user.getAccessToken());
                 } else {
-                    Toast.makeText(getBaseContext(), "로그인 정보가 정확하지 않습니다." , Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getBaseContext(), "회원정보가 정확하지 않습니다." , Toast.LENGTH_SHORT).show();
 
                     Log.d(TAG, "로그인 창 열림!!");
                     Intent intentLogin = new Intent(getApplicationContext(), LoginActivity.class);
@@ -121,9 +120,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(intentLogin);
             }
         });
-
-        // 닫힐때 한번 더 확인
-        backPressCloseHandler = new BackPressCloseHandler(this);
 
         if (checkPlayServices()) {
             // GCM 서비스 등록
@@ -143,13 +139,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
-        // TabLayout 관련
+        // ViewPager 에 TabLayout 연결
         TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
-        /*
-        tabLayout.addTab(tabLayout.newTab().setText("스마트일보"));
-        tabLayout.addTab(tabLayout.newTab().setText("작업지시"));
-        tabLayout.addTab(tabLayout.newTab().setText("공지사항"));
-        */
         tabLayout.setupWithViewPager(mViewPager);
 
         // Floating Action Button 관련
@@ -168,18 +159,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
+        // 네비게이션 연동
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         // 삼성런처에서만 가능한 벳지 카운트
-        int badgeCount = 12;
-        Intent intentBadge = new Intent("android.intent.action.BADGE_COUNT_UPDATE");
-        intentBadge.putExtra("badge_count", badgeCount);
-        // 메인 메뉴에 나타나는 어플의  패키지 명
-        intentBadge.putExtra("badge_count_package_name", getComponentName().getPackageName());
-        // 메인메뉴에 나타나는 어플의 클래스 명
-        intentBadge.putExtra("badge_count_class_name", getComponentName().getClassName());
-        sendBroadcast(intentBadge);
+        ShortcutBadger.applyCount(this, 10);
+        // 닫힐때 한번 더 확인
+        backPressCloseHandler = new BackPressCloseHandler(this);
+
     }
 
     //  ############## Fragment 통신 ##################  // OneFragment 용
@@ -279,63 +267,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onResume() {
         super.onResume();
-
         // the intent filter defined in AndroidManifest will handle the return from ACTION_VIEW intent
+        String redirectUri = "";
         Uri uri = getIntent().getData();
-        if (uri != null && uri.toString().startsWith(redirectUri) || true) {
+        if (uri != null && uri.toString().startsWith(redirectUri)) {
             // use the parameter your API exposes for the code (mostly it's "code")
             String code = "code"; //uri.getQueryParameter("code");
             if (code != null) {
-                /*
-                try {
-                    AccessToken accessToken = call.execute().body();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                */
 
-                /*
-                // get access token (custom)
-                LoginService loginService =
-                        ServiceGenerator.createService(LoginService.class, "user", "secretpassword");
-                Call<User> call = loginService.basicLogin();
-
-                call.enqueue(new Callback<User>() {
-                    @Override
-                    public void onResponse(Call<User> call, Response<User> response) {
-
-                        //get raw response
-                        okhttp3.Response raw = response.raw();
-
-                        if (response.isSuccessful()) {
-                            // tasks available
-                            Toast.makeText(getBaseContext(), "success : " + response.toString() , Toast.LENGTH_SHORT).show();
-                        } else {
-                            // error response, no access to resource?
-                            Toast.makeText(getBaseContext(), "failure : " + response.toString() , Toast.LENGTH_SHORT).show();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<User> call, Throwable t) {
-                        // something went completely south (like no internet connection)
-                        Toast.makeText(getBaseContext(), "error : " + t.getMessage() , Toast.LENGTH_SHORT).show();
-                        Log.d("Error", t.getMessage());
-                    }
-                });
-                */
             } else if (uri.getQueryParameter("error") != null) {
                 // show an error message here
             }
         }
     }
 
-
-
     // Drawer Layout 관련
     @Override
     public void onBackPressed() {
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
@@ -384,8 +332,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         } else if (id == R.id.nav_share) {
 
-        } else if (id == R.id.nav_send) {
-
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -425,7 +371,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         @Override
         public int getCount() {
-            // Show 3 total pages.
             return 3;
         }
 
@@ -447,7 +392,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             switch(idx) {
                 case 0:
-                    tempFragment = new SmartFragment();
+                    tempFragment = new SmartBuildFragment();
                     break;
                 case 1:
                     tempFragment = new TwoFragment();
@@ -462,5 +407,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             return tempFragment;
         }
     }
+
 
 }

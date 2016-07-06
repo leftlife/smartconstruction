@@ -8,12 +8,9 @@ import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
 
-/**
- * Created by LeeSungWoo on 2016-06-21.
- */
 public interface FileUploadService {
     @Multipart
-    @POST("upload")
+    @POST("uploads")
     Call<ResponseBody> upload(@Part("description") RequestBody description,
                               @Part MultipartBody.Part file);
 }

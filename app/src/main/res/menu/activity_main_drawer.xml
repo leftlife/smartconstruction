@@ -14,22 +14,18 @@
             android:id="@+id/nav_slideshow"
             android:icon="@drawable/ic_menu_slideshow"
             android:title="작업지시 등록" />
-        <item
-            android:id="@+id/nav_manage"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="사진관리" />
     </group>
 
-    <item android:title="Communicate">
+    <item android:title="Management">
         <menu>
+            <item
+                android:id="@+id/nav_manage"
+                android:icon="@drawable/ic_menu_camera"
+                android:title="사진관리" />
             <item
                 android:id="@+id/nav_share"
                 android:icon="@drawable/ic_menu_share"
-                android:title="사원리스트" />
-            <item
-                android:id="@+id/nav_send"
-                android:icon="@drawable/ic_menu_send"
-                android:title="사내메신저" />
+                android:title="사원목록" />
         </menu>
     </item>
 
