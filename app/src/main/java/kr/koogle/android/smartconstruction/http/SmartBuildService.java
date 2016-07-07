@@ -1,6 +1,7 @@
 package kr.koogle.android.smartconstruction.http;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import retrofit2.Call;
 import retrofit2.http.Field;
@@ -16,6 +17,11 @@ public interface SmartBuildService {
 
     @GET("builds/{build}")
     Call<SmartBuild> getSmartBuild(
+            @Path("build") String buildCode
+    );
+
+    @GET("builds/{build}/works")
+    Call<ArrayList<SmartWork>> getSmartWorks(
             @Path("build") String buildCode
     );
 

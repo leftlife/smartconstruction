@@ -7,6 +7,7 @@ public class SmartSingleton {
     private SmartSingleton() {}
 
     public static ArrayList<SmartBuild> arrSmartBuilds;
+    public static ArrayList<SmartWork> arrSmartWorks;
 
     public static SmartSingleton getInstance() {
         if (uniqueInstance == null) {
@@ -15,6 +16,7 @@ public class SmartSingleton {
                 if (uniqueInstance == null) {
                     uniqueInstance = new SmartSingleton();
                     arrSmartBuilds = new ArrayList<SmartBuild>();
+                    arrSmartWorks = new ArrayList<SmartWork>();
                 }
             }
         }

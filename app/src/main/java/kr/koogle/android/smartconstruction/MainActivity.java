@@ -1,5 +1,6 @@
 package kr.koogle.android.smartconstruction;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.app.ActivityManager;
 import android.content.Context;
@@ -283,6 +284,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 // show an error message here
             }
         }
+    }
+
+    @Override
+    protected  void onPause() {
+        super.onPause();
+
     }
 
     // Drawer Layout 관련

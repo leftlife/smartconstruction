@@ -51,8 +51,8 @@ public class SmartBuild {
     public String strLat;
     public String strLng;
 
-    public HashMap<String, String> mapFiles; // String 파일명 : strFile1
-    public HashMap<String, SmartWork> mapSmartWorks; // String 날짜 : 2016.06.12
+    public ArrayList<String> mapFiles; // String 파일명 : strFile1
+    public ArrayList<SmartWork> mapSmartWorks; // String 날짜 : 2016.06.12
 
 
     private static int lastContactId = 0;
