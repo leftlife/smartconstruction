@@ -19,6 +19,8 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
@@ -27,26 +29,31 @@ import kr.koogle.android.smartconstruction.http.SmartBuild;
 import kr.koogle.android.smartconstruction.http.SmartBuildService;
 import kr.koogle.android.smartconstruction.http.SmartSingleton;
 import kr.koogle.android.smartconstruction.http.SmartWork;
+import kr.koogle.android.smartconstruction.util.OnLoadMoreListener;
 import kr.koogle.android.smartconstruction.util.RbPreference;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class WorkActivity extends AppCompatActivity {
-
     private static final String TAG = "WorkActivity";
+
+    public static RecyclerView rvSmartWorks;
     private SmartWorkAdapter adapter;
-    // public static HashMap<String, SmartWork> smartWorks; // SmartSingleton.smartBuilds -> smartBuilds 변경 사용할 경우 !!
-    private static RecyclerView rvSmartWorks;
     private LayoutInflater mInflater;
+
+    private static String strBuildCode = "";
+    private static Boolean isNewBuild;
+    private static String strWorkTitleTop = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_work);
-
         // SmartSingleton 생성 !!
         SmartSingleton.getInstance();
+        // Settings 값 !!
+        RbPreference pref = new RbPreference(this);
 
         // Lookup the recyclerview in activity layout
         rvSmartWorks = (RecyclerView) findViewById(R.id.rvSmartWorks);
@@ -71,26 +78,38 @@ public class WorkActivity extends AppCompatActivity {
 
         loadBackdrop();
 
+        // SmartBuildFragment 에서 넘어온 값 받기 !!
+        if ( strBuildCode.equals(getIntent().getExtras().getString("strBuildCode")) ) { // 새로운 현장이 아니면
+            isNewBuild = false;
+        } else { // 새로운 현장이면
+            SmartSingleton.arrSmartWorks = new ArrayList<SmartWork>();
+            isNewBuild = true;
 
-        // Settings 값 !!
-        RbPreference pref = new RbPreference(this);
+            // 상단부분 내용 변경 !!
+            strBuildCode = getIntent().getExtras().getString("strBuildCode");
 
-        // Initialize smartBulids - do not reinitialize an existing reference used by an adapter
-        // smartBulids = SmartBuild.createSmartBuildsList(20);
-        // SmartSingleton.getInstance();
-        // SmartSingleton.arrSmartBuilds = new ArrayList<SmartBuild>();
+            strWorkTitleTop = getIntent().getExtras().getString("strBuildName");
+            final CollapsingToolbarLayout collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout_work);
+            collapsingToolbar.setTitle(strWorkTitleTop);
+
+            final ImageView imageTop = (ImageView) findViewById(R.id.img_work_top);
+            Picasso.with(this)
+                    .load( getIntent().getExtras().getString("strImageUrl") )
+                    .fit() // resize(700,400)
+                    .into(imageTop);
+        }
 
         // Create adapter passing in the sample user data
         adapter = new SmartWorkAdapter(this, SmartSingleton.arrSmartWorks);
 
-        if(SmartSingleton.arrSmartWorks.size() <= 0) {
+        if(isNewBuild || SmartSingleton.arrSmartWorks.isEmpty()) {
             /******************************************************************************************/
             // SmartBuild 값 불러오기 (진행중인 현장)
-            Log.d(TAG, "SmartBuildService.getSmartWorks 실행!! / accessToken : " + pref.getValue("accessToken", ""));
-            SmartBuildService smartBuildService = ServiceGenerator.createService(SmartBuildService.class, pref.getValue("accessToken", ""));
-            String buildCode = "22561cb4f743881";
+            Log.d(TAG, "SmartBuildService.getSmartWorks 실행!! / pref_access_token : " + pref.getValue("pref_access_token", ""));
+            SmartBuildService smartBuildService = ServiceGenerator.createService(SmartBuildService.class, pref.getValue("pref_access_token", ""));
+
             Log.d(TAG, "getSmartWork START !!!");
-            Call<ArrayList<SmartWork>> call = smartBuildService.getSmartWorks(buildCode);
+            Call<ArrayList<SmartWork>> call = smartBuildService.getSmartWorks(strBuildCode);
             Log.d(TAG, "getSmartWork END !!!");
 
             call.enqueue(new Callback<ArrayList<SmartWork>>() {
@@ -118,69 +137,50 @@ public class WorkActivity extends AppCompatActivity {
             });
             /******************************************************************************************/
         }
-        /*
-        smartBulids.addAll(SmartBuild.createSmartBuildsList(10));
 
-        // 새로운 리스트 추가하기!!
-        ArrayList<SmartBuild> newItems = SmartBuild.createSmartBuildsList(3);
-        smartBulids.addAll(newItems);
-
-        // 기존 리스트에 추가하기!!
-        adapter.notifyItemRangeInserted(curSize, newItems.size());
-
-        // 중간에 아이템 추가하기!!
-        smartBulids.add(0, new SmartBuild());
-        adapter.notifyItemInserted(0);
-
-        // Scrolling to New Items
-        adapter.notifyItemInserted(12);
-        rvSmartBuilds.scrollToPosition(12);
-
-        adapter.notifyItemInserted(smartBulids.size() - 1); // Last element position
-        rvSmartBuilds.scrollToPosition(adapter.getItemCount() - 1); // update based on adapter
-        */
-
-        //rvSmartWorks.setHasFixedSize(true);
-
-        // Attach the adapter to the recyclerview to populate items
-        /*
-        AlphaInAnimationAdapter alphaInAnimationAdapter = new AlphaInAnimationAdapter(adapter);
-        alphaInAnimationAdapter.setDuration(1000);
-        rvSmartBuilds.setAdapter(new ScaleInAnimationAdapter(alphaInAnimationAdapter));
-        */
         rvSmartWorks.setAdapter(adapter);
-
-        /*
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-        layoutManager.scrollToPosition(0);
-        rvSmartBuilds.setLayoutManager(layoutManager);
-
-        StaggeredGridLayoutManager gridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
-        */
-/*
-        RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST);
-        rvSmartBuilds.addItemDecoration(itemDecoration);
-*/
-
         rvSmartWorks.setItemAnimator(new SlideInUpAnimator());
 
         /***************************************************************************/
         adapter.setOnItemClickListener(new SmartWorkAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
+                adapter.notifyItemChanged(position);
                 // String name = SmartSingleton.arrSmartWorks.get(position).strName;
                 // SmartSingleton.arrSmartWorks.get(position).strName = "변경되었습니다.";
-                adapter.notifyItemChanged(position);
-
                 //Intent intentWorkView = new Intent(this, WorkViewActivity.class);
                 //startActivity(intentWorkView);
-
                 // Toast.makeText(getApplicationContext(), name + " was clicked!", Toast.LENGTH_SHORT).show();
             }
         });
         /***************************************************************************/
+        adapter.setmOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                Log.e("haint", "Load More");
 
+                /*
+                mUserAdapter.notifyItemInserted(mUsers.size() - 1);
+
+                //Remove loading item
+                mUsers.remove(mUsers.size() - 1);
+                mUserAdapter.notifyItemRemoved(mUsers.size());
+
+                //Load data
+                int index = mUsers.size();
+                int end = index + 20;
+                for (int i = index; i < end; i++) {
+                    User user = new User();
+                    user.setName("Name " + i);
+                    user.setEmail("alibaba" + i + "@gmail.com");
+                    mUsers.add(user);
+                }
+                mUserAdapter.notifyDataSetChanged();
+                mUserAdapter.setLoaded();
+                */
+            }
+        });
+        /***************************************************************************/
     }
 
     @Override
@@ -192,10 +192,10 @@ public class WorkActivity extends AppCompatActivity {
     // 스크롤 시 상단 이미지 투명하게 변경 !!
     private void loadBackdrop() {
         final CollapsingToolbarLayout collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout_work);
-        collapsingToolbar.setTitle("동구 국민체육문화센터 신축공사");
+        collapsingToolbar.setTitle(strWorkTitleTop);
 
         final int myDrawable = R.drawable.img_intro;
-        final ImageView iv = (ImageView)findViewById(R.id.backdrop);
+        final ImageView iv = (ImageView)findViewById(R.id.img_work_top);
         if (iv != null) {
             iv.setImageResource(myDrawable);
         }

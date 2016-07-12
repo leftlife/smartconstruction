@@ -88,17 +88,19 @@ public class LoginActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null ) {
                     final User user = response.body();
                     // 폰에 accessToken 값 저장
-                    String credentials = user.getId() + ":" + user.getAccessToken();
+                    String credentials = user.getPref_user_id() + ":" + user.getPref_access_token();
                     final String basicToken = "Basic " + Base64.encodeToString(credentials.getBytes(), Base64.NO_WRAP);
 
-                    Log.d(TAG, "AccessToken : " + basicToken);
-                    RbPreference pref = new RbPreference(getBaseContext());
-                    pref.put("code", user.getCode());
-                    pref.put("id", user.getId());
-                    pref.put("type", user.getType());
-                    pref.put("group", user.getGroup());
-                    pref.put("accessToken", basicToken);
-                    pref.put("phone", user.getPhone());
+                    Log.d(TAG, "pref_access_token : " + basicToken);
+                    RbPreference pref = new RbPreference(getApplicationContext());
+                    pref.put("pref_user_code", user.getPref_user_code());
+                    pref.put("pref_user_id", user.getPref_user_id());
+                    pref.put("pref_user_name", user.getPref_user_name());
+                    pref.put("pref_user_type", user.getPref_user_type());
+                    pref.put("pref_user_group", user.getPref_user_group());
+                    pref.put("pref_user_phone", user.getPref_user_phone());
+                    pref.put("pref_user_email", user.getPref_user_email());
+                    pref.put("pref_access_token", basicToken);
 
                     onLoginSuccess();
                 } else {
@@ -139,7 +141,6 @@ public class LoginActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_SIGNUP) {
             if (resultCode == RESULT_OK) {
-
                 // TODO: Implement successful signup logic here
                 // By default we just finish the Activity and log them in automatically
                 this.finish();
@@ -155,6 +156,8 @@ public class LoginActivity extends AppCompatActivity {
 
     public void onLoginSuccess() {
         _loginButton.setEnabled(true);
+        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+        startActivity(intent);
         finish();
     }
 

@@ -18,7 +18,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.Light">
 
-        <activity android:name=".MainActivity"
+        <activity android:name=".IntroActivity"
+            android:theme="@style/AppTheme.Light"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,10 +27,16 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".IntroActivity" android:theme="@style/AppTheme.Light" android:screenOrientation="portrait" />
+        <activity android:name=".MainActivity"
+            android:screenOrientation="portrait">
+        </activity>
+
         <activity android:name=".LoginActivity" android:theme="@style/AppTheme.Light" android:screenOrientation="portrait" android:windowSoftInputMode="stateHidden" />
         <activity android:name=".SignupActivity" android:theme="@style/AppTheme.Light" android:screenOrientation="portrait" />
+
         <activity android:name=".WorkActivity" android:theme="@style/AppTheme.Light" android:screenOrientation="portrait" />
+
+        <activity android:name=".SettingsActivity" android:theme="@style/AppTheme.Light.Settings" android:screenOrientation="portrait" />
 
         <service
             android:name=".gcm.MyFcmListenerService">

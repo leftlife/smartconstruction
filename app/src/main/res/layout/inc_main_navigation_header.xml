@@ -18,7 +18,7 @@
         android:layout_weight="10">
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/nav_image"
             android:layout_width="60dp"
             android:layout_height="80dp"
             android:paddingTop="20dp"
@@ -29,10 +29,11 @@
             android:layout_height="wrap_content"
             android:paddingTop="10dp"
             android:text="이성우 실장"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:id="@+id/nav_name" />
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/nav_email"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="help@architimes.co.kr" />
@@ -41,7 +42,7 @@
     <ImageView
         android:layout_width="23dp"
         android:layout_height="23dp"
-        android:id="@+id/btn_settings"
+        android:id="@+id/btn_nav_settings"
         android:src="@drawable/ico_setting_white"
         android:contentDescription=""
         android:layout_marginBottom="1dp"

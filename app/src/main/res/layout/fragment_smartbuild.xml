@@ -4,6 +4,32 @@
     android:layout_height="match_parent"
     android:background="?android:attr/selectableItemBackground" >
 
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/emp_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="200dp"
+            android:id="@+id/emp_txt_image"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/img_intro"
+            android:layout_marginTop="100dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="등록된 데이터가 없습니다."
+            android:id="@+id/emp_txt_title"
+            android:textAlignment="center"
+            android:textColor="#777777"
+            android:textSize="14dp" />
+
+    </LinearLayout>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rvSmartBuilds"
         android:layout_width="match_parent"

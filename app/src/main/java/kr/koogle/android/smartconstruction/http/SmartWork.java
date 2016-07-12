@@ -10,6 +10,7 @@ public class SmartWork {
     public String strDate;
     public int intWeather;
     public String strMemo;
+    public String strImageURL;
 
     public ArrayList<SmartLabor> lstSmartLabors;
     public ArrayList<SmartMaterial> lstSmartMaterials;

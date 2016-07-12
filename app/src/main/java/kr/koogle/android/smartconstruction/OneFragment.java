@@ -112,15 +112,12 @@ public class OneFragment extends Fragment {
     public interface OnHeadlineSelectedListener {
         void onArticleSelected(int position);
     }
-
     // Activity -> OneFragment 로 전달되는 함수
     public void updateArticleView(int position) {
 
     }
-
     // 부모 Activity 가져오기
     Activity parentActiivty = getActivity();
-
     // 저장한 bundle 가져올때
     Bundle extra = getArguments();
     //String strId = extra.getString("strId");

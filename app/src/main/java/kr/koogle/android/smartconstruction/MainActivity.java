@@ -31,11 +31,14 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -45,6 +48,7 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import kr.koogle.android.smartconstruction.http.*;
@@ -60,11 +64,17 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, OneFragment.OnHeadlineSelectedListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, SmartFragment.OnHeadlineSelectedListener {
     private static final String TAG = "MainActivity";
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+    private static BackPressCloseHandler backPressCloseHandler;
+    private static RbPreference pref;
     public static FloatingActionButton fab;
-    private BackPressCloseHandler backPressCloseHandler;
+
+    private static ImageView navImage;
+    private static TextView navName;
+    private static TextView navEmail;
+    private static ImageView btnNavSettings;
 
     // viewPager 관련
     private SectionsPagerAdapter mSectionsPagerAdapter;
@@ -74,56 +84,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         // SmartSingleton 생성 !!
         SmartSingleton.getInstance();
         // Settings 값 !!
-        RbPreference pref = new RbPreference(this);
-
-        /*
-        if (spAccessToken.equals("")) // AccessToken 값이 없으면 로그인 Activity 이동
-        {
-            Log.d(TAG, "로그인 창 열림!!");
-            Intent intentLogin = new Intent(getApplicationContext(), LoginActivity.class);
-            startActivity(intentLogin);
-        }
-        */
-
-        Intent intentIntro = new Intent(getApplicationContext(), IntroActivity.class);
-        startActivity(intentIntro);
-
-        /******************************************************************************************/
-        // AccessToken 값이 일치하는지 메인에서 한번 확인
-        Log.d(TAG, "loginService.checkLoginToken 실행!!");
-        LoginService loginService = ServiceGenerator.createService(LoginService.class, pref.getValue("accessToken", ""));
-        Call<User> call = loginService.checkLoginToken( "token" );
-
-        call.enqueue(new Callback<User>() {
-            @Override
-            public void onResponse(Call<User> call, Response<User> response) {
-                if (response.isSuccessful() && response.body() != null ) {
-                    final User user = response.body();
-                    Log.d(TAG, "AccessToken : " + user.getAccessToken());
-                } else {
-                    Toast.makeText(getBaseContext(), "회원정보가 정확하지 않습니다." , Toast.LENGTH_SHORT).show();
-
-                    Log.d(TAG, "로그인 창 열림!!");
-                    Intent intentLogin = new Intent(getBaseContext(), LoginActivity.class);
-                    startActivity(intentLogin);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<User> call, Throwable t) {
-                Toast.makeText(getBaseContext(), "네트워크 상태가 좋지 않습니다!" , Toast.LENGTH_SHORT).show();
-                Log.d("Error", t.getMessage());
-
-                Log.d(TAG, "로그인 창 열림!!");
-                Intent intentLogin = new Intent(getBaseContext(), LoginActivity.class);
-                startActivity(intentLogin);
-            }
-        });
-        /******************************************************************************************/
+        pref = new RbPreference(getApplicationContext());
 
         if (checkPlayServices()) {
             // GCM 서비스 등록
@@ -132,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             // 이 token을 서버에 전달 한다.
         }
 
-        // Tool Bar 관련
+        // ToolBar 관련
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -147,6 +111,53 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
+        // 네비게이션 이벤트
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                if (slideOffset == 0) {
+                    // drawer closed
+                    invalidateOptionsMenu();
+                } else if (slideOffset != 0) {
+                    // started opening
+                    final TextView navName = (TextView) findViewById(R.id.nav_name);
+                    final TextView navEmail = (TextView) findViewById(R.id.nav_email);
+                    navName.setText(pref.getValue("pref_user_name", ""));
+                    navEmail.setText(pref.getValue("pref_user_email", ""));
+
+                    invalidateOptionsMenu();
+                }
+                super.onDrawerSlide(drawerView, slideOffset);
+            }
+        };
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
+
+        // 네비게이션 연동
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        // Settings 버튼 클릭 이벤트
+        View navHeaderView = navigationView.getHeaderView(0);
+        btnNavSettings = (ImageView) navHeaderView.findViewById(R.id.btn_nav_settings);
+        btnNavSettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //btnNavSettings.setEnabled(true);
+                Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+                startActivity(intent);
+
+                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+                if (drawer.isDrawerOpen(GravityCompat.START)) {
+                    drawer.closeDrawer(GravityCompat.START);
+                } else {
+                    backPressCloseHandler.onBackPressed();
+                    //super.onBackPressed();
+                }
+            }
+        });
+
         // Floating Action Button 관련
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setImageResource(R.drawable.img_camera_white);
@@ -158,29 +169,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
-
-        // 네비게이션 연동
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-
         // 삼성런처에서만 가능한 벳지 카운트
         ShortcutBadger.applyCount(this, 10);
+
         // 닫힐때 한번 더 확인
         backPressCloseHandler = new BackPressCloseHandler(this);
-
-        //ScrollAwareFABBehavior scrollAwareFABBehavior = (ScrollAwareFABBehavior) new ScrollAwareFABBehavior(this);
     }
 
-    //  ############## Fragment 통신 ##################  // OneFragment 용
+    //  ############## Fragment 통신 ##################  // SmartFragment 용
     public void onArticleSelected(int position) {
-        OneFragment oneFragment = (OneFragment) getSupportFragmentManager().findFragmentById(R.id.one_fragment);
-        if(oneFragment != null) {
+        SmartFragment smartFragment = (SmartFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_smart);
+        if(smartFragment != null) {
             // Framgment 통신 사용 !!! -> OneFragment
-            oneFragment.updateArticleView(position);
+            smartFragment.updateArticleView(position);
         } else {
             /*
             OneFragment newFragment = new OneFragment();
@@ -196,79 +197,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    // GCM 이 가능한지 체크
-    private boolean checkPlayServices() {
-        GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
-        int resultCode = apiAvailability.isGooglePlayServicesAvailable(this);
-        if (resultCode != ConnectionResult.SUCCESS) {
-            if (apiAvailability.isUserResolvableError(resultCode)) {
-                apiAvailability.getErrorDialog(this, resultCode, PLAY_SERVICES_RESOLUTION_REQUEST).show();
-            } else {
-                Log.i(TAG, "This device is not supported.");
-                finish();
-            }
-            return false;
-        }
-        return true;
-    }
-
-
-    public String getImageNameToUri(Uri data)
-    {
-        String[] proj = { MediaStore.Images.Media.DATA };
-        Cursor cursor = managedQuery(data, proj, null, null, null);
-        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-
-        cursor.moveToFirst();
-
-        String imgPath = cursor.getString(column_index);
-        String imgName = imgPath.substring(imgPath.lastIndexOf("/")+1);
-
-        return imgName;
-    }
-
-    public void uploadFile(File fileImage) {
-        // create upload service client
-        FileUploadService service =
-                ServiceGenerator.createService(FileUploadService.class);
-
-        // https://github.com/iPaulPro/aFileChooser/blob/master/aFileChooser/src/com/ipaulpro/afilechooser/utils/FileUtils.java
-        // use the FileUtils to get the actual file by uri
-        File file = fileImage; //FileUtils.getFile(this, fileUri);
-
-        // create RequestBody instance from file
-        RequestBody requestFile =
-                RequestBody.create(MediaType.parse("multipart/form-data"), file);
-
-        //Toast.makeText(getBaseContext(), "filename : " + file.getName() , Toast.LENGTH_SHORT).show();
-        // MultipartBody.Part is used to send also the actual file name
-        MultipartBody.Part body =
-                MultipartBody.Part.createFormData("userfile1", file.getName(), requestFile);
-
-        // add another part within the multipart request
-        String descriptionString = "hello, this is description speaking";
-        RequestBody description =
-                RequestBody.create(
-                        MediaType.parse("multipart/form-data"), descriptionString);
-
-        // finally, execute the request
-        Call<ResponseBody> call = service.upload(description, body);
-        call.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call,
-                                   Response<ResponseBody> response) {
-                Log.v("Upload", "success");
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Log.e("Upload error:", t.getMessage());
-            }
-        });
-
-    }
-
-    // 엑티비티가 시작될 때 수행할 작업
+    /*
+     * 엑티비티 생명주기 관련 함수 ************************************************************************
+     */
     @Override
     protected void onResume() {
         super.onResume();
@@ -327,6 +258,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return super.onOptionsItemSelected(item);
     }
 
+    /*
+     * Navigation 메뉴 관련 함수 ************************************************************************
+     */
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -334,7 +268,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
 
         if (id == R.id.nav_camera) {
-            // Handle the camera action
+
         } else if (id == R.id.nav_gallery) {
 
         } else if (id == R.id.nav_slideshow) {
@@ -343,13 +277,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         } else if (id == R.id.nav_share) {
 
+        } else if (id == R.id.nav_logout) {
+            // Settings 값 !!
+            RbPreference pref = new RbPreference(getApplicationContext());
+            pref.put("pref_user_code", "");
+            pref.put("pref_user_id", "");
+            pref.put("pref_user_name", "");
+            pref.put("pref_user_type", "");
+            pref.put("pref_user_group", "");
+            pref.put("pref_user_phone", "");
+            pref.put("pref_user_email", "");
+            pref.put("pref_access_token", "");
+
+            SmartSingleton.arrSmartBuilds = new ArrayList<SmartBuild>();
+            SmartSingleton.arrSmartWorks = new ArrayList<SmartWork>();
+
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(intent);
+            finish();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
 
     public void replaceFragment(int reqNewFragmentIndex)
     {
@@ -419,5 +370,78 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    /*
+     * Util 함수들 ##################################################################
+     */
+    // GCM 이 가능한지 체크
+    private boolean checkPlayServices() {
+        GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
+        int resultCode = apiAvailability.isGooglePlayServicesAvailable(this);
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (apiAvailability.isUserResolvableError(resultCode)) {
+                apiAvailability.getErrorDialog(this, resultCode, PLAY_SERVICES_RESOLUTION_REQUEST).show();
+            } else {
+                Log.i(TAG, "This device is not supported.");
+                finish();
+            }
+            return false;
+        }
+        return true;
+    }
+
+    public String getImageNameToUri(Uri data)
+    {
+        String[] proj = { MediaStore.Images.Media.DATA };
+        Cursor cursor = managedQuery(data, proj, null, null, null);
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+
+        cursor.moveToFirst();
+
+        String imgPath = cursor.getString(column_index);
+        String imgName = imgPath.substring(imgPath.lastIndexOf("/")+1);
+
+        return imgName;
+    }
+
+    public void uploadFile(File fileImage) {
+        // create upload service client
+        FileUploadService service =
+                ServiceGenerator.createService(FileUploadService.class);
+
+        // https://github.com/iPaulPro/aFileChooser/blob/master/aFileChooser/src/com/ipaulpro/afilechooser/utils/FileUtils.java
+        // use the FileUtils to get the actual file by uri
+        File file = fileImage; //FileUtils.getFile(this, fileUri);
+
+        // create RequestBody instance from file
+        RequestBody requestFile =
+                RequestBody.create(MediaType.parse("multipart/form-data"), file);
+
+        //Toast.makeText(getBaseContext(), "filename : " + file.getName() , Toast.LENGTH_SHORT).show();
+        // MultipartBody.Part is used to send also the actual file name
+        MultipartBody.Part body =
+                MultipartBody.Part.createFormData("userfile1", file.getName(), requestFile);
+
+        // add another part within the multipart request
+        String descriptionString = "hello, this is description speaking";
+        RequestBody description =
+                RequestBody.create(
+                        MediaType.parse("multipart/form-data"), descriptionString);
+
+        // finally, execute the request
+        Call<ResponseBody> call = service.upload(description, body);
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call,
+                                   Response<ResponseBody> response) {
+                Log.v("Upload", "success");
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.e("Upload error:", t.getMessage());
+            }
+        });
+
+    }
 
 }

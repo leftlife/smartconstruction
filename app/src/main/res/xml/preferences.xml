@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="사용자 정보" >
+
+        <EditTextPreference
+            android:key="pref_user_name"
+            android:title="사용자 이름"
+            android:dialogTitle="사용자 이름을 입력하세요."
+            android:defaultValue="이름"
+            android:summary="이름" />
+
+        <EditTextPreference
+            android:key="pref_user_email"
+            android:title="사용자 이메일"
+            android:dialogTitle="사용자 이메일을 입력하세요."
+            android:defaultValue="이메일"
+            android:summary="이메일" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="알림 설정" >
+
+        <SwitchPreference
+            android:key="pref_push_smart"
+            android:title="스마트일보 등록 알림"
+            android:defaultValue="true"
+            android:summary="스마트일보가 등록되면 알려드립니다." />
+
+        <SwitchPreference
+            android:key="pref_push_client"
+            android:title="협의게시판 등록 알림"
+            android:defaultValue="true"
+            android:summary="협의게시판이 등록되면 알려드립니다." />
+
+        <SwitchPreference
+            android:key="pref_push_order"
+            android:title="업무지시 등록 알림"
+            android:defaultValue="true"
+            android:summary="업무지시가 등록되면 알려드립니다." />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="버전정보" >
+
+        <ListPreference
+            android:key="pref_auto_update"
+            android:title="자동 업데이트"
+            android:summary="항상"
+            android:dialogTitle="업데이트를 설정해 주세요."
+            android:entries="@array/pref_arr_settings_update"
+            android:entryValues="@array/pref_arr_settings_update_values"
+            android:defaultValue="1" />
+
+        <EditTextPreference
+            android:key="pref_version"
+            android:title="스마트 현장관리 버전"
+            android:dialogTitle="스마트 현장관리 버전정보"
+            android:summary="1.0.0"
+            android:defaultValue="1.0.0"
+            android:editable="false"/>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

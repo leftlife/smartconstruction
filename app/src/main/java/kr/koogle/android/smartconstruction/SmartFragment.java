@@ -1,5 +1,6 @@
 package kr.koogle.android.smartconstruction;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -21,10 +22,16 @@ public class SmartFragment extends Fragment implements AbsListView.OnScrollListe
     private boolean mLockListView;
     private View rootView;
 
+    //  ############## Fragment 통신 ##################  //
+    private SmartFragment.OnHeadlineSelectedListener customListener;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_smart, container, false);
         mInflater = inflater; //getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        // Framgment 통신 사용 !!! -> Activity
+        //customListener.onArticleSelected(1);
 
         // 멤버 변수 초기화
         mRowList = new ArrayList<String>();
@@ -44,7 +51,6 @@ public class SmartFragment extends Fragment implements AbsListView.OnScrollListe
             }
         });
 
-
         // 푸터를 등록합니다. setAdapter 이전에 해야 합니다.
         mListView.addFooterView(mInflater.inflate(R.layout.list_footer, null));
 
@@ -57,7 +63,6 @@ public class SmartFragment extends Fragment implements AbsListView.OnScrollListe
 
         return rootView;
     }
-
 
     @Override
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount)
@@ -105,4 +110,28 @@ public class SmartFragment extends Fragment implements AbsListView.OnScrollListe
         handler.postDelayed(run, 500);
     }
 
+    //  ############## Fragment 통신 ##################  //
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        // Activity(MainActivity)가 onSelectedListener를 구현했는지 확인 !!
+        try {
+            customListener = (OnHeadlineSelectedListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString() + "must implement OnHeadlineSelectedListener");
+        }
+    }
+    //  ############## Fragment 통신 ##################  // 이벤트 콜백 인터페이스 구현 !!
+    public interface OnHeadlineSelectedListener {
+        void onArticleSelected(int position);
+    }
+    // Activity -> OneFragment 로 전달되는 함수
+    public void updateArticleView(int position) {
+
+    }
+    // 부모 Activity 가져오기
+    Activity parentActiivty = getActivity();
+    // 저장한 bundle 가져올때
+    Bundle extra = getArguments();
+    //String strId = extra.getString("strId");
 }

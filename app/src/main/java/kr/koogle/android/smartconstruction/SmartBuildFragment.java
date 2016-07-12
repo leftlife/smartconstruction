@@ -11,6 +11,9 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -57,8 +60,8 @@ public class SmartBuildFragment extends Fragment {
         if(SmartSingleton.arrSmartBuilds.size() <= 0) {
             /******************************************************************************************/
             // SmartBuild 값 불러오기 (진행중인 현장)
-            Log.d(TAG, "SmartBuildService.checkLoginToken 실행!! / accessToken : " + pref.getValue("accessToken", ""));
-            SmartBuildService smartBuildService = ServiceGenerator.createService(SmartBuildService.class, pref.getValue("accessToken", ""));
+            Log.d(TAG, "SmartBuildService.checkLoginToken 실행!! / pref_access_token : " + pref.getValue("pref_access_token", ""));
+            SmartBuildService smartBuildService = ServiceGenerator.createService(SmartBuildService.class, pref.getValue("pref_access_token", ""));
             Call<ArrayList<SmartBuild>> call = smartBuildService.getSmartBuilds();
 
             call.enqueue(new Callback<ArrayList<SmartBuild>>() {
@@ -81,7 +84,7 @@ public class SmartBuildFragment extends Fragment {
 
                 @Override
                 public void onFailure(Call<ArrayList<SmartBuild>> call, Throwable t) {
-                    Toast.makeText(getContext(), "네트워크 상태가 좋지 않습니다!!!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "네트워크 상태가 좋지 않습니다.", Toast.LENGTH_SHORT).show();
                     Log.d("Error", t.getMessage());
                 }
             });
@@ -134,20 +137,29 @@ public class SmartBuildFragment extends Fragment {
         RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST);
         rvSmartBuilds.addItemDecoration(itemDecoration);
 */
+        final LinearLayout empLayout = (LinearLayout) rootView.findViewById(R.id.emp_layout);
 
-        rvSmartBuilds.setItemAnimator(new SlideInUpAnimator());
-
+        if (SmartSingleton.arrSmartBuilds.isEmpty()) {
+            empLayout.setVisibility(View.VISIBLE);
+        } else {
+            empLayout.setVisibility(View.GONE);
+            rvSmartBuilds.setItemAnimator(new SlideInUpAnimator());
+        }
         /***************************************************************************/
         adapter.setOnItemClickListener(new SmartBuildAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                String name = SmartSingleton.arrSmartBuilds.get(position).strName;
-                // SmartSingleton.arrSmartBuilds.get(position).strName = "변경되었습니다.";
+                final String strCode = SmartSingleton.arrSmartBuilds.get(position).strCode;
+                final String strBuildName = SmartSingleton.arrSmartBuilds.get(position).strName;
+                final String strImageUrl = SmartSingleton.arrSmartBuilds.get(position).strImageURL;
+                // SmartSingleton.arrSmartBuilds.get(position).strName = "직접 내용 변경";
                 adapter.notifyItemChanged(position);
 
                 Intent intentWork = new Intent(getContext(), WorkActivity.class);
+                intentWork.putExtra("strBuildCode", strCode);
+                intentWork.putExtra("strBuildName", strBuildName);
+                intentWork.putExtra("strImageUrl", strImageUrl);
                 startActivity(intentWork);
-
                 // Toast.makeText(getContext(), name + " was clicked!", Toast.LENGTH_SHORT).show();
             }
         });

@@ -2,19 +2,23 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="110dp"
-    android:layout_marginBottom="1dp">
+    android:layout_marginBottom="1dp"
+    android:background="#dddddd">
 
     <ImageView
         android:layout_width="110dp"
         android:layout_height="110dp"
         android:id="@+id/r_sw_image"
         android:scaleType="centerCrop"
-        android:src="@drawable/common_google_signin_btn_icon_dark_disabled" />
+        android:src="@drawable/common_google_signin_btn_icon_dark_disabled"
+        android:layout_marginBottom="1dp" />
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="#ffffff"
+        android:layout_marginBottom="1dp">
 
         <TextView
             android:layout_width="wrap_content"

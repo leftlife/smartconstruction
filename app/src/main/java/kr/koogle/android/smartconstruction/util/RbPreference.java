@@ -3,6 +3,7 @@ package kr.koogle.android.smartconstruction.util;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 public class RbPreference {
 
@@ -18,8 +19,8 @@ public class RbPreference {
     }
 
     public void put(String key, String value) {
-        SharedPreferences pref = mContext.getSharedPreferences(PREF_NAME,
-                Activity.MODE_PRIVATE);
+        //SharedPreferences pref = mContext.getSharedPreferences(PREF_NAME, Activity.MODE_PRIVATE);
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(mContext);
         SharedPreferences.Editor editor = pref.edit();
 
         editor.putString(key, value);
@@ -27,8 +28,8 @@ public class RbPreference {
     }
 
     public void put(String key, boolean value) {
-        SharedPreferences pref = mContext.getSharedPreferences(PREF_NAME,
-                Activity.MODE_PRIVATE);
+        //SharedPreferences pref = mContext.getSharedPreferences(PREF_NAME, Activity.MODE_PRIVATE);
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(mContext);
         SharedPreferences.Editor editor = pref.edit();
 
         editor.putBoolean(key, value);
@@ -36,8 +37,8 @@ public class RbPreference {
     }
 
     public void put(String key, int value) {
-        SharedPreferences pref = mContext.getSharedPreferences(PREF_NAME,
-                Activity.MODE_PRIVATE);
+        //SharedPreferences pref = mContext.getSharedPreferences(PREF_NAME, Activity.MODE_PRIVATE);
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(mContext);
         SharedPreferences.Editor editor = pref.edit();
 
         editor.putInt(key, value);
@@ -45,8 +46,8 @@ public class RbPreference {
     }
 
     public String getValue(String key, String dftValue) {
-        SharedPreferences pref = mContext.getSharedPreferences(PREF_NAME,
-                Activity.MODE_PRIVATE);
+        //SharedPreferences pref = mContext.getSharedPreferences(PREF_NAME, Activity.MODE_PRIVATE);
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(mContext);
 
         try {
             return pref.getString(key, dftValue);
@@ -57,8 +58,8 @@ public class RbPreference {
     }
 
     public int getValue(String key, int dftValue) {
-        SharedPreferences pref = mContext.getSharedPreferences(PREF_NAME,
-                Activity.MODE_PRIVATE);
+        //SharedPreferences pref = mContext.getSharedPreferences(PREF_NAME, Activity.MODE_PRIVATE);
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(mContext);
 
         try {
             return pref.getInt(key, dftValue);
@@ -69,8 +70,8 @@ public class RbPreference {
     }
 
     public boolean getValue(String key, boolean dftValue) {
-        SharedPreferences pref = mContext.getSharedPreferences(PREF_NAME,
-                Activity.MODE_PRIVATE);
+        //SharedPreferences pref = mContext.getSharedPreferences(PREF_NAME, Activity.MODE_PRIVATE);
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(mContext);
 
         try {
             return pref.getBoolean(key, dftValue);
