@@ -43,29 +43,7 @@ public class SmartWorkAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         mSmartWorks = smartWorks;
 
         final LinearLayoutManager linearLayoutManager = (LinearLayoutManager) WorkActivity.rvSmartWorks.getLayoutManager();
-        WorkActivity.rvSmartWorks.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
 
-                totalItemCount = linearLayoutManager.getItemCount();
-                lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
-
-                if (!isLoading && totalItemCount <= (lastVisibleItem + visibleThreshold)) {
-                    if (mOnLoadMoreListener != null) {
-                        mOnLoadMoreListener.onLoadMore();
-                    }
-                    isLoading = true;
-                }
-
-                if (dy > 3) {
-                    // Scroll Down
-                } else {
-                    // Scroll Up
-                }
-                Log.d(TAG, "dy : " + dy);
-            }
-        });
     }
 
     public void setmOnLoadMoreListener(OnLoadMoreListener mOnLoadMoreListener) {
@@ -111,8 +89,7 @@ public class SmartWorkAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         if (holder instanceof UserViewHolder) {
             //User user = mUsers.get(position);
             UserViewHolder userViewHolder = (UserViewHolder) holder;
-            //userViewHolder.tvName.setText(user.getName());
-            //userViewHolder.tvEmailId.setText(user.getEmail());
+
             ImageView ivImage = userViewHolder.image;
             TextView tvDate = userViewHolder.date;
             TextView tvWork = userViewHolder.work;
@@ -148,9 +125,7 @@ public class SmartWorkAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         return mSmartWorks.size();
     }
 
-    public void setLoaded() {
-        isLoading = false;
-    }
+    public void setLoaded() { isLoading = false; }
 
     /***************************************************************************/
     private static OnItemClickListener listener;

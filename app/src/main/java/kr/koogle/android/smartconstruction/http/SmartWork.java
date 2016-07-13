@@ -13,6 +13,7 @@ public class SmartWork {
     public String strImageURL;
 
     public ArrayList<SmartLabor> lstSmartLabors;
+    public ArrayList<SmartLabor> lstSmartLaborNexts;
     public ArrayList<SmartMaterial> lstSmartMaterials;
     public ArrayList<SmartEquipment> lstSmartEquipments;
     public ArrayList<SmartPhoto> lstSmartPhotos;

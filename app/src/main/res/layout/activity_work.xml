@@ -45,17 +45,23 @@
     <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/nested_scroll_view_work"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:context="kr.koogle.android.smartconstruction.WorkActivity"
         tools:showIn="@layout/activity_work">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rvSmartWorks"
+        <kr.koogle.android.smartconstruction.util.EndlessScrollView
+            android:id="@+id/my_scroll_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scrollbars="vertical"/>
+            android:layout_height="match_parent">
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rvSmartWorks"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scrollbars="vertical"/>
+        </kr.koogle.android.smartconstruction.util.EndlessScrollView>
 
     </android.support.v4.widget.NestedScrollView>
 

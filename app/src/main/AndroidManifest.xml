@@ -35,6 +35,7 @@
         <activity android:name=".SignupActivity" android:theme="@style/AppTheme.Light" android:screenOrientation="portrait" />
 
         <activity android:name=".WorkActivity" android:theme="@style/AppTheme.Light" android:screenOrientation="portrait" />
+        <activity android:name=".WorkViewActivity" android:theme="@style/AppTheme.Light" android:screenOrientation="portrait" />
 
         <activity android:name=".SettingsActivity" android:theme="@style/AppTheme.Light.Settings" android:screenOrientation="portrait" />
 

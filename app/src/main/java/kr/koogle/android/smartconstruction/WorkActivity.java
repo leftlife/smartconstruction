@@ -7,6 +7,7 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewCompat;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,6 +23,8 @@ import android.widget.Toast;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 import kr.koogle.android.smartconstruction.http.ServiceGenerator;
@@ -29,6 +32,9 @@ import kr.koogle.android.smartconstruction.http.SmartBuild;
 import kr.koogle.android.smartconstruction.http.SmartBuildService;
 import kr.koogle.android.smartconstruction.http.SmartSingleton;
 import kr.koogle.android.smartconstruction.http.SmartWork;
+import kr.koogle.android.smartconstruction.util.CustomLinearLayoutManager;
+import kr.koogle.android.smartconstruction.util.EndlessScrollListener;
+import kr.koogle.android.smartconstruction.util.EndlessScrollView;
 import kr.koogle.android.smartconstruction.util.OnLoadMoreListener;
 import kr.koogle.android.smartconstruction.util.RbPreference;
 import retrofit2.Call;
@@ -37,14 +43,19 @@ import retrofit2.Response;
 
 public class WorkActivity extends AppCompatActivity {
     private static final String TAG = "WorkActivity";
+    private RbPreference pref;
 
     public static RecyclerView rvSmartWorks;
     private SmartWorkAdapter adapter;
-    private LayoutInflater mInflater;
 
-    private static String strBuildCode = "";
+    private static String strBuildCode = "start";
     private static Boolean isNewBuild;
     private static String strWorkTitleTop = "";
+
+    private static boolean isLoading;
+    private static int visibleThreshold = 10;
+
+    private RecyclerView.LayoutManager layoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,20 +64,43 @@ public class WorkActivity extends AppCompatActivity {
         // SmartSingleton 생성 !!
         SmartSingleton.getInstance();
         // Settings 값 !!
-        RbPreference pref = new RbPreference(this);
+        pref = new RbPreference(this);
 
-        // Lookup the recyclerview in activity layout
+        // RecyclerView 저장
         rvSmartWorks = (RecyclerView) findViewById(R.id.rvSmartWorks);
-
-        final LinearLayoutManager layoutManager = new LinearLayoutManager(WorkActivity.this);
-        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        // Set layout manager to position the items
+        // LayoutManager 저장
+        layoutManager = new CustomLinearLayoutManager(WorkActivity.this);
+        // RecycleView에 LayoutManager 세팅
         rvSmartWorks.setLayoutManager(layoutManager);
 
+        // 툴바 세팅
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_work);
         setSupportActionBar(toolbar);
         //toolbar.setNavigationIcon(R.drawable.ic_menu_gallery);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
+        // 스크롤 이벤트 잡아내기 !!
+        final NestedScrollView parentScrollView=(NestedScrollView)findViewById (R.id.nested_scroll_view_work);
+        parentScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                final int totalItemCount = layoutManager.getItemCount();
+                final int layoutManagerH = layoutManager.getHeight();
+                final int parentH = parentScrollView.getHeight();
+                final int itemH = layoutManager.getChildAt(0).getHeight();
+
+                if ( layoutManagerH - parentH - scrollY < 10 ) {
+                    isLoading = true;
+                    Log.d(TAG, "현장 담당자만 등록이 가능합니다.");
+                    /******************************************************************************************/
+                    addItems();
+                    /******************************************************************************************/
+                }
+                Log.d(TAG, "scrollY : " + scrollY + " / height : " + layoutManagerH + " / heightRV : " + parentH + " / viewHeight : " + itemH);
+            }
+        });
+
+        // 스마트일보 등록 버튼
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_work);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -99,65 +133,42 @@ public class WorkActivity extends AppCompatActivity {
                     .into(imageTop);
         }
 
-        // Create adapter passing in the sample user data
+        // Adapter 생성
         adapter = new SmartWorkAdapter(this, SmartSingleton.arrSmartWorks);
 
         if(isNewBuild || SmartSingleton.arrSmartWorks.isEmpty()) {
             /******************************************************************************************/
-            // SmartBuild 값 불러오기 (진행중인 현장)
-            Log.d(TAG, "SmartBuildService.getSmartWorks 실행!! / pref_access_token : " + pref.getValue("pref_access_token", ""));
-            SmartBuildService smartBuildService = ServiceGenerator.createService(SmartBuildService.class, pref.getValue("pref_access_token", ""));
-
-            Log.d(TAG, "getSmartWork START !!!");
-            Call<ArrayList<SmartWork>> call = smartBuildService.getSmartWorks(strBuildCode);
-            Log.d(TAG, "getSmartWork END !!!");
-
-            call.enqueue(new Callback<ArrayList<SmartWork>>() {
-                @Override
-                public void onResponse(Call<ArrayList<SmartWork>> call, Response<ArrayList<SmartWork>> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        final ArrayList<SmartWork> responseSmartWorks = response.body();
-
-                        Log.d(TAG, "HashMap : size " + responseSmartWorks.size());
-                        SmartSingleton.arrSmartWorks.addAll(responseSmartWorks);
-                        // 최근 카운트 체크
-                        int curSize = adapter.getItemCount();
-                        adapter.notifyItemRangeInserted(curSize, responseSmartWorks.size());
-                    } else {
-                        Toast.makeText(getApplication(), "데이터가 정확하지 않습니다.", Toast.LENGTH_SHORT).show();
-                        Log.d(TAG, "HashMap : 데이터가 정확하지 않습니다.");
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<ArrayList<SmartWork>> call, Throwable t) {
-                    Toast.makeText(getApplicationContext(), "네트워크 상태가 좋지 않습니다!!!", Toast.LENGTH_SHORT).show();
-                    Log.d("Error", t.getMessage());
-                }
-            });
+            addItems();
             /******************************************************************************************/
         }
 
+        // RecycleView 에 Adapter 세팅
         rvSmartWorks.setAdapter(adapter);
+        // 리스트 표현하기 !!
         rvSmartWorks.setItemAnimator(new SlideInUpAnimator());
 
         /***************************************************************************/
         adapter.setOnItemClickListener(new SmartWorkAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
+                final String strCode = SmartSingleton.arrSmartWorks.get(position).strCode;
+                final String strDate = SmartSingleton.arrSmartWorks.get(position).strDate;
+                final String strImageUrl = SmartSingleton.arrSmartWorks.get(position).strImageURL;
                 adapter.notifyItemChanged(position);
-                // String name = SmartSingleton.arrSmartWorks.get(position).strName;
-                // SmartSingleton.arrSmartWorks.get(position).strName = "변경되었습니다.";
-                //Intent intentWorkView = new Intent(this, WorkViewActivity.class);
-                //startActivity(intentWorkView);
-                // Toast.makeText(getApplicationContext(), name + " was clicked!", Toast.LENGTH_SHORT).show();
+
+                Intent intentWorkView = new Intent(WorkActivity.this, WorkViewActivity.class);
+                intentWorkView.putExtra("strBuildCode", strCode);
+                intentWorkView.putExtra("strBuildDate", strDate);
+                intentWorkView.putExtra("strImageUrl", strImageUrl);
+                startActivityForResult(intentWorkView, 1002);
+                Toast.makeText(getApplicationContext(), "strBuildCode : " + strCode, Toast.LENGTH_SHORT).show();
             }
         });
         /***************************************************************************/
         adapter.setmOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore() {
-                Log.e("haint", "Load More");
+                Log.e("haint", "Load More -------------------------------------------------------------------");
 
                 /*
                 mUserAdapter.notifyItemInserted(mUsers.size() - 1);
@@ -183,10 +194,56 @@ public class WorkActivity extends AppCompatActivity {
         /***************************************************************************/
     }
 
+    public void setLoaded() {
+        isLoading = false;
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
 
+    }
+
+    private void addItems() {
+        /******************************************************************************************/
+        // SmartBuild 값 불러오기 (진행중인 현장)
+        Log.d(TAG, "SmartBuildService.getSmartWorks 실행!! / pref_access_token : " + pref.getValue("pref_access_token", ""));
+        SmartBuildService smartBuildService = ServiceGenerator.createService(SmartBuildService.class, pref.getValue("pref_access_token", ""));
+        final Map<String, String> mapOptions = new HashMap<String, String>();
+        mapOptions.put("offset", String.valueOf(layoutManager.getItemCount()));
+
+        Log.d(TAG, "getSmartWork START !!!");
+        Call<ArrayList<SmartWork>> call = smartBuildService.getSmartWorks(strBuildCode, mapOptions);
+        Log.d(TAG, "getSmartWork END !!!");
+
+        call.enqueue(new Callback<ArrayList<SmartWork>>() {
+            @Override
+            public void onResponse(Call<ArrayList<SmartWork>> call, Response<ArrayList<SmartWork>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    final ArrayList<SmartWork> responseSmartWorks = response.body();
+
+                    if(responseSmartWorks.size() != 0) {
+                        Log.d(TAG, "responseSmartWorks : size " + responseSmartWorks.size());
+                        SmartSingleton.arrSmartWorks.addAll(responseSmartWorks);
+                        // 최근 카운트 체크
+                        int curSize = adapter.getItemCount();
+                        adapter.notifyItemRangeInserted(curSize, responseSmartWorks.size());
+                    } else {
+                        Snackbar.make(WorkActivity.rvSmartWorks, "마지막 리스트 입니다.", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                    }
+                } else {
+                    Toast.makeText(getApplication(), "데이터가 정확하지 않습니다.", Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, "responseSmartWorks : 데이터가 정확하지 않습니다.");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<SmartWork>> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "네트워크 상태가 좋지 않습니다!!!", Toast.LENGTH_SHORT).show();
+                Log.d("Error", t.getMessage());
+            }
+        });
+        /******************************************************************************************/
     }
 
     // 스크롤 시 상단 이미지 투명하게 변경 !!
@@ -208,7 +265,7 @@ public class WorkActivity extends AppCompatActivity {
                     iv.animate().alpha(0.3f).setDuration(600);
                 } else {
                     // extended
-                    iv.animate().alpha(1f).setDuration(600);    // 1.0f means opaque
+                    iv.animate().alpha(1f).setDuration(600); // 1.0f means opaque
                 }
             }
         };
