@@ -14,12 +14,20 @@
         android:layout_marginRight="0dp"
         android:layout_marginLeft="0dp"
         android:layout_marginTop="0dp"
-        android:layout_marginBottom="15dp">
+        android:layout_marginBottom="10dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
+            <ImageView
+                android:scaleType="fitXY"
+                android:layout_width="match_parent"
+                android:layout_height="220dp"
+                android:id="@+id/r_sb_image"
+                android:background="#dddddd"
+                android:src="@drawable/img_no_image" />
 
             <TextView
                 android:id="@+id/r_sb_name"
@@ -156,13 +164,6 @@
                     android:layout_marginRight="10dp"
                     android:textColor="@android:color/tertiary_text_light" />
             </LinearLayout>
-
-            <ImageView
-                android:scaleType="fitXY"
-                android:layout_width="match_parent"
-                android:layout_height="220dp"
-                android:id="@+id/r_sb_image"
-                android:background="#dddddd" />
 
         </LinearLayout>
 

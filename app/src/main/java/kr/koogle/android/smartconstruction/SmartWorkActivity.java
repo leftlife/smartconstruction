@@ -13,7 +13,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,21 +27,17 @@ import java.util.Map;
 
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 import kr.koogle.android.smartconstruction.http.ServiceGenerator;
-import kr.koogle.android.smartconstruction.http.SmartBuild;
-import kr.koogle.android.smartconstruction.http.SmartBuildService;
+import kr.koogle.android.smartconstruction.http.SmartService;
 import kr.koogle.android.smartconstruction.http.SmartSingleton;
 import kr.koogle.android.smartconstruction.http.SmartWork;
-import kr.koogle.android.smartconstruction.util.CustomLinearLayoutManager;
-import kr.koogle.android.smartconstruction.util.EndlessScrollListener;
-import kr.koogle.android.smartconstruction.util.EndlessScrollView;
 import kr.koogle.android.smartconstruction.util.OnLoadMoreListener;
 import kr.koogle.android.smartconstruction.util.RbPreference;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class WorkActivity extends AppCompatActivity {
-    private static final String TAG = "WorkActivity";
+public class SmartWorkActivity extends AppCompatActivity {
+    private static final String TAG = "SmartWorkActivity";
     private RbPreference pref;
 
     public static RecyclerView rvSmartWorks;
@@ -69,7 +64,7 @@ public class WorkActivity extends AppCompatActivity {
         // RecyclerView 저장
         rvSmartWorks = (RecyclerView) findViewById(R.id.rvSmartWorks);
         // LayoutManager 저장
-        layoutManager = new CustomLinearLayoutManager(WorkActivity.this);
+        layoutManager = new LinearLayoutManager(SmartWorkActivity.this);
         // RecycleView에 LayoutManager 세팅
         rvSmartWorks.setLayoutManager(layoutManager);
 
@@ -127,10 +122,13 @@ public class WorkActivity extends AppCompatActivity {
             collapsingToolbar.setTitle(strWorkTitleTop);
 
             final ImageView imageTop = (ImageView) findViewById(R.id.img_work_top);
-            Picasso.with(this)
-                    .load( getIntent().getExtras().getString("strImageUrl") )
-                    .fit() // resize(700,400)
-                    .into(imageTop);
+
+            if( !getIntent().getExtras().getString("strImageUrl").isEmpty() ) {
+                Picasso.with(this)
+                        .load(getIntent().getExtras().getString("strImageUrl"))
+                        .fit() // resize(700,400)
+                        .into(imageTop);
+            }
         }
 
         // Adapter 생성
@@ -156,7 +154,7 @@ public class WorkActivity extends AppCompatActivity {
                 final String strImageUrl = SmartSingleton.arrSmartWorks.get(position).strImageURL;
                 adapter.notifyItemChanged(position);
 
-                Intent intentWorkView = new Intent(WorkActivity.this, WorkViewActivity.class);
+                Intent intentWorkView = new Intent(SmartWorkActivity.this, SmartWorkViewActivity.class);
                 intentWorkView.putExtra("strBuildCode", strCode);
                 intentWorkView.putExtra("strBuildDate", strDate);
                 intentWorkView.putExtra("strImageUrl", strImageUrl);
@@ -207,13 +205,13 @@ public class WorkActivity extends AppCompatActivity {
     private void addItems() {
         /******************************************************************************************/
         // SmartBuild 값 불러오기 (진행중인 현장)
-        Log.d(TAG, "SmartBuildService.getSmartWorks 실행!! / pref_access_token : " + pref.getValue("pref_access_token", ""));
-        SmartBuildService smartBuildService = ServiceGenerator.createService(SmartBuildService.class, pref.getValue("pref_access_token", ""));
+        Log.d(TAG, "SmartService.getSmartWorks 실행!! / pref_access_token : " + pref.getValue("pref_access_token", ""));
+        SmartService smartService = ServiceGenerator.createService(SmartService.class, pref.getValue("pref_access_token", ""));
         final Map<String, String> mapOptions = new HashMap<String, String>();
         mapOptions.put("offset", String.valueOf(layoutManager.getItemCount()));
 
         Log.d(TAG, "getSmartWork START !!!");
-        Call<ArrayList<SmartWork>> call = smartBuildService.getSmartWorks(strBuildCode, mapOptions);
+        Call<ArrayList<SmartWork>> call = smartService.getSmartWorks(strBuildCode, mapOptions);
         Log.d(TAG, "getSmartWork END !!!");
 
         call.enqueue(new Callback<ArrayList<SmartWork>>() {
@@ -229,7 +227,7 @@ public class WorkActivity extends AppCompatActivity {
                         int curSize = adapter.getItemCount();
                         adapter.notifyItemRangeInserted(curSize, responseSmartWorks.size());
                     } else {
-                        Snackbar.make(WorkActivity.rvSmartWorks, "마지막 리스트 입니다.", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                        Snackbar.make(SmartWorkActivity.rvSmartWorks, "마지막 리스트 입니다.", Snackbar.LENGTH_LONG).setAction("Action", null).show();
                     }
                 } else {
                     Toast.makeText(getApplication(), "데이터가 정확하지 않습니다.", Toast.LENGTH_SHORT).show();

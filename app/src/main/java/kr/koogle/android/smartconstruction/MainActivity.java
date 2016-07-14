@@ -357,10 +357,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     tempFragment = new SmartBuildFragment();
                     break;
                 case 1:
-                    tempFragment = new TwoFragment();
+                    tempFragment = new SmartBBSClientFragment();
                     break;
                 case 2:
-                    tempFragment = new SmartBuildFragment();
+                    tempFragment = new SmartBBSOrderFragment();
                     break;
                 default:
                     Log.d("getFragment", "Unhandle Case");

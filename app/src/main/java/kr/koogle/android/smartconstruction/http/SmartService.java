@@ -13,8 +13,9 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
 
-public interface SmartBuildService {
+public interface SmartService {
 
+    // 진행중인 현장
     @GET("builds")
     Call<ArrayList<SmartBuild>> getSmartBuilds();
 
@@ -23,6 +24,7 @@ public interface SmartBuildService {
             @Path("build") String buildCode
     );
 
+    // 스마트 일보
     @GET("builds/{build}/works")
     Call<ArrayList<SmartWork>> getSmartWorks(
             @Path("build") String buildCode,
@@ -33,6 +35,24 @@ public interface SmartBuildService {
     Call<SmartWork> getSmartWorkView(
             @Path("build") String buildCode,
             @Path("work") String workCode
+    );
+
+    // 건축주 협의
+    @GET("clients")
+    Call<ArrayList<SmartBBSClient>> getSmartBBSClients();
+
+    @GET("clients/{client}")
+    Call<SmartBBSClient> getSmartBBSClient(
+            @Path("client") String clientCode
+    );
+
+    // 작업지시
+    @GET("orders")
+    Call<ArrayList<SmartBBSOrder>> getSmartBBSOrders();
+
+    @GET("orders/{order}")
+    Call<SmartBBSOrder> getSmartBBSOrder(
+            @Path("order") String orderCode
     );
 
 }

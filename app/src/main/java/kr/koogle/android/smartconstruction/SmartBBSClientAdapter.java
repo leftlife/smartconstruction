@@ -15,12 +15,12 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
+import kr.koogle.android.smartconstruction.http.SmartBBSClient;
 import kr.koogle.android.smartconstruction.http.SmartSingleton;
-import kr.koogle.android.smartconstruction.http.SmartWork;
 import kr.koogle.android.smartconstruction.util.OnLoadMoreListener;
 
-public class SmartWorkAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private static final String TAG = "SmartWorkAdapter";
+public class SmartBBSClientAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    private static final String TAG = "SmartBBSClientAdapter";
     private final int VIEW_TYPE_ITEM = 0;
     private final int VIEW_TYPE_LOADING = 1;
     private OnLoadMoreListener mOnLoadMoreListener;
@@ -28,19 +28,19 @@ public class SmartWorkAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     private int visibleThreshold = 10;
     private int lastVisibleItem, totalItemCount;
 
-    private static ArrayList<SmartWork> mSmartWorks;
+    private static ArrayList<SmartBBSClient> mSmartBBSClients;
     private Context mContext;
-    private List<SmartWork> mUsers = SmartSingleton.arrSmartWorks;
+    private List<SmartBBSClient> mUsers = SmartSingleton.arrSmartBBSClients;
 
     private Context getContext() {
         return mContext;
     }
 
-    public SmartWorkAdapter(Context context, ArrayList<SmartWork> smartWorks) {
+    public SmartBBSClientAdapter(Context context, ArrayList<SmartBBSClient> smartBBSClients) {
         mContext = context;
-        mSmartWorks = smartWorks;
+        mSmartBBSClients = smartBBSClients;
 
-        final LinearLayoutManager linearLayoutManager = (LinearLayoutManager) SmartWorkActivity.rvSmartWorks.getLayoutManager();
+        final LinearLayoutManager linearLayoutManager = (LinearLayoutManager) SmartBBSClientFragment.rvSmartBBSClients.getLayoutManager();
 
     }
 
@@ -58,7 +58,7 @@ public class SmartWorkAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         Context context = parent.getContext();
 
         if (viewType == VIEW_TYPE_ITEM) {
-            View view = LayoutInflater.from(context).inflate(R.layout.row_smart_work, parent, false);
+            View view = LayoutInflater.from(context).inflate(R.layout.row_smart_bbs_client, parent, false);
             return new UserViewHolder(getContext(), view);
         } else if (viewType == VIEW_TYPE_LOADING) {
             View view = LayoutInflater.from(context).inflate(R.layout.layout_loading_item, parent, false);
@@ -70,10 +70,10 @@ public class SmartWorkAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         LayoutInflater inflater = LayoutInflater.from(context);
 
         // Inflate the custom layout
-        View smartWorkView = inflater.inflate(R.layout.row_smart_work, parent, false);
+        View SmartBBSClientView = inflater.inflate(R.layout.row_smart_bbs_client, parent, false);
 
         // Return a new holder instance
-        ViewHolder viewHolder = new ViewHolder(getContext(), smartWorkView);
+        ViewHolder viewHolder = new ViewHolder(getContext(), smartBBSClientView);
         return viewHolder;
         */
     }
@@ -81,7 +81,7 @@ public class SmartWorkAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         // Get the data model based on position
-        SmartWork smartWork = mSmartWorks.get(position);
+        SmartBBSClient smartBBSClient = mSmartBBSClients.get(position);
 
         // Set item views based on your views and data model
         if (holder instanceof UserViewHolder) {
@@ -89,17 +89,17 @@ public class SmartWorkAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             UserViewHolder userViewHolder = (UserViewHolder) holder;
 
             ImageView ivImage = userViewHolder.image;
+            TextView tvTitle = userViewHolder.title;
             TextView tvDate = userViewHolder.date;
-            TextView tvWork = userViewHolder.work;
 
-            if( !smartWork.strImageURL.isEmpty() ) {
-                Picasso.with(getContext())
-                        .load(smartWork.strImageURL)
-                        .fit() // resize(700,400)
-                        .into(ivImage);
-            }
-            tvDate.setText(smartWork.strDate);
-            tvWork.setText(smartWork.strBuildCode);
+            /*
+            Picasso.with(getContext())
+                    .load(smartBBSClient.strImageURL)
+                    .fit() // resize(700,400)
+                    .into(ivImage);
+            */
+            tvTitle.setText(smartBBSClient.strTitle);
+            tvDate.setText(smartBBSClient.datWrite);
 
         } else if (holder instanceof LoadingViewHolder) {
             LoadingViewHolder loadingViewHolder = (LoadingViewHolder) holder;
@@ -112,17 +112,17 @@ public class SmartWorkAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         TextView tvWork = viewHolder.work;
 
         Picasso.with(getContext())
-                .load(smartWork.strImageURL)
+                .load(smartBBSClient.strImageURL)
                 .fit() // resize(700,400)
                 .into(ivImage);
-        tvDate.setText(smartWork.strDate);
-        tvWork.setText(smartWork.strBuildCode);
+        tvDate.setText(smartBBSClient.strDate);
+        tvWork.setText(smartBBSClient.strBuildCode);
         */
     }
 
     @Override
     public int getItemCount() {
-        return mSmartWorks.size();
+        return mSmartBBSClients.size();
     }
 
     public void setLoaded() { isLoading = false; }
@@ -156,15 +156,15 @@ public class SmartWorkAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     public static class UserViewHolder extends RecyclerView.ViewHolder  { // implements View.OnClickListener
 
         public ImageView image;
+        public TextView title;
         public TextView date;
-        public TextView work;
         private Context context;
 
         public UserViewHolder(Context context, final View itemView) {
             super(itemView);
-            image = (ImageView) itemView.findViewById(R.id.r_sw_image);
-            date = (TextView) itemView.findViewById(R.id.r_sw_date);
-            work = (TextView) itemView.findViewById(R.id.r_sw_work);
+            image = (ImageView) itemView.findViewById(R.id.r_sbc_btn_image);
+            title = (TextView) itemView.findViewById(R.id.r_sbc_title);
+            date = (TextView) itemView.findViewById(R.id.r_sbc_date);
 
             this.context = context;
 

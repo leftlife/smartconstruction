@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="80dp"
+    android:background="#dddddd">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:background="#ffffff"
+        android:layout_marginBottom="1dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="철근, 레미콘 구매현황 세진주유소 지점"
+            android:id="@+id/r_sbc_title"
+            android:textSize="14dp"
+            android:gravity="top|left"
+            android:layout_marginTop="13dp"
+            android:layout_marginLeft="20dp" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/r_sbc_btn_image"
+        android:src="@drawable/abc_ic_go_search_api_material"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentBottom="false"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="25dp"
+        android:layout_marginRight="20dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="2016.07.11"
+        android:id="@+id/r_sbc_date"
+        android:textSize="12dp"
+        android:gravity="top|left"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="20dp"
+        android:textColor="#999999"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="15dp" />
+</RelativeLayout>

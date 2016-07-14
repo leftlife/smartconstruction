@@ -5,7 +5,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -41,7 +40,7 @@ public class SmartBuildAdapter extends RecyclerView.Adapter<SmartBuildAdapter.Vi
         LayoutInflater inflater = LayoutInflater.from(context);
 
         // Inflate the custom layout
-        View smartBuildView = inflater.inflate(R.layout.row_smartbuild, parent, false);
+        View smartBuildView = inflater.inflate(R.layout.row_smart_build, parent, false);
 
         // Return a new holder instance
         ViewHolder viewHolder = new ViewHolder(getContext(), smartBuildView);
@@ -68,10 +67,14 @@ public class SmartBuildAdapter extends RecyclerView.Adapter<SmartBuildAdapter.Vi
         tvSize.setText("지상 " + smartBuild.intBuildGround + "층 , 지하 " + smartBuild.intBuildBasement + "층");
         tvArea.setText(smartBuild.strBuildArea11 + " 제곱미터");
 
-        Picasso.with(getContext())
-                .load(smartBuild.strImageURL)
-                .fit() // resize(700,400)
-                .into(image);
+        if( !smartBuild.strImageURL.isEmpty() ) {
+            Picasso.with(getContext())
+                    .load(smartBuild.strImageURL)
+                    .fit() // resize(700,400)
+                    .into(image);
+        } else {
+            image.setImageResource(R.drawable.img_no_image);
+        }
     }
 
     // Returns the total count of items in the list

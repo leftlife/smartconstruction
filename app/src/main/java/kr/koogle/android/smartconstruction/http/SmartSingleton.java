@@ -8,6 +8,10 @@ public class SmartSingleton {
 
     public static ArrayList<SmartBuild> arrSmartBuilds;
     public static ArrayList<SmartWork> arrSmartWorks;
+    public static ArrayList<SmartBBSClient> arrSmartBBSClients;
+    public static ArrayList<SmartBBSOrder> arrSmartBBSOrders;
+    public static ArrayList<SmartPhoto> arrSmartPhotos;
+    public static ArrayList<SmartEmployee> arrSmartEmployees;
 
     public static SmartSingleton getInstance() {
         if (uniqueInstance == null) {
@@ -15,8 +19,13 @@ public class SmartSingleton {
             synchronized (SmartSingleton.class) {
                 if (uniqueInstance == null) {
                     uniqueInstance = new SmartSingleton();
+
                     arrSmartBuilds = new ArrayList<SmartBuild>();
                     arrSmartWorks = new ArrayList<SmartWork>();
+                    arrSmartBBSClients = new ArrayList<SmartBBSClient>();
+                    arrSmartBBSOrders = new ArrayList<SmartBBSOrder>();
+                    arrSmartPhotos = new ArrayList<SmartPhoto>();
+                    arrSmartEmployees = new ArrayList<SmartEmployee>();
                 }
             }
         }
@@ -25,17 +34,3 @@ public class SmartSingleton {
 
 }
 
-/*
-// 처음부터 JVM에서 Singleton의 유일한 인스턴스를 생성한다.
-
-public class Singleton {
-    private static Singleton uniqueInstance = new Singleton();
-
-    private Singleton() {
-    }
-
-    public static Singleton getInstance() {
-        return uniqueInstance;
-    }
-}
- */

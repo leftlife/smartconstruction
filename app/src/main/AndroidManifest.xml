@@ -34,8 +34,8 @@
         <activity android:name=".LoginActivity" android:theme="@style/AppTheme.Light" android:screenOrientation="portrait" android:windowSoftInputMode="stateHidden" />
         <activity android:name=".SignupActivity" android:theme="@style/AppTheme.Light" android:screenOrientation="portrait" />
 
-        <activity android:name=".WorkActivity" android:theme="@style/AppTheme.Light" android:screenOrientation="portrait" />
-        <activity android:name=".WorkViewActivity" android:theme="@style/AppTheme.Light" android:screenOrientation="portrait" />
+        <activity android:name=".SmartWorkActivity" android:theme="@style/AppTheme.Light" android:screenOrientation="portrait" />
+        <activity android:name=".SmartWorkViewActivity" android:theme="@style/AppTheme.Light" android:screenOrientation="portrait" />
 
         <activity android:name=".SettingsActivity" android:theme="@style/AppTheme.Light.Settings" android:screenOrientation="portrait" />
 

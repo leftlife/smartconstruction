@@ -67,7 +67,7 @@ public class CustomLinearLayoutManager extends LinearLayoutManager {
 
     private void measureScrapChild(RecyclerView.Recycler recycler, int position, int widthSpec, int heightSpec, int[] measuredDimension) {
         try {
-            View view = recycler.getViewForPosition(0);//fix 动态添加时报IndexOutOfBoundsException
+            View view = recycler.getViewForPosition(0);
 
             if (view != null) {
                 RecyclerView.LayoutParams p = (RecyclerView.LayoutParams) view.getLayoutParams();

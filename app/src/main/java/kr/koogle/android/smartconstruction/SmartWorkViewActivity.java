@@ -9,8 +9,8 @@ import android.widget.ImageView;
 import kr.koogle.android.smartconstruction.http.SmartSingleton;
 import kr.koogle.android.smartconstruction.util.RbPreference;
 
-public class WorkViewActivity extends AppCompatActivity {
-    private static final String TAG = "WorkViewActivity";
+public class SmartWorkViewActivity extends AppCompatActivity {
+    private static final String TAG = "SmartWorkViewActivity";
     private RbPreference pref;
 
     @Override

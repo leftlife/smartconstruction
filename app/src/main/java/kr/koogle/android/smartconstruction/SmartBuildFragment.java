@@ -11,19 +11,15 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import jp.wasabeef.recyclerview.adapters.AlphaInAnimationAdapter;
-import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 import kr.koogle.android.smartconstruction.http.ServiceGenerator;
 import kr.koogle.android.smartconstruction.http.SmartBuild;
-import kr.koogle.android.smartconstruction.http.SmartBuildService;
+import kr.koogle.android.smartconstruction.http.SmartService;
 import kr.koogle.android.smartconstruction.http.SmartSingleton;
 import kr.koogle.android.smartconstruction.util.RbPreference;
 import retrofit2.Call;
@@ -40,7 +36,7 @@ public class SmartBuildFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.fragment_smartbuild, container, false);
+        rootView = inflater.inflate(R.layout.fragment_smart_build, container, false);
         mInflater = inflater; //getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         // Settings 값 !!
@@ -60,9 +56,9 @@ public class SmartBuildFragment extends Fragment {
         if(SmartSingleton.arrSmartBuilds.size() <= 0) {
             /******************************************************************************************/
             // SmartBuild 값 불러오기 (진행중인 현장)
-            Log.d(TAG, "SmartBuildService.checkLoginToken 실행!! / pref_access_token : " + pref.getValue("pref_access_token", ""));
-            SmartBuildService smartBuildService = ServiceGenerator.createService(SmartBuildService.class, pref.getValue("pref_access_token", ""));
-            Call<ArrayList<SmartBuild>> call = smartBuildService.getSmartBuilds();
+            Log.d(TAG, "SmartService.checkLoginToken 실행!! / pref_access_token : " + pref.getValue("pref_access_token", ""));
+            SmartService smartService = ServiceGenerator.createService(SmartService.class, pref.getValue("pref_access_token", ""));
+            Call<ArrayList<SmartBuild>> call = smartService.getSmartBuilds();
 
             call.enqueue(new Callback<ArrayList<SmartBuild>>() {
                 @Override
@@ -155,7 +151,7 @@ public class SmartBuildFragment extends Fragment {
                 // SmartSingleton.arrSmartBuilds.get(position).strName = "직접 내용 변경";
                 adapter.notifyItemChanged(position);
 
-                Intent intentWork = new Intent(getContext(), WorkActivity.class);
+                Intent intentWork = new Intent(getContext(), SmartWorkActivity.class);
                 intentWork.putExtra("strBuildCode", strCode);
                 intentWork.putExtra("strBuildName", strBuildName);
                 intentWork.putExtra("strImageUrl", strImageUrl);
