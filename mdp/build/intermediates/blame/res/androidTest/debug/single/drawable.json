@@ -1,0 +1,18 @@
+[
+    {
+        "merged": "C:\\MaterialDateTimePicker-master\\MaterialDateTimePicker-master\\library\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\mdtp_material_button_background.xml",
+        "source": "C:\\MaterialDateTimePicker-master\\MaterialDateTimePicker-master\\library\\build\\intermediates\\bundles\\debug\\res\\drawable\\mdtp_material_button_background.xml"
+    },
+    {
+        "merged": "C:\\MaterialDateTimePicker-master\\MaterialDateTimePicker-master\\library\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\mdtp_material_button_selected.xml",
+        "source": "C:\\MaterialDateTimePicker-master\\MaterialDateTimePicker-master\\library\\build\\intermediates\\bundles\\debug\\res\\drawable\\mdtp_material_button_selected.xml"
+    },
+    {
+        "merged": "C:\\MaterialDateTimePicker-master\\MaterialDateTimePicker-master\\library\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\mdtp_done_background_color.xml",
+        "source": "C:\\MaterialDateTimePicker-master\\MaterialDateTimePicker-master\\library\\build\\intermediates\\bundles\\debug\\res\\drawable\\mdtp_done_background_color.xml"
+    },
+    {
+        "merged": "C:\\MaterialDateTimePicker-master\\MaterialDateTimePicker-master\\library\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\mdtp_done_background_color_dark.xml",
+        "source": "C:\\MaterialDateTimePicker-master\\MaterialDateTimePicker-master\\library\\build\\intermediates\\bundles\\debug\\res\\drawable\\mdtp_done_background_color_dark.xml"
+    }
+]

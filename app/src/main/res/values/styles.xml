@@ -23,7 +23,7 @@
     </style>
 
     <!-- 로그인/회원가입 theme -->
-    <style name="AppTheme.Dark" parent="Theme.AppCompat.NoActionBar">
+    <style name="AppTheme.Light.Login" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_dark</item>
         <item name="colorAccent">@color/accent</item>
@@ -35,6 +35,13 @@
         <item name="colorControlActivated">@color/white</item>
         <item name="colorControlHighlight">@color/white</item>
         <item name="android:textColorHint">@color/iron</item>
+    </style>
+
+    <!-- 카메라 theme -->
+    <style name="AppTheme.Light.Camera" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary</item>
+        <item name="colorAccent">@color/primary</item>
     </style>
 
     <!-- 로딩 theme -->

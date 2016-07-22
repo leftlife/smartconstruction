@@ -1,0 +1,18 @@
+[
+    {
+        "merged": "C:\\MaterialDateTimePicker-master\\MaterialDateTimePicker-master\\library\\build\\intermediates\\res\\merged\\debug\\color\\mdtp_done_text_color.xml",
+        "source": "C:\\MaterialDateTimePicker-master\\MaterialDateTimePicker-master\\library\\src\\main\\res\\color\\mdtp_done_text_color.xml"
+    },
+    {
+        "merged": "C:\\MaterialDateTimePicker-master\\MaterialDateTimePicker-master\\library\\build\\intermediates\\res\\merged\\debug\\color\\mdtp_date_picker_year_selector.xml",
+        "source": "C:\\MaterialDateTimePicker-master\\MaterialDateTimePicker-master\\library\\src\\main\\res\\color\\mdtp_date_picker_year_selector.xml"
+    },
+    {
+        "merged": "C:\\MaterialDateTimePicker-master\\MaterialDateTimePicker-master\\library\\build\\intermediates\\res\\merged\\debug\\color\\mdtp_date_picker_selector.xml",
+        "source": "C:\\MaterialDateTimePicker-master\\MaterialDateTimePicker-master\\library\\src\\main\\res\\color\\mdtp_date_picker_selector.xml"
+    },
+    {
+        "merged": "C:\\MaterialDateTimePicker-master\\MaterialDateTimePicker-master\\library\\build\\intermediates\\res\\merged\\debug\\color\\mdtp_done_text_color_dark.xml",
+        "source": "C:\\MaterialDateTimePicker-master\\MaterialDateTimePicker-master\\library\\src\\main\\res\\color\\mdtp_done_text_color_dark.xml"
+    }
+]

@@ -21,8 +21,14 @@ android {
     }
 }
 
+repositories {
+    maven {
+        url "https://s3.amazonaws.com/repo.commonsware.com"
+    }
+}
+
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:24.0.0'
     compile 'com.android.support:design:24.0.0'
@@ -45,7 +51,14 @@ dependencies {
     compile 'com.google.firebase:firebase-messaging:9.0.2'
     compile 'com.squareup.picasso:picasso:2.3.3'
 
+    // cwac-cam2 library
+    compile 'com.squareup.moshi:moshi:0.9.0'
+    compile 'com.commonsware.cwac:security:0.6.+'
+    releaseCompile 'com.commonsware.cwac:cam2:0.6.+'
+    compile project(':cam2')
+
     compile 'com.android.support:multidex:1.0.0'
+    compile 'com.afollestad.material-dialogs:core:0.8.6.2'
 }
 
 apply plugin: 'com.google.gms.google-services'

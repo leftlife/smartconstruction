@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
@@ -41,6 +42,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -80,6 +82,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
 
+    // UTILITY METHODS
+    private Toast mToast;
+    private Thread mThread;
+    private Handler mHandler;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         // ToolBar 관련
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_main);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
@@ -164,8 +171,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "사진촬영을 시작합니다.", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+
+                new MaterialDialog.Builder(MainActivity.this)
+                        .title("촬영선택")
+                        .items(new String[]{"사진 촬영", "동영상 촬영"})
+                        .itemsCallback(new MaterialDialog.ListCallback() {
+                            @Override
+                            public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                                // showToast(which + ": " + text);
+                                switch(which) {
+                                    case 0: // 사진 촬영
+                                        Intent intent = new Intent(MainActivity.this, CameraPicActivity.class);
+                                        startActivity(intent);
+                                        break;
+
+                                    case 1: // 동영상 촬영
+                                        break;
+                                }
+                            }
+                        })
+                        .show();
+
+                // Snackbar.make(view, "사진촬영을 시작합니다.", Snackbar.LENGTH_LONG).setAction("Action", null).show();
             }
         });
 
@@ -444,4 +471,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
+    private void showToast(String message) {
+        if (mToast != null) {
+            mToast.cancel();
+            mToast = null;
+        }
+        mToast = Toast.makeText(this, message, Toast.LENGTH_SHORT);
+        mToast.show();
+    }
 }
