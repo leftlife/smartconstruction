@@ -59,6 +59,7 @@ dependencies {
 
     compile 'com.android.support:multidex:1.0.0'
     compile 'com.afollestad.material-dialogs:core:0.8.6.2'
+    compile 'com.wdullaer:materialdatetimepicker:2.4.0'
 }
 
 apply plugin: 'com.google.gms.google-services'

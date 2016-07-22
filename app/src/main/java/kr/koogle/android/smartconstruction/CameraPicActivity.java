@@ -25,17 +25,22 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.commonsware.cwac.cam2.CameraActivity;
 import com.commonsware.cwac.cam2.Facing;
 import com.commonsware.cwac.cam2.FlashMode;
 import com.commonsware.cwac.cam2.ZoomStyle;
 import com.commonsware.cwac.security.RuntimePermissionUtils;
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
+import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
+import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
 import org.w3c.dom.Text;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import static android.Manifest.permission.CAMERA;
@@ -43,7 +48,7 @@ import static android.Manifest.permission.RECORD_AUDIO;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 
-public class CameraPicActivity extends AppCompatActivity {
+public class CameraPicActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener, DatePickerDialog.OnDateSetListener {
     private static final String[] PERMS_ALL={
             CAMERA,
             RECORD_AUDIO,
@@ -77,6 +82,11 @@ public class CameraPicActivity extends AppCompatActivity {
     private Bitmap myBitmap;
 
     private static ImageView imgPicture;
+    private TextView inputBuildName;
+    private TextView inputBuildKind;
+    private TextView inputLocation;
+    private TextView inputMemo;
+    private TextView inputDate;
 
     @TargetApi(23)
     @Override
@@ -162,32 +172,32 @@ public class CameraPicActivity extends AppCompatActivity {
                 startActivityForResult(i, REQUEST_PORTRAIT_RFC);
             }
         });
-        /*
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+
+        inputBuildName = (TextView) findViewById(R.id.input_build_name);
+        inputBuildKind = (TextView) findViewById(R.id.input_build_kind);
+        inputLocation = (TextView) findViewById(R.id.input_location);
+        inputMemo = (TextView) findViewById(R.id.input_memo);
+        inputDate = (TextView) findViewById(R.id.input_date);
+
+        inputBuildName.setInputType(0);
+        inputBuildKind.setInputType(0);
+        inputDate.setInputType(0);
+
+        inputDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
 
+                Calendar now = Calendar.getInstance();
+                DatePickerDialog dpd = DatePickerDialog.newInstance(
+                        CameraPicActivity.this,
+                        now.get(Calendar.YEAR),
+                        now.get(Calendar.MONTH),
+                        now.get(Calendar.DAY_OF_MONTH)
+                );
+                dpd.show(getFragmentManager(), "Datepickerdialog");
 
-                Intent i;
-                i=new CameraActivity.IntentBuilder(getApplication())
-                        .skipConfirm()
-                        .facing(Facing.BACK)
-                        .facingExactMatch()
-                        .to(new File(testRoot, "portrait-rear.jpg"))
-                        .updateMediaStore()
-                        .debug()
-                        .debugSavePreviewFrame()
-                        .flashModes(FLASH_MODES)
-                        .zoomStyle(ZoomStyle.SEEKBAR)
-                        .build();
-
-                startActivityForResult(i, REQUEST_PORTRAIT_RFC);
             }
         });
-        */
     }
 
     @Override
@@ -256,12 +266,24 @@ public class CameraPicActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+
+            // 프로그래스 실행 !!
+            showIndeterminateProgressDialog(true);
+
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
+    private void showIndeterminateProgressDialog(boolean horizontal) {
+        new MaterialDialog.Builder(this)
+                .title("이미지 전송중")
+                .content("이미지 전송중 입니다..")
+                .progress(true, 0)
+                .progressIndeterminateStyle(horizontal)
+                .show();
+    }
 
     @Override
     protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
@@ -287,6 +309,26 @@ public class CameraPicActivity extends AppCompatActivity {
                 //imgContent.setImageBitmap(myBitmap);
 
         }
+    }
+
+
+    @Override
+    public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int second) {
+        String hourString = hourOfDay < 10 ? "0"+hourOfDay : ""+hourOfDay;
+        String minuteString = minute < 10 ? "0"+minute : ""+minute;
+        String secondString = second < 10 ? "0"+second : ""+second;
+        String time = ""+hourString+"h"+minuteString+"m"+secondString+"s";
+
+        inputDate.setText(time);
+    }
+
+    @Override
+    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+        String strMonth = (monthOfYear+1) < 10 ? "0"+(monthOfYear+1) : ""+(monthOfYear+1);
+        String strDay = dayOfMonth < 10 ? "0"+dayOfMonth : ""+dayOfMonth;
+        String date = ""+year+"."+strMonth+"."+strDay;
+
+        inputDate.setText(date);
     }
 
 }
