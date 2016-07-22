@@ -13,6 +13,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -49,6 +50,7 @@ public class SmartBBSOrderFragment extends Fragment {
 
     private View rootView;
     private LayoutInflater mInflater;
+    private View viewEmpty;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -115,9 +117,9 @@ public class SmartBBSOrderFragment extends Fragment {
 
         // 리스트 표현하기 !!
         if (SmartSingleton.arrSmartBuilds.isEmpty()) {
-            empLayout.setVisibility(View.VISIBLE);
+            //empLayout.setVisibility(View.VISIBLE);
         } else {
-            empLayout.setVisibility(View.GONE);
+            //empLayout.setVisibility(View.GONE);
             rvSmartBBSOrders.setItemAnimator(new SlideInUpAnimator());
         }
         /***************************************************************************/
@@ -229,6 +231,17 @@ public class SmartBBSOrderFragment extends Fragment {
                         int curSize = adapter.getItemCount();
                         adapter.notifyItemRangeInserted(curSize, responseSmartBBSOrders.size());
                     } else {
+                        if(SmartSingleton.arrSmartBBSOrders.isEmpty()) {
+                            viewEmpty = mInflater.inflate(R.layout.row_empty, null);
+                            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.MATCH_PARENT);
+                            viewEmpty.setLayoutParams(params);
+                            RelativeLayout rmSmartBBSClient = (RelativeLayout) rootView.findViewById(R.id.fm_smart_bbs_order);
+                            rmSmartBBSClient.addView(viewEmpty);
+                        } else {
+                            RelativeLayout rmSmartBBSClient = (RelativeLayout) rootView.findViewById(R.id.fm_smart_bbs_order);
+                            rmSmartBBSClient.removeView(viewEmpty);
+                        }
+
                         Snackbar.make(SmartBBSOrderFragment.rvSmartBBSOrders, "마지막 리스트 입니다.", Snackbar.LENGTH_LONG).setAction("Action", null).show();
                     }
                 } else {

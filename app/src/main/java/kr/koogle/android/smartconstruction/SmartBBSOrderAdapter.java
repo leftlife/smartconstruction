@@ -58,7 +58,7 @@ public class SmartBBSOrderAdapter extends RecyclerView.Adapter<RecyclerView.View
         Context context = parent.getContext();
 
         if (viewType == VIEW_TYPE_ITEM) {
-            View view = LayoutInflater.from(context).inflate(R.layout.row_smart_bbs_client, parent, false);
+            View view = LayoutInflater.from(context).inflate(R.layout.row_smart_bbs_order, parent, false);
             return new UserViewHolder(getContext(), view);
         } else if (viewType == VIEW_TYPE_LOADING) {
             View view = LayoutInflater.from(context).inflate(R.layout.layout_loading_item, parent, false);
@@ -98,7 +98,7 @@ public class SmartBBSOrderAdapter extends RecyclerView.Adapter<RecyclerView.View
                     .fit() // resize(700,400)
                     .into(ivImage);
             */
-            tvTitle.setText(smartBBSOrder.strTitle);
+            tvTitle.setText(smartBBSOrder.strContent);
             tvDate.setText(smartBBSOrder.datWrite);
 
         } else if (holder instanceof LoadingViewHolder) {
@@ -157,6 +157,7 @@ public class SmartBBSOrderAdapter extends RecyclerView.Adapter<RecyclerView.View
 
         public ImageView image;
         public TextView title;
+        public TextView content;
         public TextView date;
         private Context context;
 

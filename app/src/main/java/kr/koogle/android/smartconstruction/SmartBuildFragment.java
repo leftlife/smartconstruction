@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -12,6 +13,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -29,63 +31,27 @@ import retrofit2.Response;
 public class SmartBuildFragment extends Fragment {
 
     private static final String TAG = "SmartBuildFragment";
+    private RbPreference pref;
     private View rootView;
     private SmartBuildAdapter adapter;
-    // public static ArrayList<SmartBuild> smartBulids; // SmartSingleton.smartBuilds -> smartBuilds 변경 사용할 경우 !!
+    private RecyclerView rvSmartBuilds;
     private LayoutInflater mInflater;
+    private View viewEmpty;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_smart_build, container, false);
         mInflater = inflater; //getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
+        // SmartSingleton 생성 !!
+        SmartSingleton.getInstance();
         // Settings 값 !!
-        RbPreference pref = new RbPreference(getContext());
+        pref = new RbPreference(getContext());
 
         // Lookup the recyclerview in activity layout
-        RecyclerView rvSmartBuilds = (RecyclerView) rootView.findViewById(R.id.rvSmartBuilds);
-
-        // Initialize smartBulids - do not reinitialize an existing reference used by an adapter
-        // smartBulids = SmartBuild.createSmartBuildsList(20);
-        // SmartSingleton.getInstance();
-        // SmartSingleton.arrSmartBuilds = new ArrayList<SmartBuild>();
-
+        rvSmartBuilds = (RecyclerView) rootView.findViewById(R.id.rvSmartBuilds);
         // Create adapter passing in the sample user data
         adapter = new SmartBuildAdapter(getContext(), SmartSingleton.arrSmartBuilds);
 
-        if(SmartSingleton.arrSmartBuilds.size() <= 0) {
-            /******************************************************************************************/
-            // SmartBuild 값 불러오기 (진행중인 현장)
-            Log.d(TAG, "SmartService.checkLoginToken 실행!! / pref_access_token : " + pref.getValue("pref_access_token", ""));
-            SmartService smartService = ServiceGenerator.createService(SmartService.class, pref.getValue("pref_access_token", ""));
-            Call<ArrayList<SmartBuild>> call = smartService.getSmartBuilds();
-
-            call.enqueue(new Callback<ArrayList<SmartBuild>>() {
-                @Override
-                public void onResponse(Call<ArrayList<SmartBuild>> call, Response<ArrayList<SmartBuild>> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        final ArrayList<SmartBuild> responseSmartBuilds = response.body();
-
-                        SmartSingleton.arrSmartBuilds.addAll(responseSmartBuilds);
-                        // 최근 카운트 체크
-                        int curSize = adapter.getItemCount();
-                        adapter.notifyItemRangeInserted(curSize, responseSmartBuilds.size());
-                    } else {
-                        Toast.makeText(getContext(), "데이터가 정확하지 않습니다.", Toast.LENGTH_SHORT).show();
-
-                        Intent intentLogin = new Intent(getContext(), LoginActivity.class);
-                        startActivity(intentLogin);
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<ArrayList<SmartBuild>> call, Throwable t) {
-                    Toast.makeText(getContext(), "네트워크 상태가 좋지 않습니다.", Toast.LENGTH_SHORT).show();
-                    Log.d("Error", t.getMessage());
-                }
-            });
-            /******************************************************************************************/
-        }
         /*
         smartBulids.addAll(SmartBuild.createSmartBuildsList(10));
 
@@ -110,7 +76,6 @@ public class SmartBuildFragment extends Fragment {
 
         rvSmartBuilds.setHasFixedSize(true);
 
-        // Attach the adapter to the recyclerview to populate items
         /*
         AlphaInAnimationAdapter alphaInAnimationAdapter = new AlphaInAnimationAdapter(adapter);
         alphaInAnimationAdapter.setDuration(1000);
@@ -133,12 +98,18 @@ public class SmartBuildFragment extends Fragment {
         RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST);
         rvSmartBuilds.addItemDecoration(itemDecoration);
 */
+        if(SmartSingleton.arrSmartBuilds.isEmpty()) {
+            /******************************************************************************************/
+            addItems();
+            /******************************************************************************************/
+        }
+
         final LinearLayout empLayout = (LinearLayout) rootView.findViewById(R.id.emp_layout);
 
         if (SmartSingleton.arrSmartBuilds.isEmpty()) {
-            empLayout.setVisibility(View.VISIBLE);
+            //empLayout.setVisibility(View.VISIBLE);
         } else {
-            empLayout.setVisibility(View.GONE);
+            //empLayout.setVisibility(View.GONE);
             rvSmartBuilds.setItemAnimator(new SlideInUpAnimator());
         }
         /***************************************************************************/
@@ -223,5 +194,45 @@ public class SmartBuildFragment extends Fragment {
         });
 
         return rootView;
+    }
+
+    public void addItems() {
+        // SmartBuild 값 불러오기 (진행중인 현장)
+        Log.d(TAG, "SmartService.checkLoginToken 실행!! / pref_access_token : " + pref.getValue("pref_access_token", ""));
+        SmartService smartService = ServiceGenerator.createService(SmartService.class, pref.getValue("pref_access_token", ""));
+        Call<ArrayList<SmartBuild>> call = smartService.getSmartBuilds();
+
+        call.enqueue(new Callback<ArrayList<SmartBuild>>() {
+            @Override
+            public void onResponse(Call<ArrayList<SmartBuild>> call, Response<ArrayList<SmartBuild>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    final ArrayList<SmartBuild> responseSmartBuilds = response.body();
+
+                    SmartSingleton.arrSmartBuilds.addAll(responseSmartBuilds);
+                    // 최근 카운트 체크
+                    int curSize = adapter.getItemCount();
+                    adapter.notifyItemRangeInserted(curSize, responseSmartBuilds.size());
+
+                    if(SmartSingleton.arrSmartBuilds.isEmpty()) {
+                        viewEmpty = mInflater.inflate(R.layout.row_empty, null);
+                        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.MATCH_PARENT);
+                        viewEmpty.setLayoutParams(params);
+                        RelativeLayout rmSmartBuild = (RelativeLayout) rootView.findViewById(R.id.fm_smart_build);
+                        rmSmartBuild.addView(viewEmpty);
+                    }
+                } else {
+                    Toast.makeText(getContext(), "데이터가 정확하지 않습니다.", Toast.LENGTH_SHORT).show();
+
+                    Intent intentLogin = new Intent(getContext(), LoginActivity.class);
+                    startActivity(intentLogin);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<SmartBuild>> call, Throwable t) {
+                Toast.makeText(getContext(), "네트워크 상태가 좋지 않습니다.", Toast.LENGTH_SHORT).show();
+                Log.d("Error", t.getMessage());
+            }
+        });
     }
 }

@@ -17,10 +17,17 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="철근, 레미콘 구매현황 세진주유소 지점"
             android:id="@+id/r_sbc_title"
-            android:textSize="14dp"
+            android:textSize="15dp"
             android:gravity="top|left"
             android:layout_marginTop="13dp"
-            android:layout_marginLeft="20dp" />
+            android:layout_marginLeft="20dp"
+            android:longClickable="true"
+            android:linksClickable="true"
+            android:singleLine="true"
+            android:autoText="false"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:layout_marginRight="50dp" />
 
     </LinearLayout>
 
