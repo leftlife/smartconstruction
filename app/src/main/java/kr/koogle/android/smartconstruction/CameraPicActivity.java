@@ -1,6 +1,7 @@
 package kr.koogle.android.smartconstruction;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.ContentUris;
 import android.content.Intent;
 import android.database.Cursor;
@@ -40,9 +41,15 @@ import org.w3c.dom.Text;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+import butterknife.OnClick;
+import kr.koogle.android.smartconstruction.http.SmartBuild;
+import kr.koogle.android.smartconstruction.http.SmartSingleton;
+
+import static android.Manifest.permission.ACCESS_CHECKIN_PROPERTIES;
 import static android.Manifest.permission.CAMERA;
 import static android.Manifest.permission.RECORD_AUDIO;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
@@ -180,9 +187,59 @@ public class CameraPicActivity extends AppCompatActivity implements TimePickerDi
         inputDate = (TextView) findViewById(R.id.input_date);
 
         inputBuildName.setInputType(0);
-        inputBuildKind.setInputType(0);
-        inputDate.setInputType(0);
+        inputBuildName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
+                final ArrayList<String> arrBuild = new ArrayList<String>();
+                if ( ! SmartSingleton.arrSmartBuilds.isEmpty() ) {
+                    //ArrayList<SmartBuild> arrBuild = SmartSingleton.arrSmartBuilds;
+                    for(int i=0; i<SmartSingleton.arrSmartBuilds.size(); i++) {
+                        arrBuild.add(SmartSingleton.arrSmartBuilds.get(i).strName);
+                    }
+                }
+
+                new MaterialDialog.Builder(CameraPicActivity.this)
+                        .title("현장선택")
+                        .items(arrBuild)
+                        .itemsCallback(new MaterialDialog.ListCallback() {
+                            @Override
+                            public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                                inputBuildName.setText(text);
+                            }
+                        })
+                        .positiveText("취소하기").show();
+
+            }
+        });
+
+        inputBuildKind.setInputType(0);
+        inputBuildKind.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                final ArrayList<String> arrBuild = new ArrayList<String>();
+                if ( ! SmartSingleton.arrLaborCategorys.isEmpty() ) {
+                    for(int i=0; i<SmartSingleton.arrLaborCategorys.get(0).arrCategory.size(); i++) {
+                        arrBuild.add(SmartSingleton.arrLaborCategorys.get(0).arrCategory.get(i).strName);
+                    }
+                }
+
+                new MaterialDialog.Builder(CameraPicActivity.this)
+                        .title("공종선택")
+                        .items(arrBuild)
+                        .itemsCallback(new MaterialDialog.ListCallback() {
+                            @Override
+                            public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                                inputBuildKind.setText(text);
+                            }
+                        })
+                        .positiveText("취소하기").show();
+
+            }
+        });
+
+        inputDate.setInputType(0);
         inputDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -198,6 +255,7 @@ public class CameraPicActivity extends AppCompatActivity implements TimePickerDi
 
             }
         });
+
     }
 
     @Override

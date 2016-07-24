@@ -39,6 +39,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,7 +53,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import kr.koogle.android.smartconstruction.http.*;
 import kr.koogle.android.smartconstruction.util.BackPressCloseHandler;
@@ -201,6 +205,38 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         // 닫힐때 한번 더 확인
         backPressCloseHandler = new BackPressCloseHandler(this);
+
+        /******************************************************************************************/
+        // Category 값 불러오기 (한번만!!)
+        SmartService smartService = ServiceGenerator.createService(SmartService.class, pref.getValue("pref_access_token", ""));
+        Call<ArrayList<SmartCategory>> call = smartService.getLaborCategorys();
+
+        call.enqueue(new Callback<ArrayList<SmartCategory>>() {
+            @Override
+            public void onResponse(Call<ArrayList<SmartCategory>> call, Response<ArrayList<SmartCategory>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    final ArrayList<SmartCategory> responseLaborCategorys = response.body();
+
+                    if(responseLaborCategorys.size() != 0) {
+                        Log.d(TAG, "responseSmartCategorys : size " + responseLaborCategorys.size());
+                        SmartSingleton.arrLaborCategorys.addAll(responseLaborCategorys);
+                    } else {
+
+                    }
+                } else {
+                    Toast.makeText(MainActivity.this, "데이터가 정확하지 않습니다.", Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, "responseLaborCategorys : 데이터가 정확하지 않습니다.");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<SmartCategory>> call, Throwable t) {
+                Toast.makeText(MainActivity.this, "네트워크 상태가 좋지 않습니다!", Toast.LENGTH_SHORT).show();
+                Log.d("Error", t.getMessage());
+            }
+        });
+        /******************************************************************************************/
+
     }
 
     //  ############## Fragment 통신 ##################  // SmartFragment 용
