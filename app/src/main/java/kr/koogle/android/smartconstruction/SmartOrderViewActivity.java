@@ -10,14 +10,14 @@ import android.widget.ImageView;
 import kr.koogle.android.smartconstruction.http.SmartSingleton;
 import kr.koogle.android.smartconstruction.util.RbPreference;
 
-public class SmartWorkViewActivity extends AppCompatActivity {
+public class SmartOrderViewActivity extends AppCompatActivity {
     private static final String TAG = "SmartWorkViewActivity";
     private RbPreference pref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_work_view);
+        setContentView(R.layout.activity_client_view);
         // SmartSingleton 생성 !!
         SmartSingleton.getInstance();
         // Settings 값 !!
@@ -33,7 +33,7 @@ public class SmartWorkViewActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SmartWorkViewActivity.this.finish();
+                SmartOrderViewActivity.this.finish();
             }
         });
 

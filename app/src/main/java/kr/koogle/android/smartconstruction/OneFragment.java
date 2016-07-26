@@ -23,6 +23,8 @@ import com.squareup.picasso.Picasso;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import kr.koogle.android.smartconstruction.http.FileUploadService;
 import kr.koogle.android.smartconstruction.http.ServiceGenerator;
@@ -226,7 +228,10 @@ public class OneFragment extends Fragment {
                         MediaType.parse("multipart/form-data"), descriptionString);
 
         // finally, execute the request
-        Call<ResponseBody> call = service.upload(description, body);
+        Map<String, RequestBody> querys = new HashMap<>();
+        RequestBody descriptionRB = RequestBody.create(MediaType.parse("multipart/form-data"), "현장사진입니다.");
+        querys.put("description", descriptionRB);
+        Call<ResponseBody> call = service.upload(querys, body);
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call,

@@ -3,6 +3,7 @@ package kr.koogle.android.smartconstruction.http;
 import java.util.ArrayList;
 
 public class SmartBBSClient {
+
     public int intId;
     public String strSiteId;
     public int intSort;
@@ -17,4 +18,6 @@ public class SmartBBSClient {
     public String datWrite;
 
     public ArrayList<SmartFile> arrFiles;
+    public ArrayList<SmartComment> arrComments;
+
 }

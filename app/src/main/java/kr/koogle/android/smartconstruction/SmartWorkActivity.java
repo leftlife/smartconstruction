@@ -100,8 +100,7 @@ public class SmartWorkActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "스마트 일보를 등록합니다.", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Snackbar.make(view, "스마트 일보를 등록합니다.", Snackbar.LENGTH_LONG).setAction("Action", null).show();
             }
         });
 
@@ -116,8 +115,8 @@ public class SmartWorkActivity extends AppCompatActivity {
 
             // 상단부분 내용 변경 !!
             strBuildCode = getIntent().getExtras().getString("strBuildCode");
-
             strWorkTitleTop = getIntent().getExtras().getString("strBuildName");
+
             final CollapsingToolbarLayout collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout_work);
             collapsingToolbar.setTitle(strWorkTitleTop);
 

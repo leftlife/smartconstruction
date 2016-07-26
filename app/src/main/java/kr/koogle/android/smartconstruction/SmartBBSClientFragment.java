@@ -123,21 +123,17 @@ public class SmartBBSClientFragment extends Fragment {
             rvSmartBBSClients.setItemAnimator(new SlideInUpAnimator());
         }
         /***************************************************************************/
+        // 리스트 클릭시 상세 페이지 보기 !!
         adapter.setOnItemClickListener(new SmartBBSClientAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-
-                final String strCode = SmartSingleton.arrSmartBBSClients.get(position).strSiteId;
-                final String strDate = SmartSingleton.arrSmartBBSClients.get(position).datWrite;
-                final String strImageUrl = SmartSingleton.arrSmartBBSClients.get(position).strContent;
                 adapter.notifyItemChanged(position);
 
-                Intent intentWorkView = new Intent(getActivity(), SmartWorkViewActivity.class);
-                intentWorkView.putExtra("strBuildCode", strCode);
-                intentWorkView.putExtra("strBuildDate", strDate);
-                intentWorkView.putExtra("strImageUrl", strImageUrl);
+                Intent intentWorkView = new Intent(getActivity(), SmartClientViewActivity.class);
+                final int intId = SmartSingleton.arrSmartBBSClients.get(position).intId;
+                intentWorkView.putExtra("intId", intId);
                 startActivityForResult(intentWorkView, 1002);
-                Toast.makeText(getContext(), "strBuildCode : " + strCode, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "intId : " + intId, Toast.LENGTH_SHORT).show();
             }
         });
         /***************************************************************************/

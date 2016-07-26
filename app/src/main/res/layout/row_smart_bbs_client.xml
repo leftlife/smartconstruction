@@ -15,7 +15,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="철근, 레미콘 구매현황 세진주유소 지점"
+            android:text="타이틀"
             android:id="@+id/r_sbc_title"
             android:textSize="14dp"
             android:gravity="top|left"
@@ -24,11 +24,12 @@
 
     </LinearLayout>
 
+    <!-- @drawable/abc_ic_go_search_api_material -->
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/r_sbc_btn_image"
-        android:src="@drawable/abc_ic_go_search_api_material"
+        android:src="@android:drawable/radiobutton_off_background"
         android:layout_alignParentLeft="false"
         android:layout_alignParentBottom="false"
         android:layout_alignParentRight="true"

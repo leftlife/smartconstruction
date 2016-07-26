@@ -132,7 +132,7 @@ public class SmartBBSOrderFragment extends Fragment {
                 final String strImageUrl = SmartSingleton.arrSmartBBSOrders.get(position).strContent;
                 adapter.notifyItemChanged(position);
 
-                Intent intentWorkView = new Intent(getActivity(), SmartWorkViewActivity.class);
+                Intent intentWorkView = new Intent(getActivity(), SmartClientViewActivity.class);
                 intentWorkView.putExtra("strBuildCode", strCode);
                 intentWorkView.putExtra("strBuildDate", strDate);
                 intentWorkView.putExtra("strImageUrl", strImageUrl);

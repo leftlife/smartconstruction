@@ -32,8 +32,6 @@ public interface SmartService {
     );
 
     @GET("builds/{build}/works/{work}")
-
-
     Call<SmartWork> getSmartWorkView(
             @Path("build") String buildCode,
             @Path("work") String workCode
@@ -62,8 +60,8 @@ public interface SmartService {
     Call<ArrayList<SmartCategory>> getLaborCategorys();
 
     // 자재 카테고리
-    @GET("meterials")
-    Call<ArrayList<SmartCategory>> getMeterialCategorys();
+    @GET("materials")
+    Call<ArrayList<SmartCategory>> getMaterialCategorys();
 
     // 장비 카테고리
     @GET("equipments")

@@ -3,6 +3,7 @@ package kr.koogle.android.smartconstruction.http;
 import java.util.ArrayList;
 
 public class SmartBBSOrder {
+
     public int intId;
     public String strSiteId;
     public String strUserId;
@@ -18,6 +19,8 @@ public class SmartBBSOrder {
     public int intEmail;
     public String datWrite;
 
-    ArrayList<SmartEmployee> arrEmployees;
-    ArrayList<SmartFile> arrFiles;
+    public ArrayList<SmartEmployee> arrEmployees;
+    public ArrayList<SmartFile> arrFiles;
+    public ArrayList<SmartComment> arrComments;
+
 }

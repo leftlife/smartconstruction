@@ -207,34 +207,98 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         backPressCloseHandler = new BackPressCloseHandler(this);
 
         /******************************************************************************************/
-        // Category 값 불러오기 (한번만!!)
-        SmartService smartService = ServiceGenerator.createService(SmartService.class, pref.getValue("pref_access_token", ""));
-        Call<ArrayList<SmartCategory>> call = smartService.getLaborCategorys();
+        if(SmartSingleton.arrLaborCategorys.isEmpty()) {
+            // Labor Category 값 불러오기 (한번만!!)
+            SmartService smartService = ServiceGenerator.createService(SmartService.class, pref.getValue("pref_access_token", ""));
+            Call<ArrayList<SmartCategory>> call = smartService.getLaborCategorys();
 
-        call.enqueue(new Callback<ArrayList<SmartCategory>>() {
-            @Override
-            public void onResponse(Call<ArrayList<SmartCategory>> call, Response<ArrayList<SmartCategory>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    final ArrayList<SmartCategory> responseLaborCategorys = response.body();
+            call.enqueue(new Callback<ArrayList<SmartCategory>>() {
+                @Override
+                public void onResponse(Call<ArrayList<SmartCategory>> call, Response<ArrayList<SmartCategory>> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        final ArrayList<SmartCategory> responseLaborCategorys = response.body();
 
-                    if(responseLaborCategorys.size() != 0) {
-                        Log.d(TAG, "responseSmartCategorys : size " + responseLaborCategorys.size());
-                        SmartSingleton.arrLaborCategorys.addAll(responseLaborCategorys);
+                        if (responseLaborCategorys.size() != 0) {
+                            Log.d(TAG, "responseSmartCategorys : size " + responseLaborCategorys.size());
+                            SmartSingleton.arrLaborCategorys.addAll(responseLaborCategorys);
+                        } else {
+
+                        }
                     } else {
-
+                        Toast.makeText(MainActivity.this, "데이터가 정확하지 않습니다.", Toast.LENGTH_SHORT).show();
+                        Log.d(TAG, "responseLaborCategorys : 데이터가 정확하지 않습니다.");
                     }
-                } else {
-                    Toast.makeText(MainActivity.this, "데이터가 정확하지 않습니다.", Toast.LENGTH_SHORT).show();
-                    Log.d(TAG, "responseLaborCategorys : 데이터가 정확하지 않습니다.");
                 }
-            }
 
-            @Override
-            public void onFailure(Call<ArrayList<SmartCategory>> call, Throwable t) {
-                Toast.makeText(MainActivity.this, "네트워크 상태가 좋지 않습니다!", Toast.LENGTH_SHORT).show();
-                Log.d("Error", t.getMessage());
-            }
-        });
+                @Override
+                public void onFailure(Call<ArrayList<SmartCategory>> call, Throwable t) {
+                    Toast.makeText(MainActivity.this, "네트워크 상태가 좋지 않습니다!", Toast.LENGTH_SHORT).show();
+                    Log.d("Error", t.getMessage());
+                }
+            });
+        }
+        /******************************************************************************************/
+        if(SmartSingleton.arrMaterialCategorys.isEmpty()) {
+            // Material Category 값 불러오기 (한번만!!)
+            SmartService smartService = ServiceGenerator.createService(SmartService.class, pref.getValue("pref_access_token", ""));
+            Call<ArrayList<SmartCategory>> call = smartService.getMaterialCategorys();
+
+            call.enqueue(new Callback<ArrayList<SmartCategory>>() {
+                @Override
+                public void onResponse(Call<ArrayList<SmartCategory>> call, Response<ArrayList<SmartCategory>> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        final ArrayList<SmartCategory> responseMaterialCategorys = response.body();
+
+                        if (responseMaterialCategorys.size() != 0) {
+                            Log.d(TAG, "responseSmartCategorys : size " + responseMaterialCategorys.size());
+                            SmartSingleton.arrMaterialCategorys.addAll(responseMaterialCategorys);
+                        } else {
+
+                        }
+                    } else {
+                        Toast.makeText(MainActivity.this, "데이터가 정확하지 않습니다.", Toast.LENGTH_SHORT).show();
+                        Log.d(TAG, "responseMaterialCategorys : 데이터가 정확하지 않습니다.");
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ArrayList<SmartCategory>> call, Throwable t) {
+                    Toast.makeText(MainActivity.this, "네트워크 상태가 좋지 않습니다!", Toast.LENGTH_SHORT).show();
+                    Log.d("Error", t.getMessage());
+                }
+            });
+        }
+        /******************************************************************************************/
+        if(SmartSingleton.arrEquipmentCategorys.isEmpty()) {
+            // Equipment Category 값 불러오기 (한번만!!)
+            SmartService smartService = ServiceGenerator.createService(SmartService.class, pref.getValue("pref_access_token", ""));
+            Call<ArrayList<SmartCategory>> call = smartService.getEquipmentCategorys();
+
+            call.enqueue(new Callback<ArrayList<SmartCategory>>() {
+                @Override
+                public void onResponse(Call<ArrayList<SmartCategory>> call, Response<ArrayList<SmartCategory>> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        final ArrayList<SmartCategory> responseEquipmentCategorys = response.body();
+
+                        if (responseEquipmentCategorys.size() != 0) {
+                            Log.d(TAG, "responseSmartCategorys : size " + responseEquipmentCategorys.size());
+                            SmartSingleton.arrEquipmentCategorys.addAll(responseEquipmentCategorys);
+                        } else {
+
+                        }
+                    } else {
+                        Toast.makeText(MainActivity.this, "데이터가 정확하지 않습니다.", Toast.LENGTH_SHORT).show();
+                        Log.d(TAG, "responseEquipmentCategorys : 데이터가 정확하지 않습니다.");
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ArrayList<SmartCategory>> call, Throwable t) {
+                    Toast.makeText(MainActivity.this, "네트워크 상태가 좋지 않습니다!", Toast.LENGTH_SHORT).show();
+                    Log.d("Error", t.getMessage());
+                }
+            });
+        }
         /******************************************************************************************/
 
     }
@@ -452,67 +516,4 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
-    public String getImageNameToUri(Uri data)
-    {
-        String[] proj = { MediaStore.Images.Media.DATA };
-        Cursor cursor = managedQuery(data, proj, null, null, null);
-        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-
-        cursor.moveToFirst();
-
-        String imgPath = cursor.getString(column_index);
-        String imgName = imgPath.substring(imgPath.lastIndexOf("/")+1);
-
-        return imgName;
-    }
-
-    public void uploadFile(File fileImage) {
-        // create upload service client
-        FileUploadService service =
-                ServiceGenerator.createService(FileUploadService.class);
-
-        // https://github.com/iPaulPro/aFileChooser/blob/master/aFileChooser/src/com/ipaulpro/afilechooser/utils/FileUtils.java
-        // use the FileUtils to get the actual file by uri
-        File file = fileImage; //FileUtils.getFile(this, fileUri);
-
-        // create RequestBody instance from file
-        RequestBody requestFile =
-                RequestBody.create(MediaType.parse("multipart/form-data"), file);
-
-        //Toast.makeText(getBaseContext(), "filename : " + file.getName() , Toast.LENGTH_SHORT).show();
-        // MultipartBody.Part is used to send also the actual file name
-        MultipartBody.Part body =
-                MultipartBody.Part.createFormData("userfile1", file.getName(), requestFile);
-
-        // add another part within the multipart request
-        String descriptionString = "hello, this is description speaking";
-        RequestBody description =
-                RequestBody.create(
-                        MediaType.parse("multipart/form-data"), descriptionString);
-
-        // finally, execute the request
-        Call<ResponseBody> call = service.upload(description, body);
-        call.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call,
-                                   Response<ResponseBody> response) {
-                Log.v("Upload", "success");
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Log.e("Upload error:", t.getMessage());
-            }
-        });
-
-    }
-
-    private void showToast(String message) {
-        if (mToast != null) {
-            mToast.cancel();
-            mToast = null;
-        }
-        mToast = Toast.makeText(this, message, Toast.LENGTH_SHORT);
-        mToast.show();
-    }
 }

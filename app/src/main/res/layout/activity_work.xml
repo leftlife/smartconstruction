@@ -20,6 +20,7 @@
             android:id="@+id/toolbar_layout_work"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            app:expandedTitleTextAppearance="@style/TextAppearance.AppCompat.Headline"
             android:fitsSystemWindows="true"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 

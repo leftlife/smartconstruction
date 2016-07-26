@@ -45,6 +45,11 @@ dependencies {
     compile 'com.squareup.retrofit2:converter-gson:2.1.0'
     compile 'com.squareup.okhttp3:logging-interceptor:3.3.1'
 
+    // Animations
+    compile 'com.nineoldandroids:library:2.4.0'
+    compile 'com.daimajia.easing:library:1.0.0@aar'
+    compile 'com.daimajia.androidanimations:library:1.0.8@aar'
+
     // GCM Service
     //compile 'com.google.android.gms:play-services-gcm:9.0.0'
     compile 'com.google.firebase:firebase-core:9.0.0'
@@ -60,6 +65,7 @@ dependencies {
     compile 'com.android.support:multidex:1.0.0'
     compile 'com.afollestad.material-dialogs:core:0.8.6.2'
     compile 'com.wdullaer:materialdatetimepicker:2.4.0'
+    compile 'org.jsoup:jsoup:1.9.2'
 }
 
 apply plugin: 'com.google.gms.google-services'

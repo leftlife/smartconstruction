@@ -1,11 +1,13 @@
 package kr.koogle.android.smartconstruction.http;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class SmartSingleton {
     private volatile static SmartSingleton uniqueInstance = null; // DCL
     private SmartSingleton() {}
+
+    public static double strLat;
+    public static double strLng;
 
     public static ArrayList<SmartBuild> arrSmartBuilds;
     public static ArrayList<SmartWork> arrSmartWorks;
@@ -15,7 +17,7 @@ public class SmartSingleton {
     public static ArrayList<SmartEmployee> arrSmartEmployees;
 
     public static ArrayList<SmartCategory> arrLaborCategorys;
-    public static ArrayList<SmartCategory> arrMeterialCategorys;
+    public static ArrayList<SmartCategory> arrMaterialCategorys;
     public static ArrayList<SmartCategory> arrEquipmentCategorys;
 
     public static SmartSingleton getInstance() {
@@ -33,7 +35,7 @@ public class SmartSingleton {
                     arrSmartEmployees = new ArrayList<SmartEmployee>();
 
                     arrLaborCategorys = new ArrayList<SmartCategory>();
-                    arrMeterialCategorys = new ArrayList<SmartCategory>();
+                    arrMaterialCategorys = new ArrayList<SmartCategory>();
                     arrEquipmentCategorys = new ArrayList<SmartCategory>();
                 }
             }
