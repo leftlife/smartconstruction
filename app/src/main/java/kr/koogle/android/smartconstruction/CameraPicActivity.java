@@ -153,7 +153,6 @@ public class CameraPicActivity extends AppCompatActivity implements TimePickerDi
             }
         });
 
-
         if (!Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
             Toast.makeText(this, "Cannot access external storage!", Toast.LENGTH_LONG).show();
             finish();
@@ -573,6 +572,7 @@ public class CameraPicActivity extends AppCompatActivity implements TimePickerDi
                             .onAny(new MaterialDialog.SingleButtonCallback() {
                                 @Override
                                 public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                    md.dismiss();
                                     CameraPicActivity.this.finish();
                                 }
                             })

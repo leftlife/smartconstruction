@@ -33,7 +33,7 @@ public class SmartClientViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     public SmartClientViewAdapter(Context context, ArrayList<SmartComment> arrRows) {
         mContext = context;
         mRows = arrRows;
-        final LinearLayoutManager linearLayoutManager = (LinearLayoutManager) SmartClientViewActivity.rvSmartComments.getLayoutManager();
+        //final LinearLayoutManager linearLayoutManager = (LinearLayoutManager) SmartClientViewActivity.rvSmartComments.getLayoutManager();
     }
 
     public void setmOnLoadMoreListener(OnLoadMoreListener mOnLoadMoreListener) {
