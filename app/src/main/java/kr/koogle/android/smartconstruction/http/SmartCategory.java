@@ -8,4 +8,8 @@ public class SmartCategory {
     public String strName;
     public ArrayList<SmartCategory> arrCategory;
 
+    public SmartCategory() {
+        arrCategory = new ArrayList<SmartCategory>();
+    }
+
 }

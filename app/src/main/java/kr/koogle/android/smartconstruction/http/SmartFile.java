@@ -1,6 +1,7 @@
 package kr.koogle.android.smartconstruction.http;
 
 public class SmartFile {
+
     public int intId;
     public String strSiteId;
     public String strBuildCode;
@@ -13,4 +14,5 @@ public class SmartFile {
     public String strFileName;
     public String strDate;
     public String strMemo;
+
 }

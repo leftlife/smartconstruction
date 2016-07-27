@@ -1,6 +1,7 @@
 package kr.koogle.android.smartconstruction.http;
 
 public class SmartEmployee {
+
     public int intId;
     public String strSiteId;
     public String strId;
@@ -14,4 +15,5 @@ public class SmartEmployee {
     public String strEmail;
     public String strImageURL;
     public int intCheck;
+
 }

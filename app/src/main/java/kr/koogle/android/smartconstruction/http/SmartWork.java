@@ -12,10 +12,18 @@ public class SmartWork {
     public String strMemo;
     public String strImageURL;
 
-    public ArrayList<SmartLabor> lstSmartLabors;
-    public ArrayList<SmartLabor> lstSmartLaborNexts;
-    public ArrayList<SmartMaterial> lstSmartMaterials;
-    public ArrayList<SmartEquipment> lstSmartEquipments;
-    public ArrayList<SmartPhoto> lstSmartPhotos;
+    public ArrayList<SmartLabor> arrSmartLabors;
+    public ArrayList<SmartLabor> arrSmartLaborNexts;
+    public ArrayList<SmartMaterial> arrSmartMaterials;
+    public ArrayList<SmartEquipment> arrSmartEquipments;
+    public ArrayList<SmartPhoto> arrSmartPhotos;
+
+    public SmartWork() {
+        arrSmartLabors = new ArrayList<SmartLabor>();
+        arrSmartLaborNexts = new ArrayList<SmartLabor>();
+        arrSmartMaterials = new ArrayList<SmartMaterial>();
+        arrSmartEquipments = new ArrayList<SmartEquipment>();
+        arrSmartPhotos = new ArrayList<SmartPhoto>();
+    }
 
 }

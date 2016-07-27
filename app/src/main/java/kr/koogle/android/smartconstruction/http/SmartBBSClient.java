@@ -20,4 +20,9 @@ public class SmartBBSClient {
     public ArrayList<SmartFile> arrFiles;
     public ArrayList<SmartComment> arrComments;
 
+    public SmartBBSClient() {
+        arrFiles = new ArrayList<SmartFile>();
+        arrComments = new ArrayList<SmartComment>();
+    }
+
 }

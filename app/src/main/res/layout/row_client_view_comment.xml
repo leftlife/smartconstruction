@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:orientation="vertical"
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+android:background="#ffffff"
+android:layout_marginTop="3dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="#ffffff"
+        android:layout_marginBottom="3dp"
+        android:paddingTop="3dp">
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:id="@+id/r_client_view_comment_photo"
+            android:src="@drawable/img_head"
+            android:layout_marginRight="0dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="8dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="leftlife"
+            android:id="@+id/r_client_view_comment_writer"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="62dp"
+            android:textSize="14dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="2016.09.09 23:11:23"
+            android:id="@+id/r_client_view_comment_date"
+            android:layout_marginTop="26dp"
+            android:layout_marginLeft="62dp"
+            android:textSize="12dp"
+            android:textColor="#777777" />
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="답변내용"
+        android:id="@+id/r_client_view_comment_content"
+        android:textSize="13dp"
+        android:paddingLeft="25dp"
+        android:paddingRight="25dp"
+        android:paddingBottom="15dp"
+        android:paddingTop="0dp" />
+
+</LinearLayout>

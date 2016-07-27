@@ -23,4 +23,10 @@ public class SmartBBSOrder {
     public ArrayList<SmartFile> arrFiles;
     public ArrayList<SmartComment> arrComments;
 
+    public SmartBBSOrder() {
+        arrEmployees = new ArrayList<SmartEmployee>();
+        arrFiles = new ArrayList<SmartFile>();
+        arrComments = new ArrayList<SmartComment>();
+    }
+
 }

@@ -35,7 +35,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/scrollView"
+        android:id="@+id/sv_client_view"
         android:background="#dddddd"
         android:focusable="true"
         android:focusableInTouchMode="true"
@@ -45,7 +45,7 @@
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
             <LinearLayout
                 android:orientation="horizontal"
@@ -122,7 +122,7 @@
                 android:layout_height="match_parent"
                 android:background="#ffffff">
 
-                <TextView
+                <!--TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
@@ -131,6 +131,18 @@
                     android:textSize="15dp"
                     android:paddingLeft="20dp"
                     android:paddingRight="20dp"
+                    android:paddingBottom="20dp"
+                    android:paddingTop="20dp"
+                    android:minHeight="200dp" /-->
+
+                <org.sufficientlysecure.htmltextview.HtmlTextView
+                    android:id="@+id/txt_client_view_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textAppearance="@android:style/TextAppearance.Small"
+                    android:textSize="15dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="18dp"
                     android:paddingBottom="20dp"
                     android:paddingTop="20dp"
                     android:minHeight="200dp" />
@@ -164,64 +176,11 @@
                     android:background="#ffffff" />
             </RelativeLayout>
 
-            <LinearLayout
-                android:orientation="vertical"
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rvClientViewComments"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#ffffff"
-                android:layout_marginTop="3dp">
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:background="#ffffff"
-                    android:layout_marginBottom="3dp"
-                    android:paddingTop="3dp">
-
-                    <ImageView
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:id="@+id/r_client_view_photo"
-                        android:src="@drawable/img_head"
-                        android:layout_marginRight="0dp"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginTop="8dp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:text="leftlife"
-                        android:id="@+id/r_client_view_writer"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginLeft="62dp"
-                        android:textSize="14dp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:text="2016.09.09 23:11:23"
-                        android:id="@+id/r_client_view_date"
-                        android:layout_marginTop="26dp"
-                        android:layout_marginLeft="62dp"
-                        android:textSize="12dp"
-                        android:textColor="#777777" />
-                </RelativeLayout>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="답변내용"
-                    android:id="@+id/r_client_view_content"
-                    android:textSize="13dp"
-                    android:paddingLeft="25dp"
-                    android:paddingRight="25dp"
-                    android:paddingBottom="15dp"
-                    android:paddingTop="0dp" />
-
-            </LinearLayout>
+                android:layout_height="wrap_content"
+                android:scrollbars="vertical"/>
 
             <LinearLayout
                 android:orientation="horizontal"

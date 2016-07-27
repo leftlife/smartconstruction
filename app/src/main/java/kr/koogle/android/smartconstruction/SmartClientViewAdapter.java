@@ -11,14 +11,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import kr.koogle.android.smartconstruction.http.SmartBBSClient;
-import kr.koogle.android.smartconstruction.http.SmartSingleton;
+import kr.koogle.android.smartconstruction.http.SmartComment;
 import kr.koogle.android.smartconstruction.util.OnLoadMoreListener;
 
-public class SmartBBSClientAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private static final String TAG = "SmartBBSClientAdapter";
+public class SmartClientViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    private static final String TAG = "SmartClientViewAdapter";
     private final int VIEW_TYPE_ITEM = 0;
     private final int VIEW_TYPE_LOADING = 1;
     private OnLoadMoreListener mOnLoadMoreListener;
@@ -26,20 +24,16 @@ public class SmartBBSClientAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     private int visibleThreshold = 10;
     private int lastVisibleItem, totalItemCount;
 
-    private static ArrayList<SmartBBSClient> mSmartBBSClients;
     private Context mContext;
-    private List<SmartBBSClient> mUsers = SmartSingleton.arrSmartBBSClients;
-
+    private ArrayList<SmartComment> mRows;
     private Context getContext() {
         return mContext;
     }
 
-    public SmartBBSClientAdapter(Context context, ArrayList<SmartBBSClient> smartBBSClients) {
+    public SmartClientViewAdapter(Context context, ArrayList<SmartComment> arrRows) {
         mContext = context;
-        mSmartBBSClients = smartBBSClients;
-
-        final LinearLayoutManager linearLayoutManager = (LinearLayoutManager) SmartBBSClientFragment.rvSmartBBSClients.getLayoutManager();
-
+        mRows = arrRows;
+        final LinearLayoutManager linearLayoutManager = (LinearLayoutManager) SmartClientViewActivity.rvSmartComments.getLayoutManager();
     }
 
     public void setmOnLoadMoreListener(OnLoadMoreListener mOnLoadMoreListener) {
@@ -48,7 +42,7 @@ public class SmartBBSClientAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     @Override
     public int getItemViewType(int position) {
-        return mUsers.get(position) == null ? VIEW_TYPE_LOADING : VIEW_TYPE_ITEM;
+        return mRows.get(position) == null ? VIEW_TYPE_LOADING : VIEW_TYPE_ITEM;
     }
 
     @Override
@@ -56,22 +50,21 @@ public class SmartBBSClientAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         Context context = parent.getContext();
 
         if (viewType == VIEW_TYPE_ITEM) {
-            View view = LayoutInflater.from(context).inflate(R.layout.row_smart_client, parent, false);
+            View view = LayoutInflater.from(context).inflate(R.layout.row_client_view_comment, parent, false);
             return new UserViewHolder(getContext(), view);
         } else if (viewType == VIEW_TYPE_LOADING) {
             View view = LayoutInflater.from(context).inflate(R.layout.layout_loading_item, parent, false);
             return new LoadingViewHolder(getContext(), view);
         }
         return null;
-
         /*
         LayoutInflater inflater = LayoutInflater.from(context);
 
         // Inflate the custom layout
-        View SmartBBSClientView = inflater.inflate(R.layout.row_smart_client, parent, false);
+        View smartWorkView = inflater.inflate(R.layout.row_smart_work, parent, false);
 
         // Return a new holder instance
-        ViewHolder viewHolder = new ViewHolder(getContext(), smartBBSClientView);
+        ViewHolder viewHolder = new ViewHolder(getContext(), smartWorkView);
         return viewHolder;
         */
     }
@@ -79,48 +72,39 @@ public class SmartBBSClientAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         // Get the data model based on position
-        SmartBBSClient smartBBSClient = mSmartBBSClients.get(position);
+        SmartComment row = mRows.get(position);
 
         // Set item views based on your views and data model
         if (holder instanceof UserViewHolder) {
-            //User user = mUsers.get(position);
             UserViewHolder userViewHolder = (UserViewHolder) holder;
 
-            ImageView ivImage = userViewHolder.image;
-            TextView tvTitle = userViewHolder.title;
+            ImageView ivPhoto = userViewHolder.photo;
+            TextView tvWriter = userViewHolder.writer;
             TextView tvDate = userViewHolder.date;
+            TextView tvContent = userViewHolder.content;
 
             /*
-            Picasso.with(getContext())
-                    .load(smartBBSClient.strImageURL)
-                    .fit() // resize(700,400)
-                    .into(ivImage);
+            if( !mRows.strImageURL.isEmpty() ) {
+                Picasso.with(getContext())
+                        .load(mRows.strImageURL)
+                        .fit() // resize(700,400)
+                        .into(ivImage);
+            }
             */
-            tvTitle.setText(smartBBSClient.strTitle);
-            tvDate.setText(smartBBSClient.datWrite);
+            tvWriter.setText(row.strWriter);
+            tvDate.setText(row.datWrite);
+            tvContent.setText(row.strContent);
 
         } else if (holder instanceof LoadingViewHolder) {
             LoadingViewHolder loadingViewHolder = (LoadingViewHolder) holder;
             loadingViewHolder.progressBar.setIndeterminate(true);
         }
 
-        /*
-        ImageView ivImage = viewHolder.image;
-        TextView tvDate = viewHolder.date;
-        TextView tvWork = viewHolder.work;
-
-        Picasso.with(getContext())
-                .load(smartBBSClient.strImageURL)
-                .fit() // resize(700,400)
-                .into(ivImage);
-        tvDate.setText(smartBBSClient.strDate);
-        tvWork.setText(smartBBSClient.strBuildCode);
-        */
     }
 
     @Override
     public int getItemCount() {
-        return mSmartBBSClients.size();
+        return mRows.size();
     }
 
     public void setLoaded() { isLoading = false; }
@@ -145,24 +129,24 @@ public class SmartBBSClientAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         public LoadingViewHolder(Context context, final View itemView) {
             super(itemView);
             progressBar = (ProgressBar) itemView.findViewById(R.id.progressBar1);
-
             this.context = context;
         }
     }
-
     // 뷰홀더 클래스 ###############################################################################
     public static class UserViewHolder extends RecyclerView.ViewHolder  { // implements View.OnClickListener
 
-        public ImageView image;
-        public TextView title;
-        public TextView date;
         private Context context;
+        public ImageView photo;
+        public TextView writer;
+        public TextView date;
+        public TextView content;
 
         public UserViewHolder(Context context, final View itemView) {
             super(itemView);
-            image = (ImageView) itemView.findViewById(R.id.r_sbc_btn_image);
-            title = (TextView) itemView.findViewById(R.id.r_sbc_title);
-            date = (TextView) itemView.findViewById(R.id.r_sbc_date);
+            photo = (ImageView) itemView.findViewById(R.id.r_client_view_comment_photo);
+            writer = (TextView) itemView.findViewById(R.id.r_client_view_comment_writer);
+            date = (TextView) itemView.findViewById(R.id.r_client_view_comment_date);
+            content = (TextView) itemView.findViewById(R.id.r_client_view_comment_content);
 
             this.context = context;
 
@@ -176,7 +160,6 @@ public class SmartBBSClientAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             });
             /***************************************************************************/
         }
-
     }
 
 }

@@ -4,10 +4,14 @@ import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.Html.ImageGetter;
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import org.sufficientlysecure.htmltextview.HtmlTextView;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,29 +19,31 @@ import java.lang.ref.WeakReference;
 import java.net.URI;
 import java.net.URL;
 
-public class HtmlRemoteImageGetter implements ImageGetter {
+public class HtmlRemoteImageGetterLee implements ImageGetter {
     TextView container;
     URI baseUri;
     boolean matchParentWidth;
+    public static int width;
 
-    public HtmlRemoteImageGetter(TextView textView) {
+    public HtmlRemoteImageGetterLee(TextView textView) {
         this.container = textView;
         this.matchParentWidth = false;
     }
 
-    public HtmlRemoteImageGetter(TextView textView, String baseUrl) {
+    public HtmlRemoteImageGetterLee(TextView textView, String baseUrl) {
         this.container = textView;
         if (baseUrl != null) {
             this.baseUri = URI.create(baseUrl);
         }
     }
 
-    public HtmlRemoteImageGetter(TextView textView, String baseUrl, boolean matchParentWidth) {
+    public HtmlRemoteImageGetterLee(TextView textView, String baseUrl, boolean matchParentWidth, int width) {
         this.container = textView;
         this.matchParentWidth = matchParentWidth;
         if (baseUrl != null) {
             this.baseUri = URI.create(baseUrl);
         }
+        this.width = width;
     }
 
     public Drawable getDrawable(String source) {
@@ -54,20 +60,20 @@ public class HtmlRemoteImageGetter implements ImageGetter {
 
     /**
      * Static inner {@link AsyncTask} that keeps a {@link WeakReference} to the {@link UrlDrawable}
-     * and {@link HtmlRemoteImageGetter}.
+     * and {@link HtmlRemoteImageGetterLee}.
      * <p/>
      * This way, if the AsyncTask has a longer life span than the UrlDrawable,
      * we won't leak the UrlDrawable or the HtmlRemoteImageGetter.
      */
     private static class ImageGetterAsyncTask extends AsyncTask<String, Void, Drawable> {
         private final WeakReference<UrlDrawable> drawableReference;
-        private final WeakReference<HtmlRemoteImageGetter> imageGetterReference;
+        private final WeakReference<HtmlRemoteImageGetterLee> imageGetterReference;
         private final WeakReference<View> containerReference;
         private String source;
         private boolean matchParentWidth;
         private float scale;
 
-        public ImageGetterAsyncTask(UrlDrawable d, HtmlRemoteImageGetter imageGetter, View container, boolean matchParentWidth) {
+        public ImageGetterAsyncTask(UrlDrawable d, HtmlRemoteImageGetterLee imageGetter, View container, boolean matchParentWidth) {
             this.drawableReference = new WeakReference<>(d);
             this.imageGetterReference = new WeakReference<>(imageGetter);
             this.containerReference = new WeakReference<>(container);
@@ -83,7 +89,7 @@ public class HtmlRemoteImageGetter implements ImageGetter {
         @Override
         protected void onPostExecute(Drawable result) {
             if (result == null) {
-                //Log.w(HtmlTextView.TAG, "Drawable result is null! (source: " + source + ")");
+                Log.w(HtmlTextView.TAG, "Drawable result is null! (source: " + source + ")");
                 return;
             }
             final UrlDrawable urlDrawable = drawableReference.get();
@@ -96,7 +102,7 @@ public class HtmlRemoteImageGetter implements ImageGetter {
             // change the reference of the current drawable to the result from the HTTP call
             urlDrawable.drawable = result;
 
-            final HtmlRemoteImageGetter imageGetter = imageGetterReference.get();
+            final HtmlRemoteImageGetterLee imageGetter = imageGetterReference.get();
             if (imageGetter == null) {
                 return;
             }
@@ -128,12 +134,14 @@ public class HtmlRemoteImageGetter implements ImageGetter {
             }
             float maxWidth = container.getWidth();
             float originalDrawableWidth = drawable.getIntrinsicWidth();
-            return maxWidth / originalDrawableWidth;
+            Log.d("Getter", "width : " + width + " / maxWidth : " + maxWidth);
+            //return maxWidth / originalDrawableWidth;
+            return (float) ((width * 0.96) / originalDrawableWidth);
         }
 
         private InputStream fetch(String urlString) throws IOException {
             URL url;
-            final HtmlRemoteImageGetter imageGetter = imageGetterReference.get();
+            final HtmlRemoteImageGetterLee imageGetter = imageGetterReference.get();
             if (imageGetter == null) {
                 return null;
             }

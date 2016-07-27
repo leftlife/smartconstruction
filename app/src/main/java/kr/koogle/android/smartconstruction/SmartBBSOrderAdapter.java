@@ -10,8 +10,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,7 +56,7 @@ public class SmartBBSOrderAdapter extends RecyclerView.Adapter<RecyclerView.View
         Context context = parent.getContext();
 
         if (viewType == VIEW_TYPE_ITEM) {
-            View view = LayoutInflater.from(context).inflate(R.layout.row_smart_bbs_order, parent, false);
+            View view = LayoutInflater.from(context).inflate(R.layout.row_smart_order, parent, false);
             return new UserViewHolder(getContext(), view);
         } else if (viewType == VIEW_TYPE_LOADING) {
             View view = LayoutInflater.from(context).inflate(R.layout.layout_loading_item, parent, false);
@@ -70,7 +68,7 @@ public class SmartBBSOrderAdapter extends RecyclerView.Adapter<RecyclerView.View
         LayoutInflater inflater = LayoutInflater.from(context);
 
         // Inflate the custom layout
-        View SmartBBSOrderView = inflater.inflate(R.layout.row_smart_bbs_client, parent, false);
+        View SmartBBSOrderView = inflater.inflate(R.layout.row_smart_client, parent, false);
 
         // Return a new holder instance
         ViewHolder viewHolder = new ViewHolder(getContext(), smartBBSOrderView);
