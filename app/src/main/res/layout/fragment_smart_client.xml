@@ -6,7 +6,7 @@
     android:background="?android:attr/selectableItemBackground" >
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/rvSmartBBSClients"
+        android:id="@+id/rv_smart_clients"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

@@ -206,12 +206,13 @@ public class SmartBuildFragment extends Fragment {
             @Override
             public void onResponse(Call<ArrayList<SmartBuild>> call, Response<ArrayList<SmartBuild>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    final ArrayList<SmartBuild> responseSmartBuilds = response.body();
+                    final ArrayList<SmartBuild> responses = response.body();
 
-                    SmartSingleton.arrSmartBuilds.addAll(responseSmartBuilds);
+                    SmartSingleton.arrSmartBuilds.addAll(responses);
                     // 최근 카운트 체크
-                    int curSize = adapter.getItemCount();
-                    adapter.notifyItemRangeInserted(curSize, responseSmartBuilds.size());
+                    int curSize = SmartSingleton.arrSmartBuilds.size();
+                    adapter.notifyItemRangeInserted(curSize, responses.size());
+                    //adapter.notifyDataSetChanged();
 
                     if(SmartSingleton.arrSmartBuilds.isEmpty()) {
                         viewEmpty = mInflater.inflate(R.layout.row_empty, null);

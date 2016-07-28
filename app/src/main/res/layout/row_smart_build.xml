@@ -26,7 +26,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="220dp"
                 android:id="@+id/r_sb_image"
-                android:background="#dddddd"
+                android:background="@drawable/bak_photo_build"
                 android:src="@drawable/img_no_image" />
 
             <TextView

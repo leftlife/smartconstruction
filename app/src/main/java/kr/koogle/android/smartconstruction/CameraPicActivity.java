@@ -173,7 +173,7 @@ public class CameraPicActivity extends AppCompatActivity implements TimePickerDi
             testRoot=new File(getExternalFilesDir(null), filename);
 
             String baseDir = testRoot.getAbsolutePath();
-            Toast.makeText(this, baseDir, Toast.LENGTH_LONG).show();
+            //Toast.makeText(this, baseDir, Toast.LENGTH_LONG).show();
         }
         else {
 
@@ -274,9 +274,12 @@ public class CameraPicActivity extends AppCompatActivity implements TimePickerDi
 
             }
         });
+
         // 초기값 설정
-        strBuildCode = SmartSingleton.arrSmartBuilds.get(0).strCode;
-        inputBuildName.setText(SmartSingleton.arrSmartBuilds.get(0).strName);
+        if( !SmartSingleton.arrSmartBuilds.isEmpty() ) {
+            strBuildCode = SmartSingleton.arrSmartBuilds.get(0).strCode;
+            inputBuildName.setText(SmartSingleton.arrSmartBuilds.get(0).strName);
+        }
 
         inputBuildKind.setInputType(0);
         inputBuildKind.setOnClickListener(new View.OnClickListener() {
@@ -390,10 +393,8 @@ public class CameraPicActivity extends AppCompatActivity implements TimePickerDi
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-
             // 프로그래스 실행 !!
             showIndeterminateProgressDialog(true);
-
             return true;
         }
 
@@ -432,26 +433,29 @@ public class CameraPicActivity extends AppCompatActivity implements TimePickerDi
         switch(requestCode) {
             case REQUEST_PORTRAIT_RFC:
 
-                //Toast.makeText(this, data.getDataString(), Toast.LENGTH_LONG).show();
-                //String fileName = data.getDataString();
+                if( data != null) {
+                    //Toast.makeText(this, data.getDataString(), Toast.LENGTH_LONG).show();
+                    //String fileName = data.getDataString();
 
-                //txtContent = (TextView) findViewById(R.id.txt_content);
-                //txtContent.setText(fileName);
+                    //txtContent = (TextView) findViewById(R.id.txt_content);
+                    //txtContent.setText(fileName);
 
-                imgContent = (ImageView) findViewById(R.id.img_picture);
-                //imgContent.setImageURI(Uri.fromFile(new File(fileName)));
+                    imgContent = (ImageView) findViewById(R.id.img_picture);
+                    //imgContent.setImageURI(Uri.fromFile(new File(fileName)));
 
-                fileURI = data.getData();
-                try {
-                    myBitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), fileURI);
-                    imgContent.setImageBitmap(myBitmap);
+                    fileURI = data.getData();
+                    try {
+                        myBitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), fileURI);
+                        final Bitmap bm = Bitmap.createScaledBitmap(myBitmap, 600, 400, true);
+                        imgContent.setImageBitmap(myBitmap);
 
-                    testFileName = "sc_app.jpg"; // + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".jpg"; // 서버에서 이름 자동변경됨 !!
-                    createThumbnail(myBitmap, testRoot.getPath(), testFileName);
-                } catch (IOException e) {
-                    e.printStackTrace();
+                        testFileName = "sc_app.jpg"; // + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".jpg"; // 서버에서 이름 자동변경됨 !!
+                        createThumbnail(myBitmap, testRoot.getPath(), testFileName);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    //imgContent.setImageBitmap(myBitmap);
                 }
-                //imgContent.setImageBitmap(myBitmap);
 
         }
     }
@@ -639,7 +643,7 @@ public class CameraPicActivity extends AppCompatActivity implements TimePickerDi
         File file = new File(strFilePath);
         if (!file.exists()) {
             file.mkdirs();
-            Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show();
         }
 
         File fileCacheItem = new File(strFilePath + "/" + filename);

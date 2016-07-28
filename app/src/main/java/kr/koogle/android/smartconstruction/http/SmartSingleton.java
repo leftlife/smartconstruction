@@ -11,8 +11,8 @@ public class SmartSingleton {
 
     public static ArrayList<SmartBuild> arrSmartBuilds;
     public static ArrayList<SmartWork> arrSmartWorks;
-    public static ArrayList<SmartBBSClient> arrSmartBBSClients;
-    public static ArrayList<SmartBBSOrder> arrSmartBBSOrders;
+    public static ArrayList<SmartClient> arrSmartClients;
+    public static ArrayList<SmartOrder> arrSmartOrders;
     public static ArrayList<SmartPhoto> arrSmartPhotos;
     public static ArrayList<SmartEmployee> arrSmartEmployees;
 
@@ -29,8 +29,8 @@ public class SmartSingleton {
 
                     arrSmartBuilds = new ArrayList<SmartBuild>();
                     arrSmartWorks = new ArrayList<SmartWork>();
-                    arrSmartBBSClients = new ArrayList<SmartBBSClient>();
-                    arrSmartBBSOrders = new ArrayList<SmartBBSOrder>();
+                    arrSmartClients = new ArrayList<SmartClient>();
+                    arrSmartOrders = new ArrayList<SmartOrder>();
                     arrSmartPhotos = new ArrayList<SmartPhoto>();
                     arrSmartEmployees = new ArrayList<SmartEmployee>();
 

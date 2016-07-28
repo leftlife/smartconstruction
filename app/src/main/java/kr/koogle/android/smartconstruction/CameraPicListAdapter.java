@@ -1,7 +1,6 @@
 package kr.koogle.android.smartconstruction;
 
 import android.content.Context;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,14 +12,12 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import kr.koogle.android.smartconstruction.http.SmartSingleton;
-import kr.koogle.android.smartconstruction.http.SmartWork;
+import kr.koogle.android.smartconstruction.http.SmartPhoto;
 import kr.koogle.android.smartconstruction.util.OnLoadMoreListener;
 
-public class SmartWorkAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private static final String TAG = "SmartWorkAdapter";
+public class CameraPicListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    private static final String TAG = "CameraPicListAdapter";
     private final int VIEW_TYPE_ITEM = 0;
     private final int VIEW_TYPE_LOADING = 1;
     private OnLoadMoreListener mOnLoadMoreListener;
@@ -29,25 +26,34 @@ public class SmartWorkAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     private int lastVisibleItem, totalItemCount;
 
     private Context mContext;
-    private static ArrayList<SmartWork> mRows;
-    private List<SmartWork> mUsers = SmartSingleton.arrSmartWorks;
-
+    private ArrayList<SmartPhoto> mRows;
     private Context getContext() {
         return mContext;
     }
 
-    public SmartWorkAdapter(Context context, ArrayList<SmartWork> smartWorks) {
+    public CameraPicListAdapter(Context context, ArrayList<SmartPhoto> arrRows) {
         mContext = context;
-        mRows = smartWorks;
+        mRows = arrRows;
     }
 
     public void setmOnLoadMoreListener(OnLoadMoreListener mOnLoadMoreListener) {
         this.mOnLoadMoreListener = mOnLoadMoreListener;
     }
 
+    public void add(SmartPhoto item, int position) {
+        mRows.add(position, item);
+        notifyItemInserted(position);
+    }
+
+    public void remove(SmartPhoto item) {
+        int position = mRows.indexOf(item);
+        mRows.remove(position);
+        notifyItemRemoved(position);
+    }
+
     @Override
     public int getItemViewType(int position) {
-        return mUsers.get(position) == null ? VIEW_TYPE_LOADING : VIEW_TYPE_ITEM;
+        return mRows.get(position) == null ? VIEW_TYPE_LOADING : VIEW_TYPE_ITEM;
     }
 
     @Override
@@ -55,14 +61,14 @@ public class SmartWorkAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         Context context = parent.getContext();
 
         if (viewType == VIEW_TYPE_ITEM) {
-            View view = LayoutInflater.from(context).inflate(R.layout.row_smart_work, parent, false);
+            // 리스트 목록 디자인 설정
+            View view = LayoutInflater.from(context).inflate(R.layout.row_camera_pic_list, parent, false);
             return new UserViewHolder(getContext(), view);
         } else if (viewType == VIEW_TYPE_LOADING) {
             View view = LayoutInflater.from(context).inflate(R.layout.row_loading_item, parent, false);
             return new LoadingViewHolder(getContext(), view);
         }
         return null;
-
         /*
         LayoutInflater inflater = LayoutInflater.from(context);
 
@@ -78,43 +84,34 @@ public class SmartWorkAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         // Get the data model based on position
-        SmartWork smartWork = mRows.get(position);
+        SmartPhoto row = mRows.get(position);
 
         // Set item views based on your views and data model
         if (holder instanceof UserViewHolder) {
-            //User user = mUsers.get(position);
             UserViewHolder userViewHolder = (UserViewHolder) holder;
 
-            ImageView ivImage = userViewHolder.image;
+            ImageView ivPhoto = userViewHolder.picPhoto;
+            TextView tvBuildName = userViewHolder.buildName;
+            TextView tvLaborName = userViewHolder.laborName;
+            TextView tvContent = userViewHolder.content;
             TextView tvDate = userViewHolder.date;
-            TextView tvWork = userViewHolder.work;
 
-            if( !smartWork.strImageURL.isEmpty() ) {
+            if ( !row.strName.isEmpty() ) {
                 Picasso.with(getContext())
-                        .load(smartWork.strImageURL)
+                        .load(row.strURL + row.strThumbnail)
                         .fit() // resize(700,400)
-                        .into(ivImage);
+                        .into(ivPhoto);
             }
-            tvDate.setText(smartWork.strDate);
-            tvWork.setText(smartWork.strBuildCode);
+            tvBuildName.setText(row.strBuildName);
+            tvLaborName.setText(row.strLavorCode);
+            tvContent.setText(row.strMemo);
+            tvDate.setText(row.datRegist);
 
         } else if (holder instanceof LoadingViewHolder) {
             LoadingViewHolder loadingViewHolder = (LoadingViewHolder) holder;
             loadingViewHolder.progressBar.setIndeterminate(true);
         }
 
-        /*
-        ImageView ivImage = viewHolder.image;
-        TextView tvDate = viewHolder.date;
-        TextView tvWork = viewHolder.work;
-
-        Picasso.with(getContext())
-                .load(smartWork.strImageURL)
-                .fit() // resize(700,400)
-                .into(ivImage);
-        tvDate.setText(smartWork.strDate);
-        tvWork.setText(smartWork.strBuildCode);
-        */
     }
 
     @Override
@@ -144,24 +141,26 @@ public class SmartWorkAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         public LoadingViewHolder(Context context, final View itemView) {
             super(itemView);
             progressBar = (ProgressBar) itemView.findViewById(R.id.progressBar1);
-
             this.context = context;
         }
     }
-
     // 뷰홀더 클래스 ###############################################################################
     public static class UserViewHolder extends RecyclerView.ViewHolder  { // implements View.OnClickListener
 
-        public ImageView image;
-        public TextView date;
-        public TextView work;
         private Context context;
+        public ImageView picPhoto;
+        public TextView buildName;
+        public TextView laborName;
+        public TextView content;
+        public TextView date;
 
         public UserViewHolder(Context context, final View itemView) {
             super(itemView);
-            image = (ImageView) itemView.findViewById(R.id.r_sw_image);
-            date = (TextView) itemView.findViewById(R.id.r_sw_date);
-            work = (TextView) itemView.findViewById(R.id.r_sw_work);
+            picPhoto = (ImageView) itemView.findViewById(R.id.r_camera_pic_photo);
+            buildName = (TextView) itemView.findViewById(R.id.r_camera_pic_build_name);
+            laborName = (TextView) itemView.findViewById(R.id.r_camera_pic_labor_name);
+            content = (TextView) itemView.findViewById(R.id.r_camera_pic_content);
+            date = (TextView) itemView.findViewById(R.id.r_camera_pic_date);
 
             this.context = context;
 
@@ -175,7 +174,6 @@ public class SmartWorkAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             });
             /***************************************************************************/
         }
-
     }
 
 }

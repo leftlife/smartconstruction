@@ -32,20 +32,20 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <ScrollView
+
+    <kr.koogle.android.smartconstruction.util.EndlessScrollView
+        android:id="@+id/sv_client_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/sv_client_view"
         android:background="#dddddd"
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:fitsSystemWindows="true">
 
-
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
             <LinearLayout
                 android:orientation="horizontal"
@@ -177,7 +177,7 @@
             </RelativeLayout>
 
             <android.support.v7.widget.RecyclerView
-                android:id="@+id/rvClientViewComments"
+                android:id="@+id/rv_client_view_comments"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:scrollbars="vertical"/>
@@ -185,21 +185,36 @@
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:background="#ffffff"
                 android:layout_marginTop="3dp">
 
-                <EditText
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:id="@+id/input_client_view_comment"
-                    android:textSize="16dp"
                     android:layout_weight="10"
                     android:layout_marginLeft="20dp"
-                    android:layout_marginBottom="8dp"
                     android:layout_marginTop="8dp"
-                    android:hint="답변을 입력하세요." />
+                    android:layout_marginBottom="8dp">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="160dp"
+                        android:id="@+id/input_client_view_comment_photo"
+                        android:visibility="gone"
+                        android:scaleType="centerCrop" />
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:id="@+id/input_client_view_comment"
+                        android:textSize="16dp"
+                        android:hint="답변을 입력하세요."
+                        android:layout_marginBottom="5dp" />
+
+                </LinearLayout>
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -224,6 +239,6 @@
 
             </LinearLayout>
         </LinearLayout>
-    </ScrollView>
+    </kr.koogle.android.smartconstruction.util.EndlessScrollView>
 
 </LinearLayout>

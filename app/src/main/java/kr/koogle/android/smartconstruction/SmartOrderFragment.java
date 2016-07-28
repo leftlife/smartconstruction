@@ -22,7 +22,7 @@ import java.util.Map;
 
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 import kr.koogle.android.smartconstruction.http.ServiceGenerator;
-import kr.koogle.android.smartconstruction.http.SmartBBSClient;
+import kr.koogle.android.smartconstruction.http.SmartOrder;
 import kr.koogle.android.smartconstruction.http.SmartService;
 import kr.koogle.android.smartconstruction.http.SmartSingleton;
 import kr.koogle.android.smartconstruction.util.OnLoadMoreListener;
@@ -31,13 +31,13 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class SmartBBSClientFragment extends Fragment {
+public class SmartOrderFragment extends Fragment {
 
-    private static final String TAG = "SmartBBSClientFragment";
+    private static final String TAG = "SmartOrderFragment";
     private RbPreference pref;
 
-    public static RecyclerView rvSmartBBSClients;
-    private SmartBBSClientAdapter adapter;
+    public static RecyclerView recyclerView;
+    private SmartOrderAdapter adapter;
 
     private static String strBuildCode = "start";
     private static Boolean isNewBuild = false;
@@ -54,7 +54,7 @@ public class SmartBBSClientFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.fragment_smart_bbs_client, container, false);
+        rootView = inflater.inflate(R.layout.fragment_smart_order, container, false);
         mInflater = inflater; //getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         // SmartSingleton 생성 !!
@@ -63,26 +63,23 @@ public class SmartBBSClientFragment extends Fragment {
         pref = new RbPreference(getContext());
 
         // RecyclerView 저장
-        rvSmartBBSClients = (RecyclerView) rootView.findViewById(R.id.rvSmartBBSClients);
+        recyclerView = (RecyclerView) rootView.findViewById(R.id.rv_smart_orders);
         // LayoutManager 저장
         layoutManager = new LinearLayoutManager(getActivity());
         // RecycleView에 LayoutManager 세팅
-        rvSmartBBSClients.setLayoutManager(layoutManager);
-
-        // Lookup the recyclerview in activity layout
-        RecyclerView rvSmartBBSClients = (RecyclerView) rootView.findViewById(R.id.rvSmartBBSClients);
+        recyclerView.setLayoutManager(layoutManager);
 
         // Adapter 생성
-        adapter = new SmartBBSClientAdapter(getContext(), SmartSingleton.arrSmartBBSClients);
+        adapter = new SmartOrderAdapter(getContext(), SmartSingleton.arrSmartOrders);
 
-        if(isNewBuild || SmartSingleton.arrSmartBBSClients.isEmpty()) {
+        if(isNewBuild || SmartSingleton.arrSmartOrders.isEmpty()) {
             /******************************************************************************************/
             addItems();
             /******************************************************************************************/
         }
 
         // RecycleView 에 Adapter 세팅
-        rvSmartBBSClients.setAdapter(adapter);
+        recyclerView.setAdapter(adapter);
 
         /***************************************************************************/
         adapter.setmOnLoadMoreListener(new OnLoadMoreListener() {
@@ -116,30 +113,34 @@ public class SmartBBSClientFragment extends Fragment {
         final LinearLayout empLayout = (LinearLayout) rootView.findViewById(R.id.emp_layout);
 
         // 리스트 표현하기 !!
-        if (SmartSingleton.arrSmartBBSClients.isEmpty()) {
+        if (SmartSingleton.arrSmartBuilds.isEmpty()) {
             //empLayout.setVisibility(View.VISIBLE);
         } else {
             //empLayout.setVisibility(View.GONE);
-            rvSmartBBSClients.setItemAnimator(new SlideInUpAnimator());
+            recyclerView.setItemAnimator(new SlideInUpAnimator());
         }
         /***************************************************************************/
-        // 리스트 클릭시 상세 페이지 보기 !!
-        adapter.setOnItemClickListener(new SmartBBSClientAdapter.OnItemClickListener() {
+        adapter.setOnItemClickListener(new SmartOrderAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
+
+                final String strCode = SmartSingleton.arrSmartOrders.get(position).strSiteId;
+                final String strDate = SmartSingleton.arrSmartOrders.get(position).datWrite;
+                final String strImageUrl = SmartSingleton.arrSmartOrders.get(position).strContent;
                 adapter.notifyItemChanged(position);
 
                 Intent intentWorkView = new Intent(getActivity(), SmartClientViewActivity.class);
-                final int intId = SmartSingleton.arrSmartBBSClients.get(position).intId;
-                intentWorkView.putExtra("intId", intId);
+                intentWorkView.putExtra("strBuildCode", strCode);
+                intentWorkView.putExtra("strBuildDate", strDate);
+                intentWorkView.putExtra("strImageUrl", strImageUrl);
                 startActivityForResult(intentWorkView, 1002);
-                Toast.makeText(getContext(), "intId : " + intId, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "strBuildCode : " + strCode, Toast.LENGTH_SHORT).show();
             }
         });
         /***************************************************************************/
 
         // Handling Touch Events
-        rvSmartBBSClients.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
+        recyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
             @Override
             public void onTouchEvent(RecyclerView rv, MotionEvent e) {
                 // Handle on touch events here
@@ -158,7 +159,7 @@ public class SmartBBSClientFragment extends Fragment {
         });
 
         /* 가장 쉽게 클릭 이벤츠 핸들러 만들기
-        ItemClickSupport.addTo(rvSmartBBSClients).setOnItemClickListener(
+        ItemClickSupport.addTo(rvSmartBuilds).setOnItemClickListener(
                 new ItemClickSupport.OnItemClickListener() {
                     @Override
                     public void onItemClicked(RecyclerView recyclerView, int position, View v) {
@@ -170,7 +171,7 @@ public class SmartBBSClientFragment extends Fragment {
          */
 
         // 스크롤시 FAB 버튼 숨기기 !!
-        rvSmartBBSClients.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             final FloatingActionButton fab = MainActivity.fab;
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx,int dy){
@@ -204,50 +205,50 @@ public class SmartBBSClientFragment extends Fragment {
 
     private void addItems() {
         /******************************************************************************************/
-        // SmartBBSClient 값 불러오기 (진행중인 현장)
-        Log.d(TAG, "SmartService.getSmartBBSClients 실행!! / pref_access_token : " + pref.getValue("pref_access_token", ""));
+        // SmartBuild 값 불러오기 (진행중인 현장)
+        Log.d(TAG, "SmartService.getSmartBBSOrders 실행!! / pref_access_token : " + pref.getValue("pref_access_token", ""));
         SmartService smartService = ServiceGenerator.createService(SmartService.class, pref.getValue("pref_access_token", ""));
         final Map<String, String> mapOptions = new HashMap<String, String>();
         mapOptions.put("offset", String.valueOf(layoutManager.getItemCount()));
 
-        Log.d(TAG, "getSmartBBSClient START !!!");
-        Call<ArrayList<SmartBBSClient>> call = smartService.getSmartBBSClients();
-        Log.d(TAG, "getSmartBBSClient END !!!");
+        Log.d(TAG, "getSmartBBSOrder START !!!");
+        Call<ArrayList<SmartOrder>> call = smartService.getSmartBBSOrders();
+        Log.d(TAG, "getSmartBBSOrder END !!!");
 
-        call.enqueue(new Callback<ArrayList<SmartBBSClient>>() {
+        call.enqueue(new Callback<ArrayList<SmartOrder>>() {
             @Override
-            public void onResponse(Call<ArrayList<SmartBBSClient>> call, Response<ArrayList<SmartBBSClient>> response) {
+            public void onResponse(Call<ArrayList<SmartOrder>> call, Response<ArrayList<SmartOrder>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    final ArrayList<SmartBBSClient> responseSmartBBSClients = response.body();
+                    final ArrayList<SmartOrder> responseSmartOrders = response.body();
 
-                    if(responseSmartBBSClients.size() != 0) {
-                        Log.d(TAG, "responseSmartBBSClients : size " + responseSmartBBSClients.size());
-                        SmartSingleton.arrSmartBBSClients.addAll(responseSmartBBSClients);
+                    if(responseSmartOrders.size() != 0) {
+                        Log.d(TAG, "responseSmartOrders : size " + responseSmartOrders.size());
+                        SmartSingleton.arrSmartOrders.addAll(responseSmartOrders);
                         // 최근 카운트 체크
                         int curSize = adapter.getItemCount();
-                        adapter.notifyItemRangeInserted(curSize, responseSmartBBSClients.size());
+                        adapter.notifyItemRangeInserted(curSize, responseSmartOrders.size());
                     } else {
-                        if(SmartSingleton.arrSmartBBSClients.isEmpty()) {
+                        if(SmartSingleton.arrSmartOrders.isEmpty()) {
                             viewEmpty = mInflater.inflate(R.layout.row_empty, null);
                             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.MATCH_PARENT);
                             viewEmpty.setLayoutParams(params);
-                            RelativeLayout rmSmartBBSOrder = (RelativeLayout) rootView.findViewById(R.id.fm_smart_bbs_client);
-                            rmSmartBBSOrder.addView(viewEmpty);
+                            RelativeLayout rmSmartBBSClient = (RelativeLayout) rootView.findViewById(R.id.fm_smart_bbs_order);
+                            rmSmartBBSClient.addView(viewEmpty);
                         } else {
-                            RelativeLayout rmSmartBBSOrder = (RelativeLayout) rootView.findViewById(R.id.fm_smart_bbs_client);
-                            rmSmartBBSOrder.removeView(viewEmpty);
+                            RelativeLayout rmSmartBBSClient = (RelativeLayout) rootView.findViewById(R.id.fm_smart_bbs_order);
+                            rmSmartBBSClient.removeView(viewEmpty);
                         }
 
-                        Snackbar.make(SmartBBSClientFragment.rvSmartBBSClients, "마지막 리스트 입니다.", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                        Snackbar.make(SmartOrderFragment.recyclerView, "마지막 리스트 입니다.", Snackbar.LENGTH_LONG).setAction("Action", null).show();
                     }
                 } else {
                     Toast.makeText(getContext(), "데이터가 정확하지 않습니다.", Toast.LENGTH_SHORT).show();
-                    Log.d(TAG, "responseSmartBBSClients : 데이터가 정확하지 않습니다.");
+                    Log.d(TAG, "responseSmartBBSOrders : 데이터가 정확하지 않습니다.");
                 }
             }
 
             @Override
-            public void onFailure(Call<ArrayList<SmartBBSClient>> call, Throwable t) {
+            public void onFailure(Call<ArrayList<SmartOrder>> call, Throwable t) {
                 Toast.makeText(getContext(), "네트워크 상태가 좋지 않습니다!!!", Toast.LENGTH_SHORT).show();
                 Log.d("Error", t.getMessage());
             }

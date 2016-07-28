@@ -1,7 +1,6 @@
 package kr.koogle.android.smartconstruction;
 
 import android.content.Context;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,12 +12,12 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import kr.koogle.android.smartconstruction.http.SmartBBSOrder;
+import kr.koogle.android.smartconstruction.http.SmartClient;
 import kr.koogle.android.smartconstruction.http.SmartSingleton;
 import kr.koogle.android.smartconstruction.util.OnLoadMoreListener;
 
-public class SmartBBSOrderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private static final String TAG = "SmartBBSOrderAdapter";
+public class SmartClientAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    private static final String TAG = "SmartClientAdapter";
     private final int VIEW_TYPE_ITEM = 0;
     private final int VIEW_TYPE_LOADING = 1;
     private OnLoadMoreListener mOnLoadMoreListener;
@@ -26,20 +25,17 @@ public class SmartBBSOrderAdapter extends RecyclerView.Adapter<RecyclerView.View
     private int visibleThreshold = 10;
     private int lastVisibleItem, totalItemCount;
 
-    private static ArrayList<SmartBBSOrder> mSmartBBSOrders;
     private Context mContext;
-    private List<SmartBBSOrder> mUsers = SmartSingleton.arrSmartBBSOrders;
+    private static ArrayList<SmartClient> mRows;
+    private List<SmartClient> mUsers = SmartSingleton.arrSmartClients;
 
     private Context getContext() {
         return mContext;
     }
 
-    public SmartBBSOrderAdapter(Context context, ArrayList<SmartBBSOrder> smartBBSOrders) {
+    public SmartClientAdapter(Context context, ArrayList<SmartClient> smartClients) {
         mContext = context;
-        mSmartBBSOrders = smartBBSOrders;
-
-        final LinearLayoutManager linearLayoutManager = (LinearLayoutManager) SmartBBSOrderFragment.rvSmartBBSOrders.getLayoutManager();
-
+        mRows = smartClients;
     }
 
     public void setmOnLoadMoreListener(OnLoadMoreListener mOnLoadMoreListener) {
@@ -56,30 +52,19 @@ public class SmartBBSOrderAdapter extends RecyclerView.Adapter<RecyclerView.View
         Context context = parent.getContext();
 
         if (viewType == VIEW_TYPE_ITEM) {
-            View view = LayoutInflater.from(context).inflate(R.layout.row_smart_order, parent, false);
+            View view = LayoutInflater.from(context).inflate(R.layout.row_smart_client, parent, false);
             return new UserViewHolder(getContext(), view);
         } else if (viewType == VIEW_TYPE_LOADING) {
-            View view = LayoutInflater.from(context).inflate(R.layout.layout_loading_item, parent, false);
+            View view = LayoutInflater.from(context).inflate(R.layout.row_loading_item, parent, false);
             return new LoadingViewHolder(getContext(), view);
         }
         return null;
-
-        /*
-        LayoutInflater inflater = LayoutInflater.from(context);
-
-        // Inflate the custom layout
-        View SmartBBSOrderView = inflater.inflate(R.layout.row_smart_client, parent, false);
-
-        // Return a new holder instance
-        ViewHolder viewHolder = new ViewHolder(getContext(), smartBBSOrderView);
-        return viewHolder;
-        */
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         // Get the data model based on position
-        SmartBBSOrder smartBBSOrder = mSmartBBSOrders.get(position);
+        SmartClient smartClient = mRows.get(position);
 
         // Set item views based on your views and data model
         if (holder instanceof UserViewHolder) {
@@ -92,12 +77,12 @@ public class SmartBBSOrderAdapter extends RecyclerView.Adapter<RecyclerView.View
 
             /*
             Picasso.with(getContext())
-                    .load(smartBBSClient.strImageURL)
+                    .load(smartClient.strImageURL)
                     .fit() // resize(700,400)
                     .into(ivImage);
             */
-            tvTitle.setText(smartBBSOrder.strContent);
-            tvDate.setText(smartBBSOrder.datWrite);
+            tvTitle.setText(smartClient.strTitle);
+            tvDate.setText(smartClient.datWrite);
 
         } else if (holder instanceof LoadingViewHolder) {
             LoadingViewHolder loadingViewHolder = (LoadingViewHolder) holder;
@@ -110,17 +95,17 @@ public class SmartBBSOrderAdapter extends RecyclerView.Adapter<RecyclerView.View
         TextView tvWork = viewHolder.work;
 
         Picasso.with(getContext())
-                .load(smartBBSOrder.strImageURL)
+                .load(smartClient.strImageURL)
                 .fit() // resize(700,400)
                 .into(ivImage);
-        tvDate.setText(smartBBSOrder.strDate);
-        tvWork.setText(smartBBSOrder.strBuildCode);
+        tvDate.setText(smartClient.strDate);
+        tvWork.setText(smartClient.strBuildCode);
         */
     }
 
     @Override
     public int getItemCount() {
-        return mSmartBBSOrders.size();
+        return mRows.size();
     }
 
     public void setLoaded() { isLoading = false; }
@@ -155,7 +140,6 @@ public class SmartBBSOrderAdapter extends RecyclerView.Adapter<RecyclerView.View
 
         public ImageView image;
         public TextView title;
-        public TextView content;
         public TextView date;
         private Context context;
 
@@ -177,7 +161,6 @@ public class SmartBBSOrderAdapter extends RecyclerView.Adapter<RecyclerView.View
             });
             /***************************************************************************/
         }
-
     }
 
 }

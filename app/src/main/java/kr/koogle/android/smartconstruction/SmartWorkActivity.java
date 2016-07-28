@@ -40,7 +40,7 @@ public class SmartWorkActivity extends AppCompatActivity {
     private static final String TAG = "SmartWorkActivity";
     private RbPreference pref;
 
-    public static RecyclerView rvSmartWorks;
+    public static RecyclerView recyclerView;
     private SmartWorkAdapter adapter;
 
     private static String strBuildCode = "start";
@@ -56,17 +56,18 @@ public class SmartWorkActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_work);
+
         // SmartSingleton 생성 !!
         SmartSingleton.getInstance();
         // Settings 값 !!
         pref = new RbPreference(this);
 
         // RecyclerView 저장
-        rvSmartWorks = (RecyclerView) findViewById(R.id.rvSmartWorks);
+        recyclerView = (RecyclerView) findViewById(R.id.rvSmartWorks);
         // LayoutManager 저장
         layoutManager = new LinearLayoutManager(SmartWorkActivity.this);
         // RecycleView에 LayoutManager 세팅
-        rvSmartWorks.setLayoutManager(layoutManager);
+        recyclerView.setLayoutManager(layoutManager);
 
         // 툴바 세팅
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_work);
@@ -75,7 +76,7 @@ public class SmartWorkActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         // 스크롤 이벤트 잡아내기 !!
-        final NestedScrollView parentScrollView=(NestedScrollView)findViewById (R.id.nested_scroll_view_work);
+        final NestedScrollView parentScrollView=(NestedScrollView)findViewById (R.id.nsv_smart_work);
         parentScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
             @Override
             public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
@@ -88,7 +89,7 @@ public class SmartWorkActivity extends AppCompatActivity {
                     isLoading = true;
                     Log.d(TAG, "현장 담당자만 등록이 가능합니다.");
                     /******************************************************************************************/
-                    addItems();
+                    addRows();
                     /******************************************************************************************/
                 }
                 Log.d(TAG, "scrollY : " + scrollY + " / height : " + layoutManagerH + " / heightRV : " + parentH + " / viewHeight : " + itemH);
@@ -130,19 +131,16 @@ public class SmartWorkActivity extends AppCompatActivity {
             }
         }
 
+        /******************************************************************************************/
         // Adapter 생성
         adapter = new SmartWorkAdapter(this, SmartSingleton.arrSmartWorks);
-
         if(isNewBuild || SmartSingleton.arrSmartWorks.isEmpty()) {
-            /******************************************************************************************/
-            addItems();
-            /******************************************************************************************/
+            addRows();
         }
-
         // RecycleView 에 Adapter 세팅
-        rvSmartWorks.setAdapter(adapter);
+        recyclerView.setAdapter(adapter);
         // 리스트 표현하기 !!
-        rvSmartWorks.setItemAnimator(new SlideInUpAnimator());
+        recyclerView.setItemAnimator(new SlideInUpAnimator());
 
         /***************************************************************************/
         adapter.setOnItemClickListener(new SmartWorkAdapter.OnItemClickListener() {
@@ -162,33 +160,6 @@ public class SmartWorkActivity extends AppCompatActivity {
             }
         });
         /***************************************************************************/
-        adapter.setmOnLoadMoreListener(new OnLoadMoreListener() {
-            @Override
-            public void onLoadMore() {
-                Log.e("haint", "Load More -------------------------------------------------------------------");
-
-                /*
-                mUserAdapter.notifyItemInserted(mUsers.size() - 1);
-
-                //Remove loading item
-                mUsers.remove(mUsers.size() - 1);
-                mUserAdapter.notifyItemRemoved(mUsers.size());
-
-                //Load data
-                int index = mUsers.size();
-                int end = index + 20;
-                for (int i = index; i < end; i++) {
-                    User user = new User();
-                    user.setName("Name " + i);
-                    user.setEmail("alibaba" + i + "@gmail.com");
-                    mUsers.add(user);
-                }
-                mUserAdapter.notifyDataSetChanged();
-                mUserAdapter.setLoaded();
-                */
-            }
-        });
-        /***************************************************************************/
     }
 
     public void setLoaded() {
@@ -201,17 +172,14 @@ public class SmartWorkActivity extends AppCompatActivity {
 
     }
 
-    private void addItems() {
+    private void addRows() {
         /******************************************************************************************/
         // SmartBuild 값 불러오기 (진행중인 현장)
-        Log.d(TAG, "SmartService.getSmartWorks 실행!! / pref_access_token : " + pref.getValue("pref_access_token", ""));
         SmartService smartService = ServiceGenerator.createService(SmartService.class, pref.getValue("pref_access_token", ""));
+
         final Map<String, String> mapOptions = new HashMap<String, String>();
         mapOptions.put("offset", String.valueOf(layoutManager.getItemCount()));
-
-        Log.d(TAG, "getSmartWork START !!!");
         Call<ArrayList<SmartWork>> call = smartService.getSmartWorks(strBuildCode, mapOptions);
-        Log.d(TAG, "getSmartWork END !!!");
 
         call.enqueue(new Callback<ArrayList<SmartWork>>() {
             @Override
@@ -226,7 +194,7 @@ public class SmartWorkActivity extends AppCompatActivity {
                         int curSize = adapter.getItemCount();
                         adapter.notifyItemRangeInserted(curSize, responseSmartWorks.size());
                     } else {
-                        Snackbar.make(SmartWorkActivity.rvSmartWorks, "마지막 리스트 입니다.", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                        Snackbar.make(SmartWorkActivity.recyclerView, "마지막 리스트 입니다.", Snackbar.LENGTH_LONG).setAction("Action", null).show();
                     }
                 } else {
                     Toast.makeText(getApplication(), "데이터가 정확하지 않습니다.", Toast.LENGTH_SHORT).show();

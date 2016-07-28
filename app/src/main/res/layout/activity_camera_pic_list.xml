@@ -7,7 +7,7 @@
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:theme="@style/AppTheme.AppBarOverlay">
 
@@ -32,21 +32,32 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <ScrollView
+    <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/nsv_camera_pic_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/sv_camera_pic_list"
-        android:background="#dddddd"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        android:fitsSystemWindows="true">
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:showIn="@layout/activity_camera_pic_list">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rvCameraPics"
+        <kr.koogle.android.smartconstruction.util.EndlessScrollView
+            android:id="@+id/sv_camera_pic_list"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:scrollbars="vertical" />
+            android:layout_height="match_parent"
+            android:background="#dddddd"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:fitsSystemWindows="true">
 
-    </ScrollView>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_camera_pics"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scrollbars="vertical" />
+
+        </kr.koogle.android.smartconstruction.util.EndlessScrollView>
+
+    </android.support.v4.widget.NestedScrollView>
 
 </LinearLayout>

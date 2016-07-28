@@ -45,7 +45,7 @@
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/scrollView2"
+            android:id="@+id/sv_camera_pic"
             android:background="#eeeeee">
 
             <LinearLayout
@@ -58,7 +58,7 @@
                     android:layout_height="210dp"
                     android:id="@+id/img_picture"
                     android:layout_marginTop="0dp"
-                    android:background="#dddddd"
+                    android:background="@drawable/bak_photo"
                     android:scaleType="centerCrop" />
 
                 <LinearLayout

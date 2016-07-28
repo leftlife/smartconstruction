@@ -1,7 +1,6 @@
 package kr.koogle.android.smartconstruction;
 
 import android.content.Context;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,7 +52,7 @@ public class SmartClientViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             View view = LayoutInflater.from(context).inflate(R.layout.row_client_view_comment, parent, false);
             return new UserViewHolder(getContext(), view);
         } else if (viewType == VIEW_TYPE_LOADING) {
-            View view = LayoutInflater.from(context).inflate(R.layout.layout_loading_item, parent, false);
+            View view = LayoutInflater.from(context).inflate(R.layout.row_loading_item, parent, false);
             return new LoadingViewHolder(getContext(), view);
         }
         return null;

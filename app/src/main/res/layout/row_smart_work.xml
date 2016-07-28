@@ -10,7 +10,7 @@
         android:layout_height="110dp"
         android:id="@+id/r_sw_image"
         android:scaleType="centerCrop"
-        android:src="@drawable/common_google_signin_btn_icon_dark_disabled"
+        android:src="@drawable/img_no_image_gray"
         android:layout_marginBottom="1dp" />
 
     <LinearLayout

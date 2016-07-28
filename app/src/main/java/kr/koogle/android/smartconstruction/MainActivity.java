@@ -1,46 +1,29 @@
 package kr.koogle.android.smartconstruction;
 
-import android.graphics.Color;
 import android.os.Bundle;
-import android.app.ActivityManager;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.NavigationView;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 
-import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.provider.MediaStore;
-import android.util.AttributeSet;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,23 +32,12 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.firebase.iid.FirebaseInstanceId;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import kr.koogle.android.smartconstruction.http.*;
 import kr.koogle.android.smartconstruction.util.BackPressCloseHandler;
 import kr.koogle.android.smartconstruction.util.RbPreference;
-import kr.koogle.android.smartconstruction.util.ScrollAwareFABBehavior;
 import me.leolin.shortcutbadger.ShortcutBadger;
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -347,8 +319,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected  void onPause() {
         super.onPause();
-
     }
+
+    @Override
+    protected void onDestroy() {
+        SmartSingleton.getInstance().arrSmartBuilds.clear();
+        SmartSingleton.getInstance().arrSmartWorks.clear();
+        SmartSingleton.getInstance().arrSmartClients.clear();
+        SmartSingleton.getInstance().arrSmartOrders.clear();
+        SmartSingleton.getInstance().arrSmartPhotos.clear();
+        SmartSingleton.getInstance().arrSmartEmployees.clear();
+        SmartSingleton.getInstance().arrLaborCategorys.clear();
+        SmartSingleton.getInstance().arrMaterialCategorys.clear();
+        SmartSingleton.getInstance().arrEquipmentCategorys.clear();
+
+        super.onDestroy();
+    }
+
 
     // Drawer Layout 관련
     @Override
@@ -484,10 +471,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     tempFragment = new SmartBuildFragment();
                     break;
                 case 1:
-                    tempFragment = new SmartBBSClientFragment();
+                    tempFragment = new SmartClientFragment();
                     break;
                 case 2:
-                    tempFragment = new SmartBBSOrderFragment();
+                    tempFragment = new SmartOrderFragment();
                     break;
                 default:
                     Log.d("getFragment", "Unhandle Case");

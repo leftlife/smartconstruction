@@ -2,29 +2,25 @@ package kr.koogle.android.smartconstruction.http;
 
 import java.util.ArrayList;
 
-public class SmartBBSOrder {
+public class SmartClient {
 
     public int intId;
     public String strSiteId;
-    public String strUserId;
-    public String strUserName;
-    public String strBuildCode;
+    public int intSort;
+    public String strCate1;
     public String strTitle;
     public String strContent;
-    public String strTel;
-    public int intStatus;
+    public String strWriter;
+    public String UserId;
+    public int intState;
     public int intLevel;
-    public String workDay;
-    public int intSMS;
-    public int intEmail;
+    public int intCount;
     public String datWrite;
 
-    public ArrayList<SmartEmployee> arrEmployees;
     public ArrayList<SmartFile> arrFiles;
     public ArrayList<SmartComment> arrComments;
 
-    public SmartBBSOrder() {
-        arrEmployees = new ArrayList<SmartEmployee>();
+    public SmartClient() {
         arrFiles = new ArrayList<SmartFile>();
         arrComments = new ArrayList<SmartComment>();
     }
