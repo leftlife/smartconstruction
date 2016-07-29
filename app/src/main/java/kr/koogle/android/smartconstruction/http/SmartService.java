@@ -3,8 +3,17 @@ package kr.koogle.android.smartconstruction.http;
 import java.util.ArrayList;
 import java.util.Map;
 
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
+import retrofit2.http.FieldMap;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
+import retrofit2.http.POST;
+import retrofit2.http.Part;
+import retrofit2.http.PartMap;
 import retrofit2.http.Path;
 import retrofit2.http.QueryMap;
 
@@ -61,6 +70,11 @@ public interface SmartService {
         @Path("photo") String photoCode,
         @QueryMap Map<String, String> options
     );
+
+    // 답글 업로드
+    @FormUrlEncoded
+    @POST("comments")
+    Call<ResponseBody> registComment(@FieldMap Map<String, String> fields);
 
     // 공종 카테고리
     @GET("labors")

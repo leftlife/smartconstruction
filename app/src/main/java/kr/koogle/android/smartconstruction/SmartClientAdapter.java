@@ -88,19 +88,6 @@ public class SmartClientAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             LoadingViewHolder loadingViewHolder = (LoadingViewHolder) holder;
             loadingViewHolder.progressBar.setIndeterminate(true);
         }
-
-        /*
-        ImageView ivImage = viewHolder.image;
-        TextView tvDate = viewHolder.date;
-        TextView tvWork = viewHolder.work;
-
-        Picasso.with(getContext())
-                .load(smartClient.strImageURL)
-                .fit() // resize(700,400)
-                .into(ivImage);
-        tvDate.setText(smartClient.strDate);
-        tvWork.setText(smartClient.strBuildCode);
-        */
     }
 
     @Override

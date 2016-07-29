@@ -98,7 +98,7 @@ public class SmartClientFragment extends Fragment {
                 final int intId = SmartSingleton.arrSmartClients.get(position).intId;
                 intext.putExtra("intId", intId);
                 startActivityForResult(intext, 1002);
-                Toast.makeText(getContext(), "intId : " + intId, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getContext(), "intId : " + intId, Toast.LENGTH_SHORT).show();
             }
         });
         /***************************************************************************/
@@ -121,18 +121,6 @@ public class SmartClientFragment extends Fragment {
 
             }
         });
-
-        /* 가장 쉽게 클릭 이벤츠 핸들러 만들기
-        ItemClickSupport.addTo(rvSmartBBSClients).setOnItemClickListener(
-                new ItemClickSupport.OnItemClickListener() {
-                    @Override
-                    public void onItemClicked(RecyclerView recyclerView, int position, View v) {
-                        // do it
-                        Log.d("LLL", "position: " + position);
-                    }
-                }
-        );
-         */
 
         // 스크롤시 FAB 버튼 숨기기 !!
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {

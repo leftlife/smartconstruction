@@ -113,7 +113,7 @@ public class CameraPicActivity extends AppCompatActivity implements TimePickerDi
     private ImageView imgContent;
     private Bitmap myBitmap;
 
-    private static ImageView imgPicture;
+    private ImageView imgPicture;
     private String strBuildCode;
     private TextView inputBuildName;
     private TextView inputBuildKind;
@@ -410,7 +410,7 @@ public class CameraPicActivity extends AppCompatActivity implements TimePickerDi
                     .progress(true, 0)
                     .progressIndeterminateStyle(horizontal)
                     .show();
-            Log.d(TAG, "fileURI : " + fileURI.toString());
+            //Log.d(TAG, "fileURI : " + fileURI.toString());
             uploadFile(new File(testRoot.getPath() + "/" + testFileName )); // 서버에 이미지 업로드 !!
         } else {
 

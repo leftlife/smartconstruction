@@ -63,7 +63,7 @@ public class SmartWorkActivity extends AppCompatActivity {
         pref = new RbPreference(this);
 
         // RecyclerView 저장
-        recyclerView = (RecyclerView) findViewById(R.id.rvSmartWorks);
+        recyclerView = (RecyclerView) findViewById(R.id.rv_smart_work);
         // LayoutManager 저장
         layoutManager = new LinearLayoutManager(SmartWorkActivity.this);
         // RecycleView에 LayoutManager 세팅

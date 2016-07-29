@@ -2,6 +2,7 @@ package kr.koogle.android.smartconstruction;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,9 +16,11 @@ import java.util.ArrayList;
 
 import kr.koogle.android.smartconstruction.http.SmartPhoto;
 import kr.koogle.android.smartconstruction.util.OnLoadMoreListener;
+import kr.koogle.android.smartconstruction.util.RbPreference;
 
 public class CameraPicListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final String TAG = "CameraPicListAdapter";
+    private RbPreference pref;
     private final int VIEW_TYPE_ITEM = 0;
     private final int VIEW_TYPE_LOADING = 1;
     private OnLoadMoreListener mOnLoadMoreListener;
@@ -34,6 +37,8 @@ public class CameraPicListAdapter extends RecyclerView.Adapter<RecyclerView.View
     public CameraPicListAdapter(Context context, ArrayList<SmartPhoto> arrRows) {
         mContext = context;
         mRows = arrRows;
+        // Settings 값 !!
+        pref = new RbPreference(context.getApplicationContext());
     }
 
     public void setmOnLoadMoreListener(OnLoadMoreListener mOnLoadMoreListener) {
@@ -69,16 +74,6 @@ public class CameraPicListAdapter extends RecyclerView.Adapter<RecyclerView.View
             return new LoadingViewHolder(getContext(), view);
         }
         return null;
-        /*
-        LayoutInflater inflater = LayoutInflater.from(context);
-
-        // Inflate the custom layout
-        View smartWorkView = inflater.inflate(R.layout.row_smart_work, parent, false);
-
-        // Return a new holder instance
-        ViewHolder viewHolder = new ViewHolder(getContext(), smartWorkView);
-        return viewHolder;
-        */
     }
 
     @Override
@@ -107,6 +102,7 @@ public class CameraPicListAdapter extends RecyclerView.Adapter<RecyclerView.View
             tvContent.setText(row.strMemo);
             tvDate.setText(row.datRegist);
 
+            Log.d(TAG, " 리스트 생성 : " +position+ " / " +row.strBuildName+ " / " +row.strLavorCode+ " / " +row.strWriter+ " / ");
         } else if (holder instanceof LoadingViewHolder) {
             LoadingViewHolder loadingViewHolder = (LoadingViewHolder) holder;
             loadingViewHolder.progressBar.setIndeterminate(true);

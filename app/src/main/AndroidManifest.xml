@@ -22,7 +22,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.Light"
         android:name="android.support.multidex.MultiDexApplication"
-        tools:replace="android:icon">
+        tools:replace="android:icon"
+       android:largeHeap="true">
 
         <activity android:name=".IntroActivity"
             android:theme="@style/AppTheme.Light"
