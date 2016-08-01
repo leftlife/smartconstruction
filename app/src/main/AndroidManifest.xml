@@ -42,8 +42,9 @@
 
         <activity android:name=".SmartWorkActivity" android:theme="@style/AppTheme.Light" android:screenOrientation="portrait" />
         <activity android:name=".SmartWorkViewActivity" android:theme="@style/AppTheme.Light" android:screenOrientation="portrait" />
-        <activity android:name=".SmartClientViewActivity" android:theme="@style/AppTheme.Light" android:screenOrientation="portrait" android:windowSoftInputMode="stateHidden" />
-        <activity android:name=".SmartOrderViewActivity" android:theme="@style/AppTheme.Light" android:screenOrientation="portrait" android:windowSoftInputMode="stateHidden" />
+        <activity android:name=".SmartClientViewActivity" android:theme="@style/AppTheme.Light.Camera" android:screenOrientation="portrait" android:windowSoftInputMode="stateHidden" />
+        <activity android:name=".SmartClientWriteActivity" android:theme="@style/AppTheme.Light.Camera" android:screenOrientation="portrait" android:windowSoftInputMode="stateHidden" />
+        <activity android:name=".SmartOrderViewActivity" android:theme="@style/AppTheme.Light.Camera" android:screenOrientation="portrait" android:windowSoftInputMode="stateHidden" />
 
         <activity android:name=".CameraPicActivity" android:theme="@style/AppTheme.Light.Camera" android:screenOrientation="portrait" />
         <activity android:name=".CameraPicListActivity" android:theme="@style/AppTheme.Light.Camera" android:screenOrientation="portrait" />

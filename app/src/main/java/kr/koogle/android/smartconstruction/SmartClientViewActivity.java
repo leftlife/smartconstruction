@@ -3,7 +3,9 @@ package kr.koogle.android.smartconstruction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.UiThread;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -113,15 +115,27 @@ public class SmartClientViewActivity extends AppCompatActivity {
             recyclerView.setItemAnimator(new SlideInUpAnimator());
         }
 
+        SmartSingleton.arrComments = new ArrayList<SmartComment>();
         // Adapter 생성
-        adapter = new SmartClientViewAdapter(this, smartClient.arrComments);
-        //if(smartClient.arrComments.isEmpty() || true) {
+        adapter = new SmartClientViewAdapter(this, SmartSingleton.arrComments);
+        //if(SmartSingleton.arrComments.isEmpty() || true) {
             addRows();
         //}
         // RecycleView 에 Adapter 세팅
         recyclerView.setAdapter(adapter);
         // 리스트 표현하기 !!
-        recyclerView.setItemAnimator(new SlideInUpAnimator());
+        RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
+        itemAnimator.setAddDuration(1000);
+        itemAnimator.setRemoveDuration(1000);
+        recyclerView.setItemAnimator(itemAnimator);
+        /*
+        notifyItemChanged(int)
+        notifyItemInserted(int)
+        notifyItemRemoved(int)
+        notifyItemRangeChanged(int, int)
+        notifyItemRangeInserted(int, int)
+        notifyItemRangeRemoved(int, int)
+         */
 
         // 툴바 세팅
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_client_view);
@@ -134,6 +148,16 @@ public class SmartClientViewActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 SmartClientViewActivity.this.finish();
+            }
+        });
+
+        // 건축주 협의 등록버튼
+        _btnModify.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(SmartClientViewActivity.this, SmartClientWriteActivity.class);
+                intent.putExtra("intId", smartClient.intId);
+                startActivityForResult(intent, 1001);
             }
         });
 
@@ -152,18 +176,19 @@ public class SmartClientViewActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(SmartClientViewActivity.this, CameraPicListActivity.class);
                 intent.putExtra("intId", smartClient.intId);
-                startActivityForResult(intent, 1001);
+                startActivityForResult(intent, 2001);
                 //Toast.makeText(SmartClientViewActivity.this, "intId : " + smartClient.intId, Toast.LENGTH_SHORT).show();
             }
         });
 
+        // 코멘트 등록 버튼
         _btnRegistComment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if( _txtComment.getText().toString().isEmpty() ) {
 
                     new MaterialDialog.Builder(SmartClientViewActivity.this)
-                            .title("답변등록")
+                            .title("답변등록확인")
                             .content("답변을 정확하게 입력하세요.")
                             .positiveText("확인")
                             .onAny(new MaterialDialog.SingleButtonCallback() {
@@ -181,17 +206,49 @@ public class SmartClientViewActivity extends AppCompatActivity {
         });
 
         /***************************************************************************/
-        // 리스트 클릭시 상세 페이지 보기 !!
+        // 리스트 클릭시 상세 페이지 보기
         adapter.setOnItemClickListener(new SmartClientViewAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                adapter.notifyItemChanged(position);
+                //adapter.notifyItemChanged(position);
 
                 Intent intext = new Intent(SmartClientViewActivity.this, SmartClientViewActivity.class);
-                final int intId = smartClient.arrComments.get(position).intId;
+                final int intId = SmartSingleton.arrComments.get(position).intId;
                 intext.putExtra("intId", intId);
                 //startActivityForResult(intext, 1002);
-                Toast.makeText(SmartClientViewActivity.this, "intId : " + intId, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(SmartClientViewActivity.this, "intId : " + intId, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // 리스트 X버튼 클릭시 해당 글 삭제
+        adapter.setOnItemXClickListener(new SmartClientViewAdapter.OnItemXClickListener() {
+            @Override
+            public void onItemXClick(View itemView, int position) {
+
+                final String commentCode = String.valueOf(SmartSingleton.arrComments.get(position).intId);
+                SmartService smartService = ServiceGenerator.createService(SmartService.class, pref.getValue("pref_access_token", ""));
+                Call<ResponseBody> call = smartService.deleteComment(commentCode);
+                Toast.makeText(SmartClientViewActivity.this, "commentCode : " + commentCode, Toast.LENGTH_SHORT).show();
+
+                call.enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            //smartClient = response.body();
+                            Log.d(TAG, response.body().toString());
+                            //Log.d(TAG, "title : " + smartClient.arrComments.get(0).strContent.toString());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        Toast.makeText(SmartClientViewActivity.this, "네트워크 상태가 좋지 않습니다!", Toast.LENGTH_SHORT).show();
+                        Log.d("Error", t.getMessage());
+                    }
+                });
+
+                adapter.remove(position);
+                //Toast.makeText(SmartClientViewActivity.this, "position : " + position, Toast.LENGTH_SHORT).show();
             }
         });
         /***************************************************************************/
@@ -220,9 +277,12 @@ public class SmartClientViewActivity extends AppCompatActivity {
                         _txtContent.setHtml(smartClient.strContent, new HtmlRemoteImageGetterLee(_txtContent, null, true, _txtContent.getWidth()));
                         //Toast.makeText(SmartClientViewActivity.this, response.body().toString(), Toast.LENGTH_SHORT).show();
 
+                        SmartSingleton.arrComments.addAll(smartClient.arrComments);
+                        adapter.notifyDataSetChanged();
                         // comment 리스트 출력 !!
-                        int curSize = adapter.getItemCount();
-                        adapter.notifyItemRangeInserted(curSize, smartClient.arrComments.size());
+                        //int curSize = adapter.getItemCount();
+                        //adapter.notifyItemRangeInserted(curSize, smartClient.arrComments.size());
+                        Log.d(TAG, "curSize : " + adapter.getItemCount() + " / arrComments.size : " + smartClient.arrComments.size());
                         /*
                         SmartClientViewActivity.this.runOnUiThread(new Runnable() {
                             @Override
@@ -254,7 +314,7 @@ public class SmartClientViewActivity extends AppCompatActivity {
 
         switch(requestCode) {
 
-            case 1001: // 댓글에서 사진 추가하기
+            case 2001: // 댓글에서 사진 추가하기
 
                 if( data != null) {
                     final String intId = data.getStringExtra("intId");
@@ -295,19 +355,22 @@ public class SmartClientViewActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 try {
-                    Log.v("Upload", "success / " + response.body().string());
+                    //Log.v("Upload", "success / " + response.body().string());
 
                     final SmartComment sc = new SmartComment();
                     Log.d(TAG, "_txtComment 완료전 : " + _txtComment.getText().toString());
+                    sc.intId = Integer.parseInt(commentPhotoCode);
                     sc.strContent = _txtComment.getText().toString();
                     sc.strWriter = pref.getValue("pref_user_id", "");
                     sc.strName = pref.getValue("pref_user_name", "");
                     sc.datWrite = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-                    sc.strFileURL = "";
-                    smartClient.arrComments.add(sc);
+                    sc.strFileURL = response.body().string();
+                    SmartSingleton.arrComments.add(sc);
 
                     int curSize = adapter.getItemCount();
+                    //Log.d(TAG, "전 : curSize : " + adapter.getItemCount() + " / arrComments.size : " + smartClient.arrComments.size());
                     adapter.notifyItemRangeInserted(curSize, 1);
+                    //Log.d(TAG, "후 : curSize : " + adapter.getItemCount() + " / arrComments.size : " + smartClient.arrComments.size());
                     /*
                     SmartClientViewActivity.this.runOnUiThread(new Runnable() {
                         @Override
@@ -347,4 +410,8 @@ public class SmartClientViewActivity extends AppCompatActivity {
         /******************************************************************************************/
     }
 
+    @UiThread
+    protected void dataSetChanged() {
+        adapter.notifyDataSetChanged();
+    }
 }

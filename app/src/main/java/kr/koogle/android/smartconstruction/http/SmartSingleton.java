@@ -20,6 +20,8 @@ public class SmartSingleton {
     public static ArrayList<SmartCategory> arrMaterialCategorys;
     public static ArrayList<SmartCategory> arrEquipmentCategorys;
 
+    public static ArrayList<SmartComment> arrComments;
+
     public static SmartSingleton getInstance() {
         if (uniqueInstance == null) {
             // 이렇게 하면 처음에만 동기화 됨!!
@@ -37,6 +39,8 @@ public class SmartSingleton {
                     arrLaborCategorys = new ArrayList<SmartCategory>();
                     arrMaterialCategorys = new ArrayList<SmartCategory>();
                     arrEquipmentCategorys = new ArrayList<SmartCategory>();
+
+                    arrComments = new ArrayList<SmartComment>();
                 }
             }
         }

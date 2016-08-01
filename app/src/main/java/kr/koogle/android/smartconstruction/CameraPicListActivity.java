@@ -237,7 +237,7 @@ public class CameraPicListActivity extends AppCompatActivity {
             // 사진 촬영 엑티비티 열기 !!
             Intent intent = new Intent(CameraPicListActivity.this, CameraPicActivity.class);
             intent.putExtra("intId", 0);
-            startActivityForResult(intent, 1001);
+            startActivityForResult(intent, 2001);
             return true;
         }
 
@@ -250,7 +250,7 @@ public class CameraPicListActivity extends AppCompatActivity {
 
         switch(requestCode) {
 
-            case 1001: // 리스트 다시 읽기
+            case 2001: // 리스트 다시 읽기
                 SmartSingleton.arrSmartPhotos.clear();
                 addRows();
                 break;
