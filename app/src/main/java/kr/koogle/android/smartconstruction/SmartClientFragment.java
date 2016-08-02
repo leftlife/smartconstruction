@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -49,6 +50,9 @@ public class SmartClientFragment extends Fragment {
     private View rootView;
     private LayoutInflater mInflater;
     private View viewEmpty;
+
+    // Pull to Refresh 4-1
+    private SwipeRefreshLayout swipeContainer;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -152,7 +156,29 @@ public class SmartClientFragment extends Fragment {
             }
         });
 
+        // Pull to Refresh 4-2
+        // Lookup the swipe container view
+        swipeContainer = (SwipeRefreshLayout) rootView.findViewById(R.id.sc_smart_client);
+        // Setup refresh listener which triggers new data loading
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Your code to refresh the list here.
+                // Make sure you call swipeContainer.setRefreshing(false)
+                // once the network request has completed successfully.
+                fetchTimelineAsync(0);
+            }
+        });
+        // Configure the refreshing colors
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright);
+
         return rootView;
+    }
+
+    // Pull to Refresh 4-3
+    public void fetchTimelineAsync(int page) {
+        adapter.clear();
+        addItems();
     }
 
     private void addItems() {
@@ -197,6 +223,9 @@ public class SmartClientFragment extends Fragment {
                     Toast.makeText(getContext(), "데이터가 정확하지 않습니다.", Toast.LENGTH_SHORT).show();
                     Log.d(TAG, "responseSmartBBSClients : 데이터가 정확하지 않습니다.");
                 }
+
+                // Pull to Refresh 4-4
+                swipeContainer.setRefreshing(false);
             }
 
             @Override

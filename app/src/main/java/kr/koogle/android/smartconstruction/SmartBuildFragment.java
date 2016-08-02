@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -37,6 +38,9 @@ public class SmartBuildFragment extends Fragment {
     private RecyclerView rvSmartBuilds;
     private LayoutInflater mInflater;
     private View viewEmpty;
+
+    // Pull to Refresh 4-1
+    private SwipeRefreshLayout swipeContainer;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -193,7 +197,29 @@ public class SmartBuildFragment extends Fragment {
             }
         });
 
+        // Pull to Refresh 4-2
+        // Lookup the swipe container view
+        swipeContainer = (SwipeRefreshLayout) rootView.findViewById(R.id.sc_smart_build);
+        // Setup refresh listener which triggers new data loading
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Your code to refresh the list here.
+                // Make sure you call swipeContainer.setRefreshing(false)
+                // once the network request has completed successfully.
+                fetchTimelineAsync(0);
+            }
+        });
+        // Configure the refreshing colors
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright);
+
         return rootView;
+    }
+
+    // Pull to Refresh 4-3
+    public void fetchTimelineAsync(int page) {
+        adapter.clear();
+        addItems();
     }
 
     public void addItems() {
@@ -220,6 +246,7 @@ public class SmartBuildFragment extends Fragment {
                         viewEmpty.setLayoutParams(params);
                         RelativeLayout rmSmartBuild = (RelativeLayout) rootView.findViewById(R.id.fm_smart_build);
                         rmSmartBuild.addView(viewEmpty);
+
                     }
                 } else {
                     Toast.makeText(getContext(), "데이터가 정확하지 않습니다.", Toast.LENGTH_SHORT).show();
@@ -227,6 +254,9 @@ public class SmartBuildFragment extends Fragment {
                     Intent intentLogin = new Intent(getContext(), LoginActivity.class);
                     startActivity(intentLogin);
                 }
+
+                // Pull to Refresh 4-4
+                swipeContainer.setRefreshing(false);
             }
 
             @Override

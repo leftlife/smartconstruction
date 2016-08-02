@@ -32,32 +32,40 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/nsv_camera_pic_list"
+    <android.support.v4.widget.SwipeRefreshLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/sc_camera_pic_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        tools:showIn="@layout/activity_camera_pic_list">
+        android:layout_height="match_parent">
 
-        <kr.koogle.android.smartconstruction.util.EndlessScrollView
-            android:id="@+id/sv_camera_pic_list"
+        <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/nsv_camera_pic_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#dddddd"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
-            android:fitsSystemWindows="true">
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            tools:showIn="@layout/activity_camera_pic_list">
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/rv_camera_pics"
+            <kr.koogle.android.smartconstruction.util.EndlessScrollView
+                android:id="@+id/sv_camera_pic_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:scrollbars="vertical" />
+                android:background="#dddddd"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:fitsSystemWindows="true">
 
-        </kr.koogle.android.smartconstruction.util.EndlessScrollView>
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rv_camera_pics"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:scrollbars="vertical" />
 
-    </android.support.v4.widget.NestedScrollView>
+            </kr.koogle.android.smartconstruction.util.EndlessScrollView>
+
+        </android.support.v4.widget.NestedScrollView>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 </LinearLayout>

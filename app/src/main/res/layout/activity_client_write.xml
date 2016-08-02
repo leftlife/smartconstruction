@@ -37,7 +37,7 @@
         android:id="@+id/sv_client_write"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#dddddd"
+        android:background="#ffffff"
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:fitsSystemWindows="true">
@@ -45,7 +45,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:background="#ffffff"
+            android:paddingBottom="20dp">
 
             <TextView
                 android:layout_width="match_parent"
@@ -61,45 +63,125 @@
                 android:paddingLeft="20dp" />
 
             <LinearLayout
-                android:orientation="vertical"
+                android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#ffffff"
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp"
-                android:paddingBottom="20dp">
-
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="25dp"
+                android:layout_marginRight="20dp">
+                <TextView
+                    android:layout_width="70dp"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="공사명"
+                    android:textColor="#999999"
+                    android:textSize="12dp"
+                    android:layout_marginTop="21dp" />
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="0dp"
-                    android:layout_marginBottom="0dp">
-                    <EditText
+                    android:layout_height="wrap_content">
+                    <EditText android:id="@+id/input_build_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/editText"
-                        android:hint="제목을 입력하세요"
-                        android:padding="10dp" />
+                        android:textSize="14sp"
+                        android:inputType="textAutoComplete"
+                        android:hint="공사명을 입력하세요." />
                 </android.support.design.widget.TextInputLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="25dp"
+                android:layout_marginRight="20dp">
+                <TextView
+                    android:layout_width="70dp"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="제목"
+                    android:textColor="#999999"
+                    android:textSize="12dp"
+                    android:layout_marginTop="21dp" />
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <EditText android:id="@+id/input_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="14sp"
+                        android:inputType="textAutoComplete"
+                        android:hint="제목을 입력하세요." />
+                </android.support.design.widget.TextInputLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="25dp"
+                android:layout_marginRight="20dp">
+                <TextView
+                    android:layout_width="70dp"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="첨부파일"
+                    android:textColor="#999999"
+                    android:textSize="12dp"
+                    android:layout_marginTop="21dp" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/btn_add_photo"
+                    android:src="@drawable/ic_menu_camera"
+                    android:layout_marginLeft="3dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginTop="18dp" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="25dp"
+                android:layout_marginRight="20dp" >
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/img_photo"
+                    android:layout_marginBottom="20dp"
+                    android:minHeight="230dp"
+                    android:visibility="gone"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="25dp"
+                android:layout_marginRight="20dp">
 
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="0dp"
-                    android:layout_marginBottom="0dp">
-                    <EditText
+                    android:layout_height="wrap_content">
+                    <EditText android:id="@+id/input_content"
                         android:layout_width="match_parent"
-                        android:layout_height="250dp"
+                        android:layout_height="wrap_content"
+                        android:textSize="14sp"
                         android:inputType="textMultiLine"
-                        android:ems="10"
-                        android:id="@+id/editText2"
-                        android:hint="내용을 입력하세요"
-                        android:padding="10dp"
-                        android:gravity="top"
-                        android:layout_marginTop="10dp" />
+                        android:hint="내용을 입력하세요." />
                 </android.support.design.widget.TextInputLayout>
 
             </LinearLayout>
+
         </LinearLayout>
 
     </kr.koogle.android.smartconstruction.util.EndlessScrollView>

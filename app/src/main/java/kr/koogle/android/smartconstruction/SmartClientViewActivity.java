@@ -77,7 +77,6 @@ public class SmartClientViewActivity extends AppCompatActivity {
     private String commentPhotoCode = "";
 
     private String clientCode;
-    private SmartClient smartClient;
 
     // recycleViewer
     private static RecyclerView recyclerView;
@@ -97,7 +96,6 @@ public class SmartClientViewActivity extends AppCompatActivity {
 
         // 리스트 클릭시 넘어온값 받기 !!
         clientCode = String.valueOf(getIntent().getExtras().getInt("intId"));
-        smartClient = new SmartClient();
 
         // RecyclerView 저장
         recyclerView = (RecyclerView) findViewById(R.id.rv_client_view_comments);
@@ -108,14 +106,16 @@ public class SmartClientViewActivity extends AppCompatActivity {
 
         final LinearLayout empLayout = (LinearLayout) findViewById(R.id.emp_layout); // 내용없을때 보이는 레이아웃
         // 리스트 표현하기 !!
-        if (smartClient.arrComments.isEmpty()) {
+        if (SmartSingleton.smartClient.arrComments.isEmpty()) {
             //empLayout.setVisibility(View.VISIBLE);
         } else {
             //empLayout.setVisibility(View.GONE);
-            recyclerView.setItemAnimator(new SlideInUpAnimator());
+            //recyclerView.setItemAnimator(new SlideInUpAnimator());
         }
 
-        SmartSingleton.arrComments = new ArrayList<SmartComment>();
+        // arrComments 초기화
+        SmartSingleton.arrComments.clear();
+
         // Adapter 생성
         adapter = new SmartClientViewAdapter(this, SmartSingleton.arrComments);
         //if(SmartSingleton.arrComments.isEmpty() || true) {
@@ -156,7 +156,7 @@ public class SmartClientViewActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(SmartClientViewActivity.this, SmartClientWriteActivity.class);
-                intent.putExtra("intId", smartClient.intId);
+                intent.putExtra("intId", SmartSingleton.smartClient.intId);
                 startActivityForResult(intent, 1001);
             }
         });
@@ -175,7 +175,7 @@ public class SmartClientViewActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(SmartClientViewActivity.this, CameraPicListActivity.class);
-                intent.putExtra("intId", smartClient.intId);
+                intent.putExtra("intId", SmartSingleton.smartClient.intId);
                 startActivityForResult(intent, 2001);
                 //Toast.makeText(SmartClientViewActivity.this, "intId : " + smartClient.intId, Toast.LENGTH_SHORT).show();
             }
@@ -210,7 +210,7 @@ public class SmartClientViewActivity extends AppCompatActivity {
         adapter.setOnItemClickListener(new SmartClientViewAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                //adapter.notifyItemChanged(position);
+                adapter.notifyItemChanged(position);
 
                 Intent intext = new Intent(SmartClientViewActivity.this, SmartClientViewActivity.class);
                 final int intId = SmartSingleton.arrComments.get(position).intId;
@@ -264,25 +264,25 @@ public class SmartClientViewActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<SmartClient> call, Response<SmartClient> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    smartClient = response.body();
+                    SmartSingleton.smartClient = response.body();
 
-                    if (smartClient.intId != 0) {
-                        _txtTitle.setText(smartClient.strTitle);
-                        _txtWriter.setText(smartClient.strWriter);
-                        _txtDate.setText(smartClient.datWrite);
+                    if (SmartSingleton.smartClient.intId != 0) {
+                        _txtTitle.setText(SmartSingleton.smartClient.strTitle);
+                        _txtWriter.setText(SmartSingleton.smartClient.strWriter);
+                        _txtDate.setText(SmartSingleton.smartClient.datWrite);
                         /*
                         HtmlRemoteImageGetter imgGetter = new HtmlRemoteImageGetter(_txtContent, smartClient.strContent);
                         _txtContent.setText(Html.fromHtml(smartClient.strContent, imgGetter, null));
                         */
-                        _txtContent.setHtml(smartClient.strContent, new HtmlRemoteImageGetterLee(_txtContent, null, true, _txtContent.getWidth()));
+                        _txtContent.setHtml(SmartSingleton.smartClient.strContent, new HtmlRemoteImageGetterLee(_txtContent, null, true, _txtContent.getWidth()));
                         //Toast.makeText(SmartClientViewActivity.this, response.body().toString(), Toast.LENGTH_SHORT).show();
 
-                        SmartSingleton.arrComments.addAll(smartClient.arrComments);
+                        SmartSingleton.arrComments.addAll(SmartSingleton.smartClient.arrComments);
                         adapter.notifyDataSetChanged();
                         // comment 리스트 출력 !!
                         //int curSize = adapter.getItemCount();
                         //adapter.notifyItemRangeInserted(curSize, smartClient.arrComments.size());
-                        Log.d(TAG, "curSize : " + adapter.getItemCount() + " / arrComments.size : " + smartClient.arrComments.size());
+                        Log.d(TAG, "curSize : " + adapter.getItemCount() + " / arrComments.size : " + SmartSingleton.smartClient.arrComments.size());
                         /*
                         SmartClientViewActivity.this.runOnUiThread(new Runnable() {
                             @Override
@@ -359,7 +359,7 @@ public class SmartClientViewActivity extends AppCompatActivity {
 
                     final SmartComment sc = new SmartComment();
                     Log.d(TAG, "_txtComment 완료전 : " + _txtComment.getText().toString());
-                    sc.intId = Integer.parseInt(commentPhotoCode);
+                    sc.intId = Integer.parseInt(clientCode);
                     sc.strContent = _txtComment.getText().toString();
                     sc.strWriter = pref.getValue("pref_user_id", "");
                     sc.strName = pref.getValue("pref_user_name", "");

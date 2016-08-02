@@ -248,30 +248,32 @@ public class CameraPicActivity extends AppCompatActivity implements TimePickerDi
         inputDate = (TextView) findViewById(R.id.input_date);
 
         inputBuildName.setInputType(0);
-        inputBuildName.setOnClickListener(new View.OnClickListener() {
+        inputBuildName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public void onClick(View view) {
-
-                final ArrayList<String> arrBuild = new ArrayList<String>();
-                if ( ! SmartSingleton.arrSmartBuilds.isEmpty() ) {
-                    //ArrayList<SmartBuild> arrBuild = SmartSingleton.arrSmartBuilds;
-                    for(int i=0; i<SmartSingleton.arrSmartBuilds.size(); i++) {
-                        arrBuild.add(SmartSingleton.arrSmartBuilds.get(i).strName);
+            public void onFocusChange(View view, boolean b) {
+                if(b) {
+                    final ArrayList<String> arrBuild = new ArrayList<String>();
+                    if (!SmartSingleton.arrSmartBuilds.isEmpty()) {
+                        //ArrayList<SmartBuild> arrBuild = SmartSingleton.arrSmartBuilds;
+                        for (int i = 0; i < SmartSingleton.arrSmartBuilds.size(); i++) {
+                            arrBuild.add(SmartSingleton.arrSmartBuilds.get(i).strName);
+                        }
                     }
+
+                    imgPicture.requestFocus();
+                    MaterialDialog md = new MaterialDialog.Builder(CameraPicActivity.this)
+                            .title("현장선택")
+                            .items(arrBuild)
+                            .itemsCallback(new MaterialDialog.ListCallback() {
+                                @Override
+                                public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                                    strBuildCode = SmartSingleton.arrSmartBuilds.get(which).strCode;
+                                    inputBuildName.setText(text);
+                                    inputBuildName.clearFocus();
+                                }
+                            })
+                            .positiveText("창닫기").show();
                 }
-
-                MaterialDialog md = new MaterialDialog.Builder(CameraPicActivity.this)
-                        .title("현장선택")
-                        .items(arrBuild)
-                        .itemsCallback(new MaterialDialog.ListCallback() {
-                            @Override
-                            public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                                strBuildCode = SmartSingleton.arrSmartBuilds.get(which).strCode;
-                                inputBuildName.setText(text);
-                            }
-                        })
-                        .positiveText("취소하기").show();
-
             }
         });
 
@@ -282,46 +284,48 @@ public class CameraPicActivity extends AppCompatActivity implements TimePickerDi
         }
 
         inputBuildKind.setInputType(0);
-        inputBuildKind.setOnClickListener(new View.OnClickListener() {
+        inputBuildKind.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public void onClick(View view) {
-
-                final ArrayList<String> arrBuild = new ArrayList<String>();
-                if ( ! SmartSingleton.arrLaborCategorys.isEmpty() ) {
-                    for(int i=0; i<SmartSingleton.arrLaborCategorys.size(); i++) {
-                        //arrBuild.add(SmartSingleton.arrLaborCategorys.get(0).arrCategory.get(i).strName);
-                        arrBuild.add(SmartSingleton.arrLaborCategorys.get(i).strName);
+            public void onFocusChange(View view, boolean b) {
+                if(b) {
+                    final ArrayList<String> arrBuild = new ArrayList<String>();
+                    if (!SmartSingleton.arrLaborCategorys.isEmpty()) {
+                        for (int i = 0; i < SmartSingleton.arrLaborCategorys.size(); i++) {
+                            //arrBuild.add(SmartSingleton.arrLaborCategorys.get(0).arrCategory.get(i).strName);
+                            arrBuild.add(SmartSingleton.arrLaborCategorys.get(i).strName);
+                        }
                     }
+
+                    new MaterialDialog.Builder(CameraPicActivity.this)
+                            .title("공종선택")
+                            .items(arrBuild)
+                            .itemsCallback(new MaterialDialog.ListCallback() {
+                                @Override
+                                public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                                    inputBuildKind.setText(text);
+                                    inputBuildKind.clearFocus();
+                                }
+                            })
+                            .positiveText("창닫기").show();
                 }
-
-                new MaterialDialog.Builder(CameraPicActivity.this)
-                        .title("공종선택")
-                        .items(arrBuild)
-                        .itemsCallback(new MaterialDialog.ListCallback() {
-                            @Override
-                            public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                                inputBuildKind.setText(text);
-                            }
-                        })
-                        .positiveText("창닫기").show();
-
             }
         });
 
         inputDate.setInputType(0);
-        inputDate.setOnClickListener(new View.OnClickListener() {
+        inputDate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public void onClick(View view) {
-
-                Calendar now = Calendar.getInstance();
-                DatePickerDialog dpd = DatePickerDialog.newInstance(
-                        CameraPicActivity.this,
-                        now.get(Calendar.YEAR),
-                        now.get(Calendar.MONTH),
-                        now.get(Calendar.DAY_OF_MONTH)
-                );
-                dpd.show(getFragmentManager(), "Datepickerdialog");
-
+            public void onFocusChange(View view, boolean b) {
+                if(b) {
+                    Calendar now = Calendar.getInstance();
+                    DatePickerDialog dpd = DatePickerDialog.newInstance(
+                            CameraPicActivity.this,
+                            now.get(Calendar.YEAR),
+                            now.get(Calendar.MONTH),
+                            now.get(Calendar.DAY_OF_MONTH)
+                    );
+                    dpd.show(getFragmentManager(), "Datepickerdialog");
+                    inputDate.clearFocus();
+                }
             }
         });
 

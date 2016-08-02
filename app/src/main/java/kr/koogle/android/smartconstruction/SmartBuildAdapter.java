@@ -18,14 +18,20 @@ import kr.koogle.android.smartconstruction.http.SmartBuild;
 // Note that we specify the custom ViewHolder which gives us access to our views
 public class SmartBuildAdapter extends RecyclerView.Adapter<SmartBuildAdapter.ViewHolder> {
     // Store a member variable for the smartBuilds
-    private static ArrayList<SmartBuild> mSmartBuilds; // SmartSingleton.smartBuilds -> smartBuilds 변경 사용할 경우 !!
+    private static ArrayList<SmartBuild> mRows; // SmartSingleton.smartBuilds -> smartBuilds 변경 사용할 경우 !!
     // Store the context for easy access
     private Context mContext;
 
     // Pass in the smartBuild array into the constructor
     public SmartBuildAdapter(Context context, ArrayList<SmartBuild> smartBuilds) {
         mContext = context;
-        mSmartBuilds = smartBuilds;
+        mRows = smartBuilds;
+    }
+
+    // Clean all elements of the recycler
+    public void clear() {
+        mRows.clear();
+        notifyDataSetChanged();
     }
 
     // Easy access to the context object in the recyclerview
@@ -51,7 +57,7 @@ public class SmartBuildAdapter extends RecyclerView.Adapter<SmartBuildAdapter.Vi
     @Override
     public void onBindViewHolder(SmartBuildAdapter.ViewHolder viewHolder, int position) {
         // Get the data model based on position
-        SmartBuild smartBuild = mSmartBuilds.get(position);
+        SmartBuild smartBuild = mRows.get(position);
 
         // Set item views based on your views and data model
         ImageView image = viewHolder.image;
@@ -80,7 +86,7 @@ public class SmartBuildAdapter extends RecyclerView.Adapter<SmartBuildAdapter.Vi
     // Returns the total count of items in the list
     @Override
     public int getItemCount() {
-        return mSmartBuilds.size();
+        return mRows.size();
     }
 
     /***************************************************************************/
@@ -142,7 +148,7 @@ public class SmartBuildAdapter extends RecyclerView.Adapter<SmartBuildAdapter.Vi
         @Override
         public void onClick(View view) {
             int position = getLayoutPosition(); // get item position
-            SmartBuild smartBuild = mSmartBuilds.get(position);
+            SmartBuild smartBuild = mRows.get(position);
 
             Toast.makeText(context, smartBuild.strName, Toast.LENGTH_LONG).show();
         }

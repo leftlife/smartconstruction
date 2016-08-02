@@ -56,6 +56,18 @@ public class CameraPicListAdapter extends RecyclerView.Adapter<RecyclerView.View
         notifyItemRemoved(position);
     }
 
+    // Clean all elements of the recycler
+    public void clear() {
+        mRows.clear();
+        notifyDataSetChanged();
+    }
+
+    // Add a list of items
+    public void addAll(ArrayList<SmartPhoto> list) {
+        mRows.addAll(list);
+        notifyDataSetChanged();
+    }
+
     @Override
     public int getItemViewType(int position) {
         return mRows.get(position) == null ? VIEW_TYPE_LOADING : VIEW_TYPE_ITEM;

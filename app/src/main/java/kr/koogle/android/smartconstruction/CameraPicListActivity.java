@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.NestedScrollView;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,6 +17,8 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
+
+import org.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,6 +41,9 @@ public class CameraPicListActivity extends AppCompatActivity {
     private RbPreference pref;
 
     private static boolean isLoading;
+
+    // Pull to Refresh 4-1
+    private SwipeRefreshLayout swipeContainer;
 
     // recycleViewer
     private static RecyclerView recyclerView;
@@ -79,8 +85,10 @@ public class CameraPicListActivity extends AppCompatActivity {
         /******************************************************************************************/
         // Adapter 생성
         adapter = new CameraPicListAdapter(this, SmartSingleton.arrSmartPhotos);
+        SmartSingleton.arrSmartPhotos.clear();
         if(SmartSingleton.arrSmartPhotos.isEmpty()) {
             addRows();
+            Log.d(TAG, "최초실행 : SmartSingleton.arrSmartPhotos.size() : " + SmartSingleton.arrSmartPhotos.size());
         }
         // RecycleView 에 Adapter 세팅
         recyclerView.setAdapter(adapter);
@@ -176,6 +184,28 @@ public class CameraPicListActivity extends AppCompatActivity {
             }
         });
         */
+
+        // Pull to Refresh 4-2
+        // Lookup the swipe container view
+        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.sc_camera_pic_list);
+        // Setup refresh listener which triggers new data loading
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Your code to refresh the list here.
+                // Make sure you call swipeContainer.setRefreshing(false)
+                // once the network request has completed successfully.
+                fetchTimelineAsync(0);
+            }
+        });
+        // Configure the refreshing colors
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright);
+    }
+
+    // Pull to Refresh 4-3
+    public void fetchTimelineAsync(int page) {
+        adapter.clear();
+        addRows();
     }
 
     private void addRows() {
@@ -200,6 +230,8 @@ public class CameraPicListActivity extends AppCompatActivity {
                         //int curSize = SmartSingleton.arrSmartPhotos.size();
                         //adapter.notifyItemRangeInserted(curSize, responses.size());
                         adapter.notifyDataSetChanged();
+
+
                     } else {
                         Snackbar.make(CameraPicListActivity.recyclerView, "마지막 리스트 입니다.", Snackbar.LENGTH_LONG).setAction("Action", null).show();
                     }
@@ -207,6 +239,9 @@ public class CameraPicListActivity extends AppCompatActivity {
                     Toast.makeText(getApplication(), "데이터가 정확하지 않습니다.", Toast.LENGTH_SHORT).show();
                     Log.d(TAG, "responseSmartWorks : 데이터가 정확하지 않습니다.");
                 }
+
+                // Pull to Refresh 4-4
+                swipeContainer.setRefreshing(false);
             }
 
             @Override
@@ -214,6 +249,7 @@ public class CameraPicListActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "네트워크 상태가 좋지 않습니다!!!", Toast.LENGTH_SHORT).show();
                 Log.d("Error", t.getMessage());
             }
+
         });
         /******************************************************************************************/
     }

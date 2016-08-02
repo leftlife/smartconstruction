@@ -4,6 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     android:fitsSystemWindows="true"
     tools:context="kr.koogle.android.smartconstruction.CameraPicActivity">
 
@@ -72,6 +74,7 @@
                         android:layout_width="70dp"
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:id="@+id/txt_build_name"
                         android:text="공사명"
                         android:textColor="#999999"
                         android:textSize="12dp"

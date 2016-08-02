@@ -38,6 +38,12 @@ public class SmartClientAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         mRows = smartClients;
     }
 
+    // Clean all elements of the recycler
+    public void clear() {
+        mRows.clear();
+        notifyDataSetChanged();
+    }
+
     public void setmOnLoadMoreListener(OnLoadMoreListener mOnLoadMoreListener) {
         this.mOnLoadMoreListener = mOnLoadMoreListener;
     }
