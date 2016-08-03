@@ -32,16 +32,16 @@
     </LinearLayout>
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/r_sbc_btn_image"
-        android:src="@android:drawable/radiobutton_off_background"
+        android:layout_width="25dp"
+        android:layout_height="30dp"
+        android:id="@+id/imageView9"
+        android:src="@drawable/ico_right"
         android:layout_alignParentLeft="false"
         android:layout_alignParentBottom="false"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="25dp"
-        android:layout_marginRight="20dp" />
+        android:layout_marginTop="23dp"
+        android:layout_marginRight="15dp" />
 
     <TextView
         android:layout_width="wrap_content"

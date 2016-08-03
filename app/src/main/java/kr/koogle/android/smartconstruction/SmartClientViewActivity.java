@@ -68,6 +68,7 @@ public class SmartClientViewActivity extends AppCompatActivity {
     @Bind(R.id.txt_client_view_content) HtmlTextView _txtContent;
 
     @Bind(R.id.btn_client_view_modify) Button _btnModify;
+    @Bind(R.id.btn_client_view_delete) Button _btnDelete;
     @Bind(R.id.btn_client_view_top) Button _btnTop;
     @Bind(R.id.btn_client_view_regist_comment) Button _btnRegistComment;
     @Bind(R.id.img_client_view_camera) ImageView _btnAddPhoto;
@@ -83,11 +84,16 @@ public class SmartClientViewActivity extends AppCompatActivity {
     private SmartClientViewAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
 
+    // intent 로 넘어온 값 받기
+    private Intent intent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_client_view);
         ButterKnife.bind(this);
+        // intent 등록
+        intent = getIntent();
 
         // SmartSingleton 생성 !!
         SmartSingleton.getInstance();
@@ -158,6 +164,24 @@ public class SmartClientViewActivity extends AppCompatActivity {
                 Intent intent = new Intent(SmartClientViewActivity.this, SmartClientWriteActivity.class);
                 intent.putExtra("intId", SmartSingleton.smartClient.intId);
                 startActivityForResult(intent, 1001);
+            }
+        });
+
+        // 건축주 협의 삭제버튼
+        _btnDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new MaterialDialog.Builder(SmartClientViewActivity.this)
+                        .title("게시글 삭제")
+                        .content("글이 삭제되면 복구할 수 없습니다. 정말로 삭제하시겠습니까?")
+                        .positiveText("확인")
+                        .onAny(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                deleteClient(SmartSingleton.smartClient.intId);
+                            }
+                        })
+                        .show();
             }
         });
 
@@ -255,6 +279,29 @@ public class SmartClientViewActivity extends AppCompatActivity {
 
     }
 
+    private void deleteClient(int intId) {
+        /******************************************************************************************/
+        SmartService smartService = ServiceGenerator.createService(SmartService.class, pref.getValue("pref_access_token", ""));
+        Call<ResponseBody> call = smartService.deleteClient(String.valueOf(intId));
+
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    SmartClientViewActivity.this.setResult(RESULT_OK, intent);
+                    finish();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(SmartClientViewActivity.this, "네트워크 상태가 좋지 않습니다!", Toast.LENGTH_SHORT).show();
+                Log.d("Error", t.getMessage());
+            }
+        });
+        /******************************************************************************************/
+    }
+
     private void addRows() {
         /******************************************************************************************/
         SmartService smartService = ServiceGenerator.createService(SmartService.class, pref.getValue("pref_access_token", ""));
@@ -314,6 +361,17 @@ public class SmartClientViewActivity extends AppCompatActivity {
 
         switch(requestCode) {
 
+            case 1001: // 내용 수정 페이지에서 온 경우 내용 새로 고침
+
+                _txtTitle.setText(SmartSingleton.smartClient.strTitle);
+                _txtWriter.setText(SmartSingleton.smartClient.strWriter);
+                _txtDate.setText(SmartSingleton.smartClient.datWrite);
+                _txtContent.setHtml(SmartSingleton.smartClient.strContent, new HtmlRemoteImageGetterLee(_txtContent, null, true, _txtContent.getWidth()));
+
+                ScrollView scrollView = (ScrollView) findViewById(R.id.sv_client_view);
+                scrollView.fullScroll(ScrollView.FOCUS_UP);
+                break;
+
             case 2001: // 댓글에서 사진 추가하기
 
                 if( data != null) {
@@ -328,7 +386,7 @@ public class SmartClientViewActivity extends AppCompatActivity {
                         //_imgCommentPhoto.getLayoutParams().height = 200;
                         //_imgCommentPhoto.requestLayout();
                         _imgCommentPhoto.setVisibility(View.VISIBLE);
-                        ScrollView scrollView = (ScrollView) findViewById(R.id.sv_client_view);
+                        scrollView = (ScrollView) findViewById(R.id.sv_client_view);
                         scrollView.fullScroll(ScrollView.FOCUS_DOWN);
                         //Toast.makeText(SmartClientViewActivity.this, "strFileURL : " + strFileURL, Toast.LENGTH_SHORT).show();
                     }

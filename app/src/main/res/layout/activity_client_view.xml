@@ -135,6 +135,34 @@
                     android:paddingTop="20dp"
                     android:minHeight="200dp" /-->
 
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginRight="20dp"
+                    android:id="@+id/ll_attach_file"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:layout_width="25dp"
+                        android:layout_height="30dp"
+                        android:id="@+id/imageView10"
+                        android:src="@drawable/ico_file" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="첨부파일"
+                        android:id="@+id/txt_attach_file"
+                        android:textSize="13dp"
+                        android:layout_marginTop="7dp"
+                        android:layout_marginLeft="6dp" />
+                </LinearLayout>
+
                 <org.sufficientlysecure.htmltextview.HtmlTextView
                     android:id="@+id/txt_client_view_content"
                     android:layout_width="match_parent"
@@ -146,6 +174,7 @@
                     android:paddingBottom="20dp"
                     android:paddingTop="20dp"
                     android:minHeight="200dp" />
+
             </LinearLayout>
 
             <RelativeLayout
@@ -167,6 +196,18 @@
                     style="?android:attr/buttonStyleSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:text="삭제"
+                    android:id="@+id/btn_client_view_delete"
+                    android:layout_marginTop="15dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentRight="false"
+                    android:background="#ffffff"
+                    android:layout_marginLeft="110dp" />
+
+                <Button
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:text="Top"
                     android:id="@+id/btn_client_view_top"
                     android:layout_marginRight="20dp"
@@ -174,6 +215,7 @@
                     android:layout_alignParentLeft="false"
                     android:layout_alignParentRight="true"
                     android:background="#ffffff" />
+
             </RelativeLayout>
 
             <android.support.v7.widget.RecyclerView

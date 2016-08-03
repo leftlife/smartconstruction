@@ -17,15 +17,15 @@
     <item android:title="Registration">
         <menu>
             <item
-                android:id="@+id/nav_camera"
+                android:id="@+id/nav_smart_build"
                 android:icon="@drawable/ic_menu_gallery"
                 android:title="스마트일보 등록" />
             <item
-                android:id="@+id/nav_gallery"
+                android:id="@+id/nav_smart_client"
                 android:icon="@drawable/ic_menu_gallery"
                 android:title="건축주협의 등록" />
             <item
-                android:id="@+id/nav_slideshow"
+                android:id="@+id/nav_smart_order"
                 android:icon="@drawable/ic_menu_slideshow"
                 android:title="작업지시 등록" />
         </menu>
@@ -33,11 +33,11 @@
     <item android:title="Management">
         <menu>
             <item
-                android:id="@+id/nav_manage"
+                android:id="@+id/nav_manage_photo"
                 android:icon="@drawable/ic_menu_camera"
                 android:title="사진관리" />
             <item
-                android:id="@+id/nav_share"
+                android:id="@+id/nav_manage_employee"
                 android:icon="@drawable/ic_menu_share"
                 android:title="사원목록" />
             <item

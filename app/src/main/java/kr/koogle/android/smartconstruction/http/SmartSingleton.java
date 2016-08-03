@@ -56,5 +56,9 @@ public class SmartSingleton {
         return uniqueInstance;
     }
 
+    public static void clearInstance() {
+        uniqueInstance = null;
+    }
+
 }
 

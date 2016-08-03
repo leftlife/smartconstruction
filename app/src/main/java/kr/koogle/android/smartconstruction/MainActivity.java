@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     // viewPager 관련
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
+    private int pageNumber;
 
     // UTILITY METHODS
     private Toast mToast;
@@ -354,19 +355,34 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
+        //Log.d(TAG, "getCurrentItem : " + String.valueOf(mViewPager.getCurrentItem()));
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+
+            switch(mViewPager.getCurrentItem()) {
+
+                case 0: // 스마트 현장
+                    break;
+
+                case 1: // 건축주 협의
+                    Intent intent = new Intent(MainActivity.this, SmartClientWriteActivity.class);
+                    intent.putExtra("intId", 0);
+                    //SmartSingleton.smartClient = new SmartClient();
+                    startActivityForResult(intent, 1001);
+                    break;
+
+                case 2: // 작업지시
+                    break;
+
+                default:
+                    break;
+            }
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -381,15 +397,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
+        if (id == R.id.nav_smart_build) {
 
-        } else if (id == R.id.nav_gallery) {
+        } else if (id == R.id.nav_smart_client) {
 
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.nav_smart_order) {
 
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.nav_manage_photo) {
 
-        } else if (id == R.id.nav_share) {
+        } else if (id == R.id.nav_manage_employee) {
 
         } else if (id == R.id.nav_logout) {
             // Settings 값 !!
@@ -403,8 +419,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             pref.put("pref_user_email", "");
             pref.put("pref_access_token", "");
 
-            SmartSingleton.arrSmartBuilds = new ArrayList<SmartBuild>();
-            SmartSingleton.arrSmartWorks = new ArrayList<SmartWork>();
+            SmartSingleton.clearInstance();
 
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(intent);

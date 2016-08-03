@@ -13,6 +13,7 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Part;
 import retrofit2.http.PartMap;
 import retrofit2.http.Path;
@@ -49,6 +50,22 @@ public interface SmartService {
     @GET("clients/{client}")
     Call<SmartClient> getSmartBBSClient(
         @Path("client") String clientCode
+    );
+
+    @FormUrlEncoded
+    @POST("clients")
+    Call<ResponseBody> registClient(@FieldMap Map<String, String> fields);
+
+    @FormUrlEncoded
+    @POST("clients/{client}")
+    Call<ResponseBody> modifyClient(
+            @Path("client") String clientCode,
+            @FieldMap Map<String, String> fields
+    );
+
+    @DELETE("clients/{client}")
+    Call<ResponseBody> deleteClient(
+            @Path("client") String clientCode
     );
 
     // 작업지시
