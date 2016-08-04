@@ -187,7 +187,7 @@ public class CameraPicListActivity extends AppCompatActivity {
 
         // Pull to Refresh 4-2
         // Lookup the swipe container view
-        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.sc_camera_pic_list);
+        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.srl_camera_pic_list);
         // Setup refresh listener which triggers new data loading
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override

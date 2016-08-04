@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -43,30 +44,38 @@
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/nsv_smart_work"
+    <android.support.v4.widget.SwipeRefreshLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/srl_smart_work"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        tools:context=".SmartWorkActivity"
-        tools:showIn="@layout/activity_work">
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <kr.koogle.android.smartconstruction.util.EndlessScrollView
-            android:id="@+id/esv_smart_work"
+        <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/nsv_smart_work"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            tools:context=".SmartWorkActivity"
+            tools:showIn="@layout/activity_work">
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/rv_smart_work"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scrollbars="vertical"/>
+                <kr.koogle.android.smartconstruction.util.EndlessScrollView
+                    android:id="@+id/esv_smart_work"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
-        </kr.koogle.android.smartconstruction.util.EndlessScrollView>
+                        <android.support.v7.widget.RecyclerView
+                            android:id="@+id/rv_smart_work"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scrollbars="vertical"/>
 
-    </android.support.v4.widget.NestedScrollView>
+                </kr.koogle.android.smartconstruction.util.EndlessScrollView>
+
+        </android.support.v4.widget.NestedScrollView>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_work"
@@ -78,3 +87,4 @@
         app:layout_anchorGravity="bottom|end" />
 
 </android.support.design.widget.CoordinatorLayout>
+

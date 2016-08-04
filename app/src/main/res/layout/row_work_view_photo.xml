@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="140dp"
+    android:layout_marginTop="1dp"
+    android:background="#ffffff"
+    android:paddingBottom="20dp"
+    android:layout_gravity="right"
+    android:paddingTop="20dp"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp" >
+
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:id="@+id/img_work_view_photo"
+        android:src="@drawable/ico_photo" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="10"
+        android:layout_marginLeft="110dp"
+        android:layout_marginTop="4dp">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="40dp"
+            android:layout_height="match_parent" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="공종"
+                android:id="@+id/textView"
+                android:textSize="12dp"
+                android:textColor="#999999"
+                android:layout_marginTop="7dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="위치"
+                android:id="@+id/textView3"
+                android:textSize="12dp"
+                android:textColor="#999999"
+                android:layout_marginTop="7dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="내용"
+                android:id="@+id/textView4"
+                android:textSize="12dp"
+                android:textColor="#999999"
+                android:layout_marginTop="7dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="일자"
+                android:id="@+id/textView7"
+                android:textSize="12dp"
+                android:textColor="#999999"
+                android:layout_marginTop="7dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="현장관리"
+                android:id="@+id/txt_work_view_photo_build"
+                android:textSize="12dp"
+                android:textColor="#555555"
+                android:layout_marginTop="7dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="현장 외곽"
+                android:id="@+id/txt_work_view_photo_location"
+                android:textSize="12dp"
+                android:textColor="#555555"
+                android:layout_marginTop="7dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="현장전경"
+                android:id="@+id/txt_work_view_photo_memo"
+                android:textSize="12dp"
+                android:textColor="#555555"
+                android:layout_marginTop="7dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="2016.07.01"
+                android:id="@+id/txt_work_view_photo_date"
+                android:textSize="12dp"
+                android:textColor="#555555"
+                android:layout_marginTop="7dp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:text="삭제"
+        android:id="@+id/btn_work_view_photo_delete"
+        android:layout_alignParentRight="true"
+        android:textSize="11dp"
+        android:layout_marginRight="50dp"
+        android:layout_marginTop="8dp"
+        android:background="#ffffff"
+        android:layout_alignParentBottom="true" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:text="수정"
+        android:id="@+id/btn_work_view_photo_modify"
+        android:layout_alignParentRight="true"
+        android:textSize="11dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="8dp"
+        android:background="#ffffff"
+        android:layout_alignParentBottom="true" />
+
+</RelativeLayout>

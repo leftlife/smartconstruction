@@ -1,6 +1,7 @@
 package kr.koogle.android.smartconstruction;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.UiThread;
@@ -66,6 +67,8 @@ public class SmartClientViewActivity extends AppCompatActivity {
     @Bind(R.id.txt_client_view_writer) TextView _txtWriter;
     @Bind(R.id.txt_client_view_date) TextView _txtDate;
     @Bind(R.id.txt_client_view_content) HtmlTextView _txtContent;
+    @Bind(R.id.ll_attach_file) LinearLayout _llAttachFile;
+    @Bind(R.id.txt_attach_file) TextView _txtAttachFile;
 
     @Bind(R.id.btn_client_view_modify) Button _btnModify;
     @Bind(R.id.btn_client_view_delete) Button _btnDelete;
@@ -77,8 +80,6 @@ public class SmartClientViewActivity extends AppCompatActivity {
     @Bind(R.id.input_client_view_comment_photo) ImageView _imgCommentPhoto;
     private String commentPhotoCode = "";
 
-    private String clientCode;
-
     // recycleViewer
     private static RecyclerView recyclerView;
     private SmartClientViewAdapter adapter;
@@ -86,6 +87,7 @@ public class SmartClientViewActivity extends AppCompatActivity {
 
     // intent 로 넘어온 값 받기
     private Intent intent;
+    private String clientCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -324,20 +326,25 @@ public class SmartClientViewActivity extends AppCompatActivity {
                         _txtContent.setHtml(SmartSingleton.smartClient.strContent, new HtmlRemoteImageGetterLee(_txtContent, null, true, _txtContent.getWidth()));
                         //Toast.makeText(SmartClientViewActivity.this, response.body().toString(), Toast.LENGTH_SHORT).show();
 
+                        if(SmartSingleton.smartClient.arrFiles.size() > 0) {
+                            _llAttachFile.setVisibility(View.VISIBLE);
+                            _txtAttachFile.setText(SmartSingleton.smartClient.arrFiles.get(0).strNameOrigin);
+                            _txtAttachFile.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    Uri uri = Uri.parse(SmartSingleton.smartClient.arrFiles.get(0).strURL + SmartSingleton.smartClient.arrFiles.get(0).strName);
+                                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                                    startActivity(intent);
+                                }
+                            });
+                        }
+
                         SmartSingleton.arrComments.addAll(SmartSingleton.smartClient.arrComments);
                         adapter.notifyDataSetChanged();
                         // comment 리스트 출력 !!
                         //int curSize = adapter.getItemCount();
                         //adapter.notifyItemRangeInserted(curSize, smartClient.arrComments.size());
                         Log.d(TAG, "curSize : " + adapter.getItemCount() + " / arrComments.size : " + SmartSingleton.smartClient.arrComments.size());
-                        /*
-                        SmartClientViewActivity.this.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                adapter.notifyDataSetChanged();
-                            }
-                        });
-                        */
 
                     } else {
                         Toast.makeText(getApplication(), "데이터가 정확하지 않습니다.", Toast.LENGTH_SHORT).show();

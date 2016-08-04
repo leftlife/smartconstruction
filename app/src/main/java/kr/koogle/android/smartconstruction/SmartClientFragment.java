@@ -80,6 +80,7 @@ public class SmartClientFragment extends Fragment {
         }
         // RecycleView 에 Adapter 세팅
         recyclerView.setAdapter(adapter);
+        recyclerView.setItemAnimator(new SlideInUpAnimator());
         /******************************************************************************************/
 
         final LinearLayout empLayout = (LinearLayout) rootView.findViewById(R.id.emp_layout); // 내용없을때 보이는 레이아웃
@@ -88,7 +89,6 @@ public class SmartClientFragment extends Fragment {
             //empLayout.setVisibility(View.VISIBLE);
         } else {
             //empLayout.setVisibility(View.GONE);
-            recyclerView.setItemAnimator(new SlideInUpAnimator());
         }
 
         /***************************************************************************/
@@ -158,7 +158,7 @@ public class SmartClientFragment extends Fragment {
 
         // Pull to Refresh 4-2
         // Lookup the swipe container view
-        swipeContainer = (SwipeRefreshLayout) rootView.findViewById(R.id.sc_smart_client);
+        swipeContainer = (SwipeRefreshLayout) rootView.findViewById(R.id.srl_smart_client);
         // Setup refresh listener which triggers new data loading
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override

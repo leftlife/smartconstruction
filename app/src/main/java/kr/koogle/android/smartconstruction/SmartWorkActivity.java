@@ -8,11 +8,13 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.NestedScrollView;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -42,15 +44,18 @@ public class SmartWorkActivity extends AppCompatActivity {
 
     public static RecyclerView recyclerView;
     private SmartWorkAdapter adapter;
+    private RecyclerView.LayoutManager layoutManager;
 
     private static String strBuildCode = "start";
     private static Boolean isNewBuild;
     private static String strWorkTitleTop = "";
 
     private static boolean isLoading;
+    private static boolean isTop;
     private static int visibleThreshold = 10;
 
-    private RecyclerView.LayoutManager layoutManager;
+    // Pull to Refresh 4-1
+    private SwipeRefreshLayout swipeContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,7 +88,7 @@ public class SmartWorkActivity extends AppCompatActivity {
                 final int totalItemCount = layoutManager.getItemCount();
                 final int layoutManagerH = layoutManager.getHeight();
                 final int parentH = parentScrollView.getHeight();
-                final int itemH = layoutManager.getChildAt(0).getHeight();
+                //final int itemH = layoutManager.getChildAt(0).getHeight();
 
                 if ( layoutManagerH - parentH - scrollY < 10 ) {
                     isLoading = true;
@@ -92,7 +97,7 @@ public class SmartWorkActivity extends AppCompatActivity {
                     addRows();
                     /******************************************************************************************/
                 }
-                Log.d(TAG, "scrollY : " + scrollY + " / height : " + layoutManagerH + " / heightRV : " + parentH + " / viewHeight : " + itemH);
+                Log.d(TAG, "scrollY : " + scrollY + " / height : " + layoutManagerH + " / heightRV : " + parentH);
             }
         });
 
@@ -146,20 +151,48 @@ public class SmartWorkActivity extends AppCompatActivity {
         adapter.setOnItemClickListener(new SmartWorkAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
+                final String strBuildCode = SmartSingleton.arrSmartWorks.get(position).strBuildCode;
                 final String strCode = SmartSingleton.arrSmartWorks.get(position).strCode;
-                final String strDate = SmartSingleton.arrSmartWorks.get(position).strDate;
-                final String strImageUrl = SmartSingleton.arrSmartWorks.get(position).strImageURL;
                 adapter.notifyItemChanged(position);
 
                 Intent intentWorkView = new Intent(SmartWorkActivity.this, SmartWorkViewActivity.class);
-                intentWorkView.putExtra("strBuildCode", strCode);
-                intentWorkView.putExtra("strBuildDate", strDate);
-                intentWorkView.putExtra("strImageUrl", strImageUrl);
+                intentWorkView.putExtra("strBuildCode", strBuildCode);
+                intentWorkView.putExtra("strCode", strCode);
                 startActivityForResult(intentWorkView, 1002);
-                Toast.makeText(getApplicationContext(), "strBuildCode : " + strCode, Toast.LENGTH_SHORT).show();
             }
         });
         /***************************************************************************/
+
+        // Pull to Refresh 4-2
+        // Lookup the swipe container view
+        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.srl_smart_work);
+        /*
+        swipeContainer.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                Log.d(TAG, "onTouch : " + motionEvent.toString());
+                return false;
+            }
+        });
+        */
+        // Setup refresh listener which triggers new data loading
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Your code to refresh the list here.
+                // Make sure you call swipeContainer.setRefreshing(false)
+                // once the network request has completed successfully.
+                fetchTimelineAsync(0);
+            }
+        });
+        // Configure the refreshing colors
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright);
+    }
+
+    // Pull to Refresh 4-3
+    public void fetchTimelineAsync(int page) {
+        adapter.clear();
+        addRows();
     }
 
     public void setLoaded() {
@@ -185,27 +218,34 @@ public class SmartWorkActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<ArrayList<SmartWork>> call, Response<ArrayList<SmartWork>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    final ArrayList<SmartWork> responseSmartWorks = response.body();
+                    final ArrayList<SmartWork> responses = response.body();
 
-                    if(responseSmartWorks.size() != 0) {
-                        Log.d(TAG, "responseSmartWorks : size " + responseSmartWorks.size());
-                        SmartSingleton.arrSmartWorks.addAll(responseSmartWorks);
+                    if(responses.size() != 0) {
+                        Log.d(TAG, "responses : size " + responses.size());
+                        Log.d(TAG,"arrSmartLabors size : " + responses.get(0).arrSmartLabors.size());
+                        SmartSingleton.arrSmartWorks.addAll(responses);
                         // 최근 카운트 체크
                         int curSize = adapter.getItemCount();
-                        adapter.notifyItemRangeInserted(curSize, responseSmartWorks.size());
+                        adapter.notifyItemRangeInserted(curSize, responses.size());
                     } else {
                         Snackbar.make(SmartWorkActivity.recyclerView, "마지막 리스트 입니다.", Snackbar.LENGTH_LONG).setAction("Action", null).show();
                     }
                 } else {
                     Toast.makeText(getApplication(), "데이터가 정확하지 않습니다.", Toast.LENGTH_SHORT).show();
-                    Log.d(TAG, "responseSmartWorks : 데이터가 정확하지 않습니다.");
+                    Log.d(TAG, "responses : 데이터가 정확하지 않습니다.");
                 }
+
+                // Pull to Refresh 4-4
+                swipeContainer.setRefreshing(false);
             }
 
             @Override
             public void onFailure(Call<ArrayList<SmartWork>> call, Throwable t) {
                 Toast.makeText(getApplicationContext(), "네트워크 상태가 좋지 않습니다!!!", Toast.LENGTH_SHORT).show();
                 Log.d("Error", t.getMessage());
+
+                // Pull to Refresh 4-4
+                swipeContainer.setRefreshing(false);
             }
         });
         /******************************************************************************************/
@@ -232,6 +272,8 @@ public class SmartWorkActivity extends AppCompatActivity {
                     // extended
                     iv.animate().alpha(1f).setDuration(600); // 1.0f means opaque
                 }
+                Log.d(TAG, "height : " + collapsingToolbar.getHeight() + " / vertical : " + verticalOffset + " / getMinimumHeight : " + ViewCompat.getMinimumHeight(collapsingToolbar));
+                isTop = false;
             }
         };
 

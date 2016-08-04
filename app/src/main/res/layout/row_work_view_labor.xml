@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_marginTop="1dp"
+    android:background="#ffffff"
+    android:paddingBottom="10dp" >
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="현장관리, 주변건물 현황점검"
+        android:id="@+id/txt_work_view_labor_title"
+        android:textSize="14dp"
+        android:textColor="#555555"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="100dp"
+        android:layout_marginTop="10dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="현장관리 | 현장소장 (1명)"
+        android:id="@+id/txt_work_view_labor_detail"
+        android:textColor="#999999"
+        android:textSize="12dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="21dp"
+        android:layout_marginRight="21dp" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:text="수정"
+        android:id="@+id/btn_work_view_labor_modify"
+        android:layout_alignParentRight="true"
+        android:textSize="11dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="8dp"
+        android:background="#ffffff" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:text="삭제"
+        android:id="@+id/btn_work_view_labor_delete"
+        android:layout_alignParentRight="true"
+        android:textSize="11dp"
+        android:layout_marginRight="60dp"
+        android:layout_marginTop="8dp"
+        android:background="#ffffff" />
+
+</RelativeLayout>

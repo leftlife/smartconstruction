@@ -199,7 +199,7 @@ public class SmartBuildFragment extends Fragment {
 
         // Pull to Refresh 4-2
         // Lookup the swipe container view
-        swipeContainer = (SwipeRefreshLayout) rootView.findViewById(R.id.sc_smart_build);
+        swipeContainer = (SwipeRefreshLayout) rootView.findViewById(R.id.srl_smart_build);
         // Setup refresh listener which triggers new data loading
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override

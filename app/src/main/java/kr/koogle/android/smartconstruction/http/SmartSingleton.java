@@ -23,6 +23,7 @@ public class SmartSingleton {
     public static ArrayList<SmartComment> arrComments;
 
     public static SmartBuild smartBuild;
+    public static SmartWork smartWork;
     public static SmartClient smartClient;
     public static SmartOrder smartOrder;
 
@@ -47,6 +48,7 @@ public class SmartSingleton {
                     arrComments = new ArrayList<SmartComment>();
 
                     smartBuild = new SmartBuild();
+                    smartWork = new SmartWork();
                     smartClient = new SmartClient();
                     smartOrder = new SmartOrder();
 

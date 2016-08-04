@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -17,11 +18,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import kr.koogle.android.smartconstruction.http.SmartSingleton;
-import kr.koogle.android.smartconstruction.http.SmartWork;
+import kr.koogle.android.smartconstruction.http.SmartLabor;
 import kr.koogle.android.smartconstruction.util.OnLoadMoreListener;
 
-public class SmartWorkAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private static final String TAG = "SmartWorkAdapter";
+public class SmartWorkLaborAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    private static final String TAG = "SmartWorkLaborAdapter";
     private final int VIEW_TYPE_ITEM = 0;
     private final int VIEW_TYPE_LOADING = 1;
     private OnLoadMoreListener mOnLoadMoreListener;
@@ -30,12 +31,12 @@ public class SmartWorkAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     private int lastVisibleItem, totalItemCount;
 
     private Context mContext;
-    private static ArrayList<SmartWork> mRows;
+    private static ArrayList<SmartLabor> mRows;
     private Context getContext() {
         return mContext;
     }
 
-    public SmartWorkAdapter(Context context, ArrayList<SmartWork> arrRows) {
+    public SmartWorkLaborAdapter(Context context, ArrayList<SmartLabor> arrRows) {
         mContext = context;
         mRows = arrRows;
     }
@@ -60,7 +61,7 @@ public class SmartWorkAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         Context context = parent.getContext();
 
         if (viewType == VIEW_TYPE_ITEM) {
-            View view = LayoutInflater.from(context).inflate(R.layout.row_smart_work, parent, false);
+            View view = LayoutInflater.from(context).inflate(R.layout.row_work_view_labor, parent, false);
             return new UserViewHolder(getContext(), view);
         } else if (viewType == VIEW_TYPE_LOADING) {
             View view = LayoutInflater.from(context).inflate(R.layout.row_loading_item, parent, false);
@@ -83,39 +84,28 @@ public class SmartWorkAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         // Get the data model based on position
-        SmartWork row = mRows.get(position);
+        SmartLabor row = mRows.get(position);
 
         // Set item views based on your views and data model
         if (holder instanceof UserViewHolder) {
             //User user = mRows.get(position);
             UserViewHolder userViewHolder = (UserViewHolder) holder;
 
-            ImageView ivImage = userViewHolder.image;
-            TextView tvDate = userViewHolder.date;
-            TextView tvWork0 = userViewHolder.work1;
-            TextView tvWork1 = userViewHolder.work2;
-            TextView tvWork2 = userViewHolder.work3;
+            TextView txtTitle = userViewHolder.txtTitle;
+            TextView txtDetail = userViewHolder.txtDetail;
+            Button btnDelete = userViewHolder.btnDelete;
+            Button btnModify = userViewHolder.btnModify;
 
+            /*
             if( !row.strImageURL.isEmpty() ) {
                 Picasso.with(getContext())
                         .load(row.strImageURL)
                         .fit() // resize(700,400)
                         .into(ivImage);
             }
-            tvDate.setText(row.strDate);
-            if ( row.arrSmartLabors.size() == 1 ) {
-                tvWork0.setText(row.arrSmartLabors.get(0).strCate1 + " " + row.arrSmartLabors.get(0).strMemo);
-            } else if ( row.arrSmartLabors.size() == 2 ) {
-                tvWork0.setText(row.arrSmartLabors.get(0).strCate1 + " " + row.arrSmartLabors.get(0).strMemo);
-                tvWork1.setText(row.arrSmartLabors.get(1).strCate1 + " " + row.arrSmartLabors.get(1).strMemo);
-            } else if ( row.arrSmartLabors.size() == 3 ) {
-                tvWork0.setText(row.arrSmartLabors.get(0).strCate1 + " " + row.arrSmartLabors.get(0).strMemo);
-                tvWork1.setText(row.arrSmartLabors.get(1).strCate1 + " " + row.arrSmartLabors.get(1).strMemo);
-                tvWork2.setText(row.arrSmartLabors.get(2).strCate1 + " " + row.arrSmartLabors.get(2).strMemo);
-            }
-            if ( row.arrSmartLabors.size() > 0 ) {
-                Log.d(TAG, " 리스트 생성 : " + row.arrSmartLabors.size() + " / " + row.strDate + " / " + row.arrSmartLabors.get(0).strCate1 + " / " + row.arrSmartLabors.get(0).strMemo + " / ");
-            }
+            */
+            txtTitle.setText(row.strMemo);
+            txtDetail.setText(row.strCate1);
 
         } else if (holder instanceof LoadingViewHolder) {
             LoadingViewHolder loadingViewHolder = (LoadingViewHolder) holder;
@@ -158,20 +148,18 @@ public class SmartWorkAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     // 뷰홀더 클래스 ###############################################################################
     public static class UserViewHolder extends RecyclerView.ViewHolder  { // implements View.OnClickListener
 
-        public ImageView image;
-        public TextView date;
-        public TextView work1;
-        public TextView work2;
-        public TextView work3;
         private Context context;
+        public TextView txtTitle;
+        public TextView txtDetail;
+        public Button btnDelete;
+        public Button btnModify;
 
         public UserViewHolder(Context context, final View itemView) {
             super(itemView);
-            image = (ImageView) itemView.findViewById(R.id.r_sw_image);
-            date = (TextView) itemView.findViewById(R.id.r_sw_date);
-            work1 = (TextView) itemView.findViewById(R.id.r_sw_work_1);
-            work2 = (TextView) itemView.findViewById(R.id.r_sw_work_2);
-            work3 = (TextView) itemView.findViewById(R.id.r_sw_work_3);
+            txtTitle = (TextView) itemView.findViewById(R.id.txt_work_view_labor_title);
+            txtDetail = (TextView) itemView.findViewById(R.id.txt_work_view_labor_detail);
+            btnDelete = (Button) itemView.findViewById(R.id.btn_work_view_labor_delete);
+            btnModify = (Button) itemView.findViewById(R.id.btn_work_view_labor_modify);
 
             this.context = context;
 

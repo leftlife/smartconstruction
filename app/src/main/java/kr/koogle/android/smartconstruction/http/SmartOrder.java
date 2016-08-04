@@ -19,6 +19,11 @@ public class SmartOrder {
     public int intEmail;
     public String datWrite;
 
+    public String strWho;
+    public String strWhoCode;
+    public String strChk;
+    public String strChkMem;
+
     public ArrayList<SmartEmployee> arrEmployees;
     public ArrayList<SmartFile> arrFiles;
     public ArrayList<SmartComment> arrComments;

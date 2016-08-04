@@ -32,7 +32,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import kr.koogle.android.smartconstruction.http.ServiceGenerator;
 import kr.koogle.android.smartconstruction.http.SmartBuild;
-import kr.koogle.android.smartconstruction.http.SmartClient;
+import kr.koogle.android.smartconstruction.http.SmartOrder;
 import kr.koogle.android.smartconstruction.http.SmartComment;
 import kr.koogle.android.smartconstruction.http.SmartFile;
 import kr.koogle.android.smartconstruction.http.SmartService;
@@ -43,11 +43,11 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class SmartClientWriteActivity extends AppCompatActivity {
-    private static final String TAG = "SmartClientWriteActivity";
+public class SmartOrderWriteActivity extends AppCompatActivity {
+    private static final String TAG = "SmartOrderWriteActivity";
     private RbPreference pref;
 
-    //private SmartClient smartClient;
+    //private SmartOrder smartOrder;
 
     @Bind(R.id.input_build_name) EditText _buildName;
     @Bind(R.id.input_title) EditText _title;
@@ -61,7 +61,7 @@ public class SmartClientWriteActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_client_write);
+        setContentView(R.layout.activity_order_write);
         ButterKnife.bind(this);
         // intent 등록
         intent = getIntent();
@@ -71,14 +71,14 @@ public class SmartClientWriteActivity extends AppCompatActivity {
         // Settings 값 !!
         pref = new RbPreference(getApplicationContext());
 
-        //smartClient = new SmartClient();
+        //smartOrder = new SmartOrder();
 
         // 리스트 클릭시 넘어온값 받기 !!
-        SmartSingleton.smartClient.intId = getIntent().getExtras().getInt("intId");
-        //Toast.makeText(SmartClientWriteActivity.this, "intId : " + intId, Toast.LENGTH_SHORT).show();
-        if( SmartSingleton.smartClient.intId > 0 ) {
+        SmartSingleton.smartOrder.intId = getIntent().getExtras().getInt("intId");
+        //Toast.makeText(SmartOrderWriteActivity.this, "intId : " + intId, Toast.LENGTH_SHORT).show();
+        if( SmartSingleton.smartOrder.intId > 0 ) {
 
-            final String strBuildCode = SmartSingleton.smartClient.strCate1;
+            final String strBuildCode = SmartSingleton.smartOrder.strBuildCode;
             String strBuildName = "";
             for (SmartBuild sb : SmartSingleton.arrSmartBuilds) {
                 if( strBuildCode.equals(sb.strCode) ) {
@@ -87,21 +87,21 @@ public class SmartClientWriteActivity extends AppCompatActivity {
             }
             _buildName.setText(strBuildName);
 
-            _title.setText(SmartSingleton.smartClient.strTitle);
-            Spanned str = Html.fromHtml(SmartSingleton.smartClient.strContent);
+            _title.setText(SmartSingleton.smartOrder.strTitle);
+            Spanned str = Html.fromHtml(SmartSingleton.smartOrder.strContent);
             // String str2 = Html.toHtml(str);
             _content.setText(str);
 
-            if(SmartSingleton.smartClient.arrFiles.size() > 0) {
+            if(SmartSingleton.smartOrder.arrFiles.size() > 0) {
                 _photo.setVisibility(View.VISIBLE);
-                Picasso.with(SmartClientWriteActivity.this)
-                        .load(SmartSingleton.smartClient.arrFiles.get(0).strURL + SmartSingleton.smartClient.arrFiles.get(0).strName)
+                Picasso.with(SmartOrderWriteActivity.this)
+                        .load(SmartSingleton.smartOrder.arrFiles.get(0).strURL + SmartSingleton.smartOrder.arrFiles.get(0).strName)
                         .fit() // resize(700,400)
                         .into(_photo);
                 _photo.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Uri uri = Uri.parse(SmartSingleton.smartClient.arrFiles.get(0).strURL + SmartSingleton.smartClient.arrFiles.get(0).strName);
+                        Uri uri = Uri.parse(SmartSingleton.smartOrder.arrFiles.get(0).strURL + SmartSingleton.smartOrder.arrFiles.get(0).strName);
                         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                         startActivity(intent);
                     }
@@ -110,7 +110,7 @@ public class SmartClientWriteActivity extends AppCompatActivity {
         }
 
         // 툴바 세팅
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_client_write);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_order_write);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationIcon(R.drawable.ico_back);
@@ -119,7 +119,7 @@ public class SmartClientWriteActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SmartClientWriteActivity.this.finish();
+                SmartOrderWriteActivity.this.finish();
             }
         });
 
@@ -127,10 +127,10 @@ public class SmartClientWriteActivity extends AppCompatActivity {
         _addPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(SmartClientWriteActivity.this, CameraPicListActivity.class);
-                //intent.putExtra("intId", SmartSingleton.smartClient.intId);
+                Intent intent = new Intent(SmartOrderWriteActivity.this, CameraPicListActivity.class);
+                //intent.putExtra("intId", SmartSingleton.smartOrder.intId);
                 startActivityForResult(intent, 1001);
-                //Toast.makeText(SmartClientViewActivity.this, "intId : " + smartClient.intId, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(SmartOrderViewActivity.this, "intId : " + smartOrder.intId, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -147,13 +147,13 @@ public class SmartClientWriteActivity extends AppCompatActivity {
                         }
                     }
 
-                    MaterialDialog md = new MaterialDialog.Builder(SmartClientWriteActivity.this)
+                    MaterialDialog md = new MaterialDialog.Builder(SmartOrderWriteActivity.this)
                             .title("현장선택")
                             .items(arrBuild)
                             .itemsCallback(new MaterialDialog.ListCallback() {
                                 @Override
                                 public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                                    SmartSingleton.smartClient.strCate1 = SmartSingleton.arrSmartBuilds.get(which).strCode;
+                                    SmartSingleton.smartOrder.strBuildCode = SmartSingleton.arrSmartBuilds.get(which).strCode;
                                     _buildName.setText(text);
                                     _buildName.clearFocus();
                                 }
@@ -178,18 +178,18 @@ public class SmartClientWriteActivity extends AppCompatActivity {
                         final String strFileURL = data.getStringExtra("strFileURL");
                         //Log.d("aaaa", "strFileURL : " + data.getStringExtra("strFileURL"));
                         if (!strFileURL.isEmpty()) {
-                            if(SmartSingleton.smartClient.arrFiles.size() == 0) SmartSingleton.smartClient.arrFiles.add(new SmartFile());
-                            SmartSingleton.smartClient.arrFiles.get(0).intId = intId; // 첨부파일 이미지 코드값 저장 !!
-                            Picasso.with(SmartClientWriteActivity.this)
+                            if(SmartSingleton.smartOrder.arrFiles.size() == 0) SmartSingleton.smartOrder.arrFiles.add(new SmartFile());
+                            SmartSingleton.smartOrder.arrFiles.get(0).intId = intId; // 첨부파일 이미지 코드값 저장 !!
+                            Picasso.with(SmartOrderWriteActivity.this)
                                     .load(strFileURL)
                                     .fit() // resize(700,400)
                                     .into(_photo);
                             //_imgCommentPhoto.getLayoutParams().height = 200;
                             //_imgCommentPhoto.requestLayout();
                             _photo.setVisibility(View.VISIBLE);
-                            //ScrollView scrollView = (ScrollView) findViewById(R.id.sv_client_write);
+                            //ScrollView scrollView = (ScrollView) findViewById(R.id.sv_order_write);
                             //scrollView.fullScroll(ScrollView.FOCUS_DOWN);
-                            //Toast.makeText(SmartClientViewActivity.this, "strFileURL : " + strFileURL, Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(SmartOrderViewActivity.this, "strFileURL : " + strFileURL, Toast.LENGTH_SHORT).show();
                         }
                     }
                     break;
@@ -215,7 +215,7 @@ public class SmartClientWriteActivity extends AppCompatActivity {
         if (id == R.id.action_settings) {
 
             if(_buildName.getText().toString().equals("")) {
-                new MaterialDialog.Builder(SmartClientWriteActivity.this)
+                new MaterialDialog.Builder(SmartOrderWriteActivity.this)
                         .title("공사명 미등록")
                         .content("공사명을 먼저 등록해 주세요.")
                         .positiveText("확인")
@@ -228,7 +228,7 @@ public class SmartClientWriteActivity extends AppCompatActivity {
                         .show();
                 return false;
             } else if(_title.getText().toString().equals("")) {
-                new MaterialDialog.Builder(SmartClientWriteActivity.this)
+                new MaterialDialog.Builder(SmartOrderWriteActivity.this)
                         .title("제목 미등록")
                         .content("제목을 먼저 등록해 주세요.")
                         .positiveText("확인")
@@ -241,7 +241,7 @@ public class SmartClientWriteActivity extends AppCompatActivity {
                         .show();
                 return false;
             } else if(_content.getText().toString().equals("")) {
-                new MaterialDialog.Builder(SmartClientWriteActivity.this)
+                new MaterialDialog.Builder(SmartOrderWriteActivity.this)
                         .title("내용 미등록")
                         .content("내용을 먼저 등록해 주세요.")
                         .positiveText("확인")
@@ -255,12 +255,12 @@ public class SmartClientWriteActivity extends AppCompatActivity {
                 return false;
             } else {
                 // 건축주 협의 게시판 수정하기
-                SmartSingleton.smartClient.strTitle = _title.getText().toString();
-                SmartSingleton.smartClient.strContent = Html.toHtml(_content.getText());
+                SmartSingleton.smartOrder.strTitle = _title.getText().toString();
+                SmartSingleton.smartOrder.strContent = Html.toHtml(_content.getText());
 
-                Log.d("aaaa", "intId : " + SmartSingleton.smartClient.intId);
-                Toast.makeText(getBaseContext(), "intId " + SmartSingleton.smartClient.intId, Toast.LENGTH_SHORT).show();
-                registClient(SmartSingleton.smartClient.intId);
+                Log.d("aaaa", "intId : " + SmartSingleton.smartOrder.intId);
+                Toast.makeText(getBaseContext(), "intId " + SmartSingleton.smartOrder.intId, Toast.LENGTH_SHORT).show();
+                registOrder(SmartSingleton.smartOrder.intId);
                 return true;
             }
 
@@ -269,37 +269,37 @@ public class SmartClientWriteActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void registClient(int intId) {
+    public void registOrder(int intId) {
         /******************************************************************************************/
         SmartService service = ServiceGenerator.createService(SmartService.class);
 
         Map<String, String> mapFields = new HashMap<String, String>();
-        mapFields.put("intId", String.valueOf(SmartSingleton.smartClient.intId));
-        mapFields.put("strCate1", SmartSingleton.smartClient.strCate1);
-        mapFields.put("strTitle", SmartSingleton.smartClient.strTitle);
-        mapFields.put("strContent", SmartSingleton.smartClient.strContent);
-        if(SmartSingleton.smartClient.arrFiles.size() > 0) {
-            mapFields.put("strFileCode", String.valueOf(SmartSingleton.smartClient.arrFiles.get(0).intId));
+        mapFields.put("intId", String.valueOf(SmartSingleton.smartOrder.intId));
+        mapFields.put("strCate1", SmartSingleton.smartOrder.strBuildCode);
+        mapFields.put("strTitle", SmartSingleton.smartOrder.strTitle);
+        mapFields.put("strContent", SmartSingleton.smartOrder.strContent);
+        if(SmartSingleton.smartOrder.arrFiles.size() > 0) {
+            mapFields.put("strFileCode", String.valueOf(SmartSingleton.smartOrder.arrFiles.get(0).intId));
         } else {
             mapFields.put("strFileCode", "");
         }
 
         if(intId > 0) { // 수정
-            Call<ResponseBody> call = service.modifyClient(String.valueOf(SmartSingleton.smartClient.intId), mapFields);
+            Call<ResponseBody> call = service.modifyOrder(String.valueOf(SmartSingleton.smartOrder.intId), mapFields);
             call.enqueue(new Callback<ResponseBody>() {
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                     try {
-                        Log.v("registClient", "수정 / " + response.body().string());
+                        Log.v("registOrder", "수정 / " + response.body().string());
 
-                        new MaterialDialog.Builder(SmartClientWriteActivity.this)
+                        new MaterialDialog.Builder(SmartOrderWriteActivity.this)
                                 .title("협의게시판 등록 완료")
                                 .content("글이 정상적으로 등록 되었습니다.")
                                 .positiveText("확인")
                                 .onAny(new MaterialDialog.SingleButtonCallback() {
                                     @Override
                                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                        SmartClientWriteActivity.this.setResult(RESULT_OK, intent);
+                                        SmartOrderWriteActivity.this.setResult(RESULT_OK, intent);
                                         finish();
                                     }
                                 })
@@ -316,14 +316,14 @@ public class SmartClientWriteActivity extends AppCompatActivity {
                 }
             });
         } else { // 신규 등록
-            Call<ResponseBody> call = service.registClient(mapFields);
+            Call<ResponseBody> call = service.registOrder(mapFields);
             call.enqueue(new Callback<ResponseBody>() {
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                     try {
-                        Log.v("registClient", "신규등록 / " + response.body().string());
+                        Log.v("registOrder", "신규등록 / " + response.body().string());
 
-                        new MaterialDialog.Builder(SmartClientWriteActivity.this)
+                        new MaterialDialog.Builder(SmartOrderWriteActivity.this)
                                 .title("협의게시판 등록 완료")
                                 .content("글이 정상적으로 등록 되었습니다.")
                                 .positiveText("확인")

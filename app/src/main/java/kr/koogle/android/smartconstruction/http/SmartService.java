@@ -38,7 +38,7 @@ public interface SmartService {
     );
 
     @GET("builds/{build}/works/{work}")
-    Call<SmartWork> getSmartWorkView(
+    Call<SmartWork> getSmartWork(
         @Path("build") String buildCode,
         @Path("work") String workCode
     );
@@ -75,6 +75,22 @@ public interface SmartService {
     @GET("orders/{order}")
     Call<SmartOrder> getSmartBBSOrder(
         @Path("order") String orderCode
+    );
+
+    @FormUrlEncoded
+    @POST("orders")
+    Call<ResponseBody> registOrder(@FieldMap Map<String, String> fields);
+
+    @FormUrlEncoded
+    @POST("orders/{order}")
+    Call<ResponseBody> modifyOrder(
+            @Path("order") String orderCode,
+            @FieldMap Map<String, String> fields
+    );
+
+    @DELETE("orders/{order}")
+    Call<ResponseBody> deleteOrder(
+            @Path("order") String orderCode
     );
 
     // 사진관리

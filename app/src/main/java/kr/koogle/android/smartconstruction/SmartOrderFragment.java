@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -32,7 +33,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class SmartOrderFragment extends Fragment {
-
     private static final String TAG = "SmartOrderFragment";
     private RbPreference pref;
 
@@ -52,6 +52,9 @@ public class SmartOrderFragment extends Fragment {
     private LayoutInflater mInflater;
     private View viewEmpty;
 
+    // Pull to Refresh 4-1
+    private SwipeRefreshLayout swipeContainer;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_smart_order, container, false);
@@ -69,72 +72,38 @@ public class SmartOrderFragment extends Fragment {
         // RecycleView에 LayoutManager 세팅
         recyclerView.setLayoutManager(layoutManager);
 
+        /******************************************************************************************/
         // Adapter 생성
         adapter = new SmartOrderAdapter(getContext(), SmartSingleton.arrSmartOrders);
-
+        // 리스트 추가
         if(isNewBuild || SmartSingleton.arrSmartOrders.isEmpty()) {
-            /******************************************************************************************/
             addItems();
-            /******************************************************************************************/
         }
-
         // RecycleView 에 Adapter 세팅
         recyclerView.setAdapter(adapter);
+        recyclerView.setItemAnimator(new SlideInUpAnimator());
+        /******************************************************************************************/
 
-        /***************************************************************************/
-        adapter.setmOnLoadMoreListener(new OnLoadMoreListener() {
-            @Override
-            public void onLoadMore() {
-                Log.e("haint", "Load More -------------------------------------------------------------------");
-
-                /*
-                mUserAdapter.notifyItemInserted(mUsers.size() - 1);
-
-                //Remove loading item
-                mUsers.remove(mUsers.size() - 1);
-                mUserAdapter.notifyItemRemoved(mUsers.size());
-
-                //Load data
-                int index = mUsers.size();
-                int end = index + 20;
-                for (int i = index; i < end; i++) {
-                    User user = new User();
-                    user.setName("Name " + i);
-                    user.setEmail("alibaba" + i + "@gmail.com");
-                    mUsers.add(user);
-                }
-                mUserAdapter.notifyDataSetChanged();
-                mUserAdapter.setLoaded();
-                */
-            }
-        });
-        /***************************************************************************/
-
-        final LinearLayout empLayout = (LinearLayout) rootView.findViewById(R.id.emp_layout);
-
+        final LinearLayout empLayout = (LinearLayout) rootView.findViewById(R.id.emp_layout); // 내용없을때 보이는 레이아웃
         // 리스트 표현하기 !!
-        if (SmartSingleton.arrSmartBuilds.isEmpty()) {
+        if (SmartSingleton.arrSmartOrders.isEmpty()) {
             //empLayout.setVisibility(View.VISIBLE);
         } else {
             //empLayout.setVisibility(View.GONE);
-            recyclerView.setItemAnimator(new SlideInUpAnimator());
         }
+
         /***************************************************************************/
+        // 리스트 클릭시 상세 페이지 보기 !!
         adapter.setOnItemClickListener(new SmartOrderAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-
-                final String strCode = SmartSingleton.arrSmartOrders.get(position).strSiteId;
-                final String strDate = SmartSingleton.arrSmartOrders.get(position).datWrite;
-                final String strImageUrl = SmartSingleton.arrSmartOrders.get(position).strContent;
                 adapter.notifyItemChanged(position);
 
-                Intent intentWorkView = new Intent(getActivity(), SmartClientViewActivity.class);
-                intentWorkView.putExtra("strBuildCode", strCode);
-                intentWorkView.putExtra("strBuildDate", strDate);
-                intentWorkView.putExtra("strImageUrl", strImageUrl);
-                startActivityForResult(intentWorkView, 1002);
-                Toast.makeText(getContext(), "strBuildCode : " + strCode, Toast.LENGTH_SHORT).show();
+                Intent intext = new Intent(getActivity(), SmartOrderViewActivity.class);
+                final int intId = SmartSingleton.arrSmartOrders.get(position).intId;
+                intext.putExtra("intId", intId);
+                startActivityForResult(intext, 1002);
+                //Toast.makeText(getContext(), "intId : " + intId, Toast.LENGTH_SHORT).show();
             }
         });
         /***************************************************************************/
@@ -157,18 +126,6 @@ public class SmartOrderFragment extends Fragment {
 
             }
         });
-
-        /* 가장 쉽게 클릭 이벤츠 핸들러 만들기
-        ItemClickSupport.addTo(rvSmartBuilds).setOnItemClickListener(
-                new ItemClickSupport.OnItemClickListener() {
-                    @Override
-                    public void onItemClicked(RecyclerView recyclerView, int position, View v) {
-                        // do it
-                        Log.d("LLL", "position: " + position);
-                    }
-                }
-        );
-         */
 
         // 스크롤시 FAB 버튼 숨기기 !!
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -200,21 +157,39 @@ public class SmartOrderFragment extends Fragment {
             }
         });
 
+        // Pull to Refresh 4-2
+        // Lookup the swipe container view
+        swipeContainer = (SwipeRefreshLayout) rootView.findViewById(R.id.srl_smart_order);
+        // Setup refresh listener which triggers new data loading
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Your code to refresh the list here.
+                // Make sure you call swipeContainer.setRefreshing(false)
+                // once the network request has completed successfully.
+                fetchTimelineAsync(0);
+            }
+        });
+        // Configure the refreshing colors
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright);
+
         return rootView;
+    }
+
+    // Pull to Refresh 4-3
+    public void fetchTimelineAsync(int page) {
+        adapter.clear();
+        addItems();
     }
 
     private void addItems() {
         /******************************************************************************************/
         // SmartBuild 값 불러오기 (진행중인 현장)
-        Log.d(TAG, "SmartService.getSmartBBSOrders 실행!! / pref_access_token : " + pref.getValue("pref_access_token", ""));
         SmartService smartService = ServiceGenerator.createService(SmartService.class, pref.getValue("pref_access_token", ""));
         final Map<String, String> mapOptions = new HashMap<String, String>();
         mapOptions.put("offset", String.valueOf(layoutManager.getItemCount()));
 
-        Log.d(TAG, "getSmartBBSOrder START !!!");
         Call<ArrayList<SmartOrder>> call = smartService.getSmartBBSOrders();
-        Log.d(TAG, "getSmartBBSOrder END !!!");
-
         call.enqueue(new Callback<ArrayList<SmartOrder>>() {
             @Override
             public void onResponse(Call<ArrayList<SmartOrder>> call, Response<ArrayList<SmartOrder>> response) {
@@ -232,11 +207,11 @@ public class SmartOrderFragment extends Fragment {
                             viewEmpty = mInflater.inflate(R.layout.row_empty, null);
                             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.MATCH_PARENT);
                             viewEmpty.setLayoutParams(params);
-                            RelativeLayout rmSmartBBSClient = (RelativeLayout) rootView.findViewById(R.id.fm_smart_bbs_order);
-                            rmSmartBBSClient.addView(viewEmpty);
+                            RelativeLayout rmSmartBBSOrder = (RelativeLayout) rootView.findViewById(R.id.fm_smart_bbs_order);
+                            rmSmartBBSOrder.addView(viewEmpty);
                         } else {
-                            RelativeLayout rmSmartBBSClient = (RelativeLayout) rootView.findViewById(R.id.fm_smart_bbs_order);
-                            rmSmartBBSClient.removeView(viewEmpty);
+                            RelativeLayout rmSmartBBSOrder = (RelativeLayout) rootView.findViewById(R.id.fm_smart_bbs_order);
+                            rmSmartBBSOrder.removeView(viewEmpty);
                         }
 
                         Snackbar.make(SmartOrderFragment.recyclerView, "마지막 리스트 입니다.", Snackbar.LENGTH_LONG).setAction("Action", null).show();
@@ -245,6 +220,9 @@ public class SmartOrderFragment extends Fragment {
                     Toast.makeText(getContext(), "데이터가 정확하지 않습니다.", Toast.LENGTH_SHORT).show();
                     Log.d(TAG, "responseSmartBBSOrders : 데이터가 정확하지 않습니다.");
                 }
+
+                // Pull to Refresh 4-4
+                swipeContainer.setRefreshing(false);
             }
 
             @Override

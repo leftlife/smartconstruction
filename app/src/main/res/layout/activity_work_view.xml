@@ -53,7 +53,7 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:text="울산 신정동 다세대 주택"
-                    android:id="@+id/textView"
+                    android:id="@+id/txt_work_view_build_name"
                     android:layout_alignParentTop="true"
                     android:layout_alignParentLeft="true"
                     android:textSize="16dp"
@@ -66,7 +66,7 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/imageView"
+                    android:id="@+id/btn_work_view_delete"
                     android:src="@drawable/abc_btn_check_to_on_mtrl_015"
                     android:layout_alignParentLeft="false"
                     android:layout_alignParentRight="true"
@@ -86,7 +86,7 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:text="2016.07.12"
-                    android:id="@+id/textView3"
+                    android:id="@+id/txt_work_view_date"
                     android:textSize="14dp"
                     android:layout_alignParentTop="true"
                     android:layout_alignParentLeft="true"
@@ -99,7 +99,7 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:text="흐림"
-                    android:id="@+id/textView4"
+                    android:id="@+id/txt_work_view_weather"
                     android:textSize="14dp"
                     android:layout_alignParentTop="true"
                     android:layout_alignParentRight="true"
@@ -128,81 +128,15 @@
                     android:layout_marginLeft="20dp" />
             </LinearLayout>
 
-            <LinearLayout
-                android:orientation="vertical"
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_work_view_labors"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="1dp"
+                android:scrollbars="vertical"
                 android:background="#ffffff"
                 android:paddingTop="10dp"
-                android:paddingBottom="20dp" >
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="현장관리, 주변건물 현황점검"
-                    android:id="@+id/textView12"
-                    android:textSize="14dp"
-                    android:textColor="#555555"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginLeft="20dp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="현장관리 | 현장소장 (1명)"
-                    android:id="@+id/textView13"
-                    android:textColor="#999999"
-                    android:textSize="12dp"
-                    android:layout_marginTop="3dp"
-                    android:layout_marginLeft="21dp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="현장관리, 주변건물 현황점검"
-                    android:id="@+id/textView14"
-                    android:textSize="14dp"
-                    android:textColor="#555555"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginLeft="20dp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="현장관리 | 현장소장 (1명)"
-                    android:id="@+id/textView15"
-                    android:textColor="#999999"
-                    android:textSize="12dp"
-                    android:layout_marginTop="3dp"
-                    android:layout_marginLeft="21dp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="현장관리, 주변건물 현황점검"
-                    android:id="@+id/textView16"
-                    android:textSize="14dp"
-                    android:textColor="#555555"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginLeft="20dp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="현장관리 | 현장소장 (1명)"
-                    android:id="@+id/textView17"
-                    android:textColor="#999999"
-                    android:textSize="12dp"
-                    android:layout_marginTop="3dp"
-                    android:layout_marginLeft="21dp" />
-            </LinearLayout>
+                android:paddingBottom="20dp"/>
 
             <LinearLayout
                 android:orientation="vertical"
@@ -234,15 +168,16 @@
                 android:paddingBottom="20dp" >
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:text="금일 특기사항이 없습니다."
-                    android:id="@+id/textView7"
+                    android:id="@+id/txt_work_view_memo"
                     android:textSize="14dp"
                     android:textColor="#555555"
                     android:layout_marginTop="10dp"
-                    android:layout_marginLeft="20dp" />
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp" />
             </LinearLayout>
 
             <LinearLayout
@@ -266,8 +201,8 @@
                     android:layout_marginLeft="20dp" />
             </LinearLayout>
 
-            <LinearLayout
-                android:orientation="horizontal"
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_work_view_photos"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="1dp"
@@ -276,233 +211,8 @@
                 android:layout_gravity="right"
                 android:paddingTop="20dp"
                 android:paddingLeft="20dp"
-                android:paddingRight="20dp" >
+                android:paddingRight="20dp"/>
 
-                <ImageView
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:id="@+id/imageView4"
-                    android:src="@android:drawable/ic_input_get" />
-
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="10"
-                    android:layout_marginLeft="20dp" >
-
-                    <LinearLayout
-                        android:orientation="vertical"
-                        android:layout_width="40dp"
-                        android:layout_height="match_parent" >
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="?android:attr/textAppearanceLarge"
-                            android:text="공종"
-                            android:id="@+id/textView9"
-                            android:textSize="12dp"
-                            android:textColor="#999999"
-                            android:layout_marginTop="7dp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="?android:attr/textAppearanceLarge"
-                            android:text="위치"
-                            android:id="@+id/textView10"
-                            android:textSize="12dp"
-                            android:textColor="#999999"
-                            android:layout_marginTop="7dp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="?android:attr/textAppearanceLarge"
-                            android:text="내용"
-                            android:id="@+id/textView11"
-                            android:textSize="12dp"
-                            android:textColor="#999999"
-                            android:layout_marginTop="7dp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="?android:attr/textAppearanceLarge"
-                            android:text="일자"
-                            android:id="@+id/textView18"
-                            android:textSize="12dp"
-                            android:textColor="#999999"
-                            android:layout_marginTop="7dp" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:orientation="vertical"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" >
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="?android:attr/textAppearanceLarge"
-                            android:text="현장관리"
-                            android:id="@+id/textView19"
-                            android:textSize="12dp"
-                            android:textColor="#555555"
-                            android:layout_marginTop="7dp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="?android:attr/textAppearanceLarge"
-                            android:text="현장 외곽"
-                            android:id="@+id/textView20"
-                            android:textSize="12dp"
-                            android:textColor="#555555"
-                            android:layout_marginTop="7dp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="?android:attr/textAppearanceLarge"
-                            android:text="현장전경"
-                            android:id="@+id/textView21"
-                            android:textSize="12dp"
-                            android:textColor="#555555"
-                            android:layout_marginTop="7dp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="?android:attr/textAppearanceLarge"
-                            android:text="2016.07.01"
-                            android:id="@+id/textView22"
-                            android:textSize="12dp"
-                            android:textColor="#555555"
-                            android:layout_marginTop="7dp" />
-                    </LinearLayout>
-                </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="1dp"
-                android:background="#ffffff"
-                android:paddingBottom="20dp"
-                android:layout_gravity="right"
-                android:paddingTop="20dp"
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp" >
-
-                <ImageView
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:id="@+id/imageView5"
-                    android:src="@android:drawable/ic_input_get" />
-
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="10"
-                    android:layout_marginLeft="20dp" >
-
-                    <LinearLayout
-                        android:orientation="vertical"
-                        android:layout_width="40dp"
-                        android:layout_height="match_parent" >
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="?android:attr/textAppearanceLarge"
-                            android:text="공종"
-                            android:id="@+id/textView23"
-                            android:textSize="12dp"
-                            android:textColor="#999999"
-                            android:layout_marginTop="7dp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="?android:attr/textAppearanceLarge"
-                            android:text="위치"
-                            android:id="@+id/textView24"
-                            android:textSize="12dp"
-                            android:textColor="#999999"
-                            android:layout_marginTop="7dp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="?android:attr/textAppearanceLarge"
-                            android:text="내용"
-                            android:id="@+id/textView25"
-                            android:textSize="12dp"
-                            android:textColor="#999999"
-                            android:layout_marginTop="7dp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="?android:attr/textAppearanceLarge"
-                            android:text="일자"
-                            android:id="@+id/textView26"
-                            android:textSize="12dp"
-                            android:textColor="#999999"
-                            android:layout_marginTop="7dp" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:orientation="vertical"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" >
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="?android:attr/textAppearanceLarge"
-                            android:text="현장관리"
-                            android:id="@+id/textView27"
-                            android:textSize="12dp"
-                            android:textColor="#555555"
-                            android:layout_marginTop="7dp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="?android:attr/textAppearanceLarge"
-                            android:text="현장 외곽"
-                            android:id="@+id/textView28"
-                            android:textSize="12dp"
-                            android:textColor="#555555"
-                            android:layout_marginTop="7dp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="?android:attr/textAppearanceLarge"
-                            android:text="현장전경"
-                            android:id="@+id/textView29"
-                            android:textSize="12dp"
-                            android:textColor="#555555"
-                            android:layout_marginTop="7dp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="?android:attr/textAppearanceLarge"
-                            android:text="2016.07.01"
-                            android:id="@+id/textView30"
-                            android:textSize="12dp"
-                            android:textColor="#555555"
-                            android:layout_marginTop="7dp" />
-                    </LinearLayout>
-                </LinearLayout>
-            </LinearLayout>
         </LinearLayout>
 
     </ScrollView>

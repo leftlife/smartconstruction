@@ -368,16 +368,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             switch(mViewPager.getCurrentItem()) {
 
                 case 0: // 스마트 현장
+                    Intent intent = new Intent(MainActivity.this, SmartWorkViewActivity.class);
+                    intent.putExtra("strCode", "");
+                    //SmartSingleton.smartClient = new SmartClient();
+                    startActivityForResult(intent, 1001);
                     break;
 
                 case 1: // 건축주 협의
-                    Intent intent = new Intent(MainActivity.this, SmartClientWriteActivity.class);
+                    intent = new Intent(MainActivity.this, SmartClientWriteActivity.class);
                     intent.putExtra("intId", 0);
                     //SmartSingleton.smartClient = new SmartClient();
                     startActivityForResult(intent, 1001);
                     break;
 
                 case 2: // 작업지시
+                    intent = new Intent(MainActivity.this, SmartOrderWriteActivity.class);
+                    intent.putExtra("intId", 0);
+                    //SmartSingleton.smartClient = new SmartClient();
+                    startActivityForResult(intent, 1001);
                     break;
 
                 default:
@@ -398,12 +406,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
 
         if (id == R.id.nav_smart_build) {
+            Intent intent = new Intent(MainActivity.this, SmartWorkViewActivity.class);
+            intent.putExtra("strCode", "");
+            //SmartSingleton.smartClient = new SmartClient();
+            startActivityForResult(intent, 1001);
 
         } else if (id == R.id.nav_smart_client) {
+            Intent intent = new Intent(MainActivity.this, SmartClientWriteActivity.class);
+            intent.putExtra("intId", 0);
+            //SmartSingleton.smartClient = new SmartClient();
+            startActivityForResult(intent, 1001);
 
         } else if (id == R.id.nav_smart_order) {
+            Intent intent = new Intent(MainActivity.this, SmartOrderWriteActivity.class);
+            intent.putExtra("intId", 0);
+            //SmartSingleton.smartClient = new SmartClient();
+            startActivityForResult(intent, 1001);
 
         } else if (id == R.id.nav_manage_photo) {
+            Intent intent = new Intent(MainActivity.this, CameraPicListActivity.class);
+            intent.putExtra("intId", SmartSingleton.smartClient.intId);
+            startActivityForResult(intent, 2001);
 
         } else if (id == R.id.nav_manage_employee) {
 
