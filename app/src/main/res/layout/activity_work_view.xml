@@ -52,7 +52,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="울산 신정동 다세대 주택"
+                    android:text="공사명"
                     android:id="@+id/txt_work_view_build_name"
                     android:layout_alignParentTop="true"
                     android:layout_alignParentLeft="true"
@@ -67,7 +67,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/btn_work_view_delete"
-                    android:src="@drawable/abc_btn_check_to_on_mtrl_015"
+                    android:src="@drawable/abc_ic_clear_material"
                     android:layout_alignParentLeft="false"
                     android:layout_alignParentRight="true"
                     android:layout_alignParentTop="true"
@@ -108,11 +108,11 @@
                     android:textColor="#777777" />
             </RelativeLayout>
 
-            <LinearLayout
-                android:orientation="vertical"
+            <RelativeLayout
+                android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="7dp"
+                android:layout_marginTop="3dp"
                 android:background="#ffffff"
                 android:paddingBottom="20dp" >
 
@@ -126,7 +126,16 @@
                     android:textColor="#333333"
                     android:layout_marginTop="22dp"
                     android:layout_marginLeft="20dp" />
-            </LinearLayout>
+
+                <ImageView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:id="@+id/imageView"
+                    android:src="@drawable/ico_edit"
+                    android:layout_marginTop="15dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="20dp" />
+            </RelativeLayout>
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rv_work_view_labors"
@@ -136,13 +145,14 @@
                 android:scrollbars="vertical"
                 android:background="#ffffff"
                 android:paddingTop="10dp"
-                android:paddingBottom="20dp"/>
+                android:paddingBottom="20dp"
+                android:minHeight="80dp" />
 
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="7dp"
+                android:layout_marginTop="3dp"
                 android:background="#ffffff"
                 android:paddingBottom="20dp" >
 
@@ -165,7 +175,8 @@
                 android:layout_marginTop="1dp"
                 android:background="#ffffff"
                 android:paddingTop="10dp"
-                android:paddingBottom="20dp" >
+                android:paddingBottom="20dp"
+                android:minHeight="80dp">
 
                 <TextView
                     android:layout_width="match_parent"
@@ -180,11 +191,11 @@
                     android:layout_marginRight="20dp" />
             </LinearLayout>
 
-            <LinearLayout
+            <RelativeLayout
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="7dp"
+                android:layout_marginTop="3dp"
                 android:background="#ffffff"
                 android:paddingBottom="20dp"
                 android:layout_gravity="right" >
@@ -199,7 +210,16 @@
                     android:textColor="#333333"
                     android:layout_marginTop="22dp"
                     android:layout_marginLeft="20dp" />
-            </LinearLayout>
+
+                <ImageView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:id="@+id/imageView4"
+                    android:src="@drawable/ico_edit"
+                    android:layout_marginTop="15dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="20dp" />
+            </RelativeLayout>
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rv_work_view_photos"
@@ -211,7 +231,8 @@
                 android:layout_gravity="right"
                 android:paddingTop="20dp"
                 android:paddingLeft="20dp"
-                android:paddingRight="20dp"/>
+                android:paddingRight="20dp"
+                android:minHeight="80dp" />
 
         </LinearLayout>
 

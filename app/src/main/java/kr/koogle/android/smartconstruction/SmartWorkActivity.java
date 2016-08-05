@@ -106,7 +106,11 @@ public class SmartWorkActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "스마트 일보를 등록합니다.", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+            //Snackbar.make(view, "스마트 일보를 등록합니다.", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+            Intent intent = new Intent(SmartWorkActivity.this, SmartWorkViewActivity.class);
+            intent.putExtra("strCode", "");
+            //SmartSingleton.smartClient = new SmartClient();
+            startActivityForResult(intent, 1001);
             }
         });
 

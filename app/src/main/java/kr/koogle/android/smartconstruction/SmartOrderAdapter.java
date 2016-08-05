@@ -2,6 +2,7 @@ package kr.koogle.android.smartconstruction;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -87,7 +88,7 @@ public class SmartOrderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     .fit() // resize(700,400)
                     .into(ivImage);
             */
-            tvTitle.setText(smartOrder.strContent);
+            tvTitle.setText(smartOrder.strContent); // Html.fromHtml(smartOrder.strContent)
             tvDate.setText(smartOrder.datWrite);
 
         } else if (holder instanceof LoadingViewHolder) {

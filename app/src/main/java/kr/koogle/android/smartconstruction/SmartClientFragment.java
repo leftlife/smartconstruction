@@ -232,6 +232,9 @@ public class SmartClientFragment extends Fragment {
             public void onFailure(Call<ArrayList<SmartClient>> call, Throwable t) {
                 Toast.makeText(getContext(), "네트워크 상태가 좋지 않습니다!!!", Toast.LENGTH_SHORT).show();
                 Log.d("Error", t.getMessage());
+
+                // Pull to Refresh 4-4
+                swipeContainer.setRefreshing(false);
             }
         });
         /******************************************************************************************/

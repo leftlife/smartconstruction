@@ -23,12 +23,17 @@ public class SmartOrder {
     public String strWhoCode;
     public String strChk;
     public String strChkMem;
+    public ArrayList<String> arrWhoCodes;
+    public ArrayList<String> arrChks;
 
     public ArrayList<SmartEmployee> arrEmployees;
     public ArrayList<SmartFile> arrFiles;
     public ArrayList<SmartComment> arrComments;
 
     public SmartOrder() {
+        arrWhoCodes = new ArrayList<String>();
+        arrChks = new ArrayList<String>();
+
         arrEmployees = new ArrayList<SmartEmployee>();
         arrFiles = new ArrayList<SmartFile>();
         arrComments = new ArrayList<SmartComment>();

@@ -32,6 +32,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import kr.koogle.android.smartconstruction.http.ServiceGenerator;
 import kr.koogle.android.smartconstruction.http.SmartBuild;
+import kr.koogle.android.smartconstruction.http.SmartEmployee;
 import kr.koogle.android.smartconstruction.http.SmartOrder;
 import kr.koogle.android.smartconstruction.http.SmartComment;
 import kr.koogle.android.smartconstruction.http.SmartFile;
@@ -50,12 +51,16 @@ public class SmartOrderWriteActivity extends AppCompatActivity {
     //private SmartOrder smartOrder;
 
     @Bind(R.id.input_build_name) EditText _buildName;
+    @Bind(R.id.input_who) EditText _who;
     @Bind(R.id.input_content) EditText _content;
     @Bind(R.id.btn_add_photo) ImageView _addPhoto;
     @Bind(R.id.img_photo) ImageView _photo;
 
     // intent 로 넘어온 값 받기
     private Intent intent;
+
+    // 담당자 배열값
+    private Integer[] arrWho;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +76,7 @@ public class SmartOrderWriteActivity extends AppCompatActivity {
         pref = new RbPreference(getApplicationContext());
 
         //smartOrder = new SmartOrder();
+        arrWho = new Integer[]{};
 
         // 리스트 클릭시 넘어온값 받기 !!
         SmartSingleton.smartOrder.intId = getIntent().getExtras().getInt("intId");
@@ -85,6 +91,23 @@ public class SmartOrderWriteActivity extends AppCompatActivity {
                 }
             }
             _buildName.setText(strBuildName);
+
+            String strWhoCode = "";
+            String strWho = "";
+            for (String whoCode : SmartSingleton.smartOrder.arrWhoCodes) {
+                int i = 0;
+                for (SmartEmployee se : SmartSingleton.arrSmartEmployees) {
+                    if (se.strCode.equals(whoCode)) {
+                        if(i > 0) strWho += ",";
+                        strWho += se.strName;
+                        i++;
+                    }
+                }
+                strWhoCode += "|" + whoCode;
+            }
+            SmartSingleton.smartOrder.strWhoCode = strWhoCode;
+            SmartSingleton.smartOrder.strWho = strWho;
+            _who.setText(strWho);
 
             Spanned str = Html.fromHtml(SmartSingleton.smartOrder.strContent);
             // String str2 = Html.toHtml(str);
@@ -121,17 +144,6 @@ public class SmartOrderWriteActivity extends AppCompatActivity {
             }
         });
 
-        // 이미지 추가 버튼 클릭시 이미리 리스트 페이지 이동
-        _addPhoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(SmartOrderWriteActivity.this, CameraPicListActivity.class);
-                //intent.putExtra("intId", SmartSingleton.smartOrder.intId);
-                startActivityForResult(intent, 1001);
-                //Toast.makeText(SmartOrderViewActivity.this, "intId : " + smartOrder.intId, Toast.LENGTH_SHORT).show();
-            }
-        });
-
         _buildName.setInputType(0);
         _buildName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -160,6 +172,86 @@ public class SmartOrderWriteActivity extends AppCompatActivity {
                 }
             }
         });
+
+        _who.setInputType(0);
+        _who.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if(b) {
+                    final ArrayList<String> arrEmployee = new ArrayList<String>();
+                    if (!SmartSingleton.arrSmartEmployees.isEmpty()) {
+                        //ArrayList<SmartBuild> arrBuild = SmartSingleton.arrSmartBuilds;
+                        for (int i = 0; i < SmartSingleton.arrSmartEmployees.size(); i++) {
+                            arrEmployee.add(SmartSingleton.arrSmartEmployees.get(i).strName);
+                        }
+                    }
+
+                    new MaterialDialog.Builder(SmartOrderWriteActivity.this)
+                            .title("담당직원 선택")
+                            .items(arrEmployee)
+                            .itemsCallbackMultiChoice(arrWho, new MaterialDialog.ListCallbackMultiChoice() {
+                                @Override
+                                public boolean onSelection(MaterialDialog dialog, Integer[] which, CharSequence[] text) {
+                                    StringBuilder str = new StringBuilder();
+                                    SmartSingleton.smartOrder.arrWhoCodes.clear(); // arrWhoCodes 값 초기화
+                                    for (int i = 0; i < which.length; i++) {
+                                        if (i > 0) {
+                                            str.append(',');
+                                            str.append('\n');
+                                        }
+                                        str.append(text[i]);
+                                        SmartSingleton.smartOrder.arrWhoCodes.add(SmartSingleton.arrSmartEmployees.get(i).strCode); // arrWhoCodes 에 값 추가
+                                    }
+                                    arrWho = which; // 선택된 which 배열값
+                                    _who.setText(str);
+                                    _who.clearFocus();
+                                    return true; // allow selection
+                                }
+                            })
+                            .onNeutral(new MaterialDialog.SingleButtonCallback() {
+                                @Override
+                                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                    dialog.clearSelectedIndices();
+                                }
+                            })
+                            .callback(new MaterialDialog.ButtonCallback() {
+                                @Override
+                                public void onPositive(MaterialDialog dialog) {
+                                    super.onPositive(dialog);
+                                    dialog.dismiss();
+                                }
+
+                                @Override
+                                public void onNegative(MaterialDialog dialog) {
+                                    super.onNegative(dialog);
+                                }
+
+                                @Override
+                                public void onNeutral(MaterialDialog dialog) {
+                                    super.onNeutral(dialog);
+                                }
+                            })
+                            .alwaysCallMultiChoiceCallback()
+                            .positiveText("선택완료")
+                            .autoDismiss(false)
+                            .neutralText("초기화")
+                            //.itemsDisabledIndices(0, 1)
+                            .show();
+                }
+            }
+        });
+
+        // 이미지 추가 버튼 클릭시 이미리 리스트 페이지 이동
+        _addPhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(SmartOrderWriteActivity.this, CameraPicListActivity.class);
+                //intent.putExtra("intId", SmartSingleton.smartOrder.intId);
+                startActivityForResult(intent, 1001);
+                //Toast.makeText(SmartOrderViewActivity.this, "intId : " + smartOrder.intId, Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 
     @Override
@@ -243,7 +335,7 @@ public class SmartOrderWriteActivity extends AppCompatActivity {
                 SmartSingleton.smartOrder.strContent = Html.toHtml(_content.getText());
 
                 Log.d("aaaa", "intId : " + SmartSingleton.smartOrder.intId);
-                Toast.makeText(getBaseContext(), "intId " + SmartSingleton.smartOrder.intId, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getBaseContext(), "intId " + SmartSingleton.smartOrder.intId, Toast.LENGTH_SHORT).show();
                 registOrder(SmartSingleton.smartOrder.intId);
                 return true;
             }
@@ -254,12 +346,30 @@ public class SmartOrderWriteActivity extends AppCompatActivity {
     }
 
     public void registOrder(int intId) {
+
+        String strWhoCode = "";
+        String strWho = "";
+        for (String whoCode : SmartSingleton.smartOrder.arrWhoCodes) {
+            int i = 0;
+            for (SmartEmployee se : SmartSingleton.arrSmartEmployees) {
+                if (se.strCode.equals(whoCode)) {
+                    if(i > 0) strWho += ",";
+                    strWho += se.strName;
+                    i++;
+                }
+            }
+            strWhoCode += "|" + whoCode;
+        }
+        SmartSingleton.smartOrder.strWhoCode = strWhoCode;
+        SmartSingleton.smartOrder.strWho = strWho;
         /******************************************************************************************/
         SmartService service = ServiceGenerator.createService(SmartService.class);
 
         Map<String, String> mapFields = new HashMap<String, String>();
         mapFields.put("intId", String.valueOf(SmartSingleton.smartOrder.intId));
-        mapFields.put("strCate1", SmartSingleton.smartOrder.strBuildCode);
+        mapFields.put("strBuildCode", SmartSingleton.smartOrder.strBuildCode);
+        mapFields.put("strWho", SmartSingleton.smartOrder.strWho);
+        mapFields.put("strWhoCode", SmartSingleton.smartOrder.strWhoCode);
         mapFields.put("strContent", SmartSingleton.smartOrder.strContent);
         if(SmartSingleton.smartOrder.arrFiles.size() > 0) {
             mapFields.put("strFileCode", String.valueOf(SmartSingleton.smartOrder.arrFiles.get(0).intId));

@@ -136,7 +136,7 @@ public class SmartEmployeeActivity extends AppCompatActivity {
             public void onItemClick(View view, int position) {
 
                 // 클릭된 사진정보 부모 엑티비티에 전달
-                final int intId = SmartSingleton.arrSmartEmployees.get(position).intId;
+                final String strCode = SmartSingleton.arrSmartEmployees.get(position).strCode;
                 final String strPhone = SmartSingleton.arrSmartEmployees.get(position).strPhone;
                 adapter.notifyItemChanged(position);
 

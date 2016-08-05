@@ -42,6 +42,8 @@ import butterknife.ButterKnife;
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 import kr.koogle.android.smartconstruction.http.FileUploadService;
 import kr.koogle.android.smartconstruction.http.ServiceGenerator;
+import kr.koogle.android.smartconstruction.http.SmartBuild;
+import kr.koogle.android.smartconstruction.http.SmartEmployee;
 import kr.koogle.android.smartconstruction.http.SmartOrder;
 import kr.koogle.android.smartconstruction.http.SmartComment;
 import kr.koogle.android.smartconstruction.http.SmartService;
@@ -324,6 +326,19 @@ public class SmartOrderViewActivity extends AppCompatActivity {
                         */
                         _txtContent.setHtml(SmartSingleton.smartOrder.strContent, new HtmlRemoteImageGetterLee(_txtContent, null, true, _txtContent.getWidth()));
                         //Toast.makeText(SmartOrderViewActivity.this, response.body().toString(), Toast.LENGTH_SHORT).show();
+
+                        int i = 0;
+                        for (String whoCode : SmartSingleton.smartOrder.arrWhoCodes) {
+                            for (SmartEmployee se : SmartSingleton.arrSmartEmployees) {
+                                if (se.strCode.equals(whoCode)) {
+                                    if(i == 0) _txtContent.append("\n\n");
+                                    _txtContent.append("\n" + se.strName);
+                                    i++;
+                                    // 담당직원 배열 추가 !!
+                                    //SmartSingleton.smartOrder.arrWhoCodes.add(se.strCode);
+                                }
+                            }
+                        }
 
                         if(SmartSingleton.smartOrder.arrFiles.size() > 0) {
                             _llAttachFile.setVisibility(View.VISIBLE);

@@ -2,7 +2,7 @@ package kr.koogle.android.smartconstruction.http;
 
 public class SmartEmployee {
 
-    public int intId;
+    public String strCode;
     public String strSiteId;
     public String strId;
     public String strName;
