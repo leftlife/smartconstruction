@@ -59,13 +59,13 @@ public interface SmartService {
     @FormUrlEncoded
     @POST("clients/{client}")
     Call<ResponseBody> modifyClient(
-            @Path("client") String clientCode,
-            @FieldMap Map<String, String> fields
+        @Path("client") String clientCode,
+        @FieldMap Map<String, String> fields
     );
 
     @DELETE("clients/{client}")
     Call<ResponseBody> deleteClient(
-            @Path("client") String clientCode
+        @Path("client") String clientCode
     );
 
     // 작업지시
@@ -84,13 +84,13 @@ public interface SmartService {
     @FormUrlEncoded
     @POST("orders/{order}")
     Call<ResponseBody> modifyOrder(
-            @Path("order") String orderCode,
-            @FieldMap Map<String, String> fields
+        @Path("order") String orderCode,
+        @FieldMap Map<String, String> fields
     );
 
     @DELETE("orders/{order}")
     Call<ResponseBody> deleteOrder(
-            @Path("order") String orderCode
+        @Path("order") String orderCode
     );
 
     // 사진관리
@@ -126,5 +126,9 @@ public interface SmartService {
     // 장비 카테고리
     @GET("equipments")
     Call<ArrayList<SmartCategory>> getEquipmentCategorys();
+
+    // 사원목록
+    @GET("employees")
+    Call<ArrayList<SmartEmployee>> getSmartEmployees();
 
 }

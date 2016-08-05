@@ -103,19 +103,19 @@
                     android:layout_width="70dp"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="제목"
+                    android:text="담당자"
                     android:textColor="#999999"
                     android:textSize="12dp"
                     android:layout_marginTop="21dp" />
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
-                    <EditText android:id="@+id/input_title"
+                    <EditText android:id="@+id/input_who"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textSize="14sp"
                         android:inputType="textAutoComplete"
-                        android:hint="제목을 입력하세요." />
+                        android:hint="담당자를 선택하세요." />
                 </android.support.design.widget.TextInputLayout>
             </LinearLayout>
 

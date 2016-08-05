@@ -63,7 +63,6 @@ public class SmartOrderViewActivity extends AppCompatActivity {
     private static final String TAG = "SmartOrderViewActivity";
     private RbPreference pref;
 
-    @Bind(R.id.txt_order_view_title) TextView _txtTitle;
     @Bind(R.id.txt_order_view_writer) TextView _txtWriter;
     @Bind(R.id.txt_order_view_date) TextView _txtDate;
     @Bind(R.id.txt_order_view_content) HtmlTextView _txtContent;
@@ -317,7 +316,6 @@ public class SmartOrderViewActivity extends AppCompatActivity {
                     SmartSingleton.smartOrder = response.body();
 
                     if (SmartSingleton.smartOrder.intId != 0) {
-                        _txtTitle.setText(SmartSingleton.smartOrder.strTitle);
                         _txtWriter.setText(SmartSingleton.smartOrder.strUserId);
                         _txtDate.setText(SmartSingleton.smartOrder.datWrite);
                         /*
@@ -371,7 +369,6 @@ public class SmartOrderViewActivity extends AppCompatActivity {
 
             case 1001: // 내용 수정 페이지에서 온 경우 내용 새로 고침
 
-                _txtTitle.setText(SmartSingleton.smartOrder.strTitle);
                 _txtWriter.setText(SmartSingleton.smartOrder.strUserId);
                 _txtDate.setText(SmartSingleton.smartOrder.datWrite);
                 _txtContent.setHtml(SmartSingleton.smartOrder.strContent, new HtmlRemoteImageGetterLee(_txtContent, null, true, _txtContent.getWidth()));

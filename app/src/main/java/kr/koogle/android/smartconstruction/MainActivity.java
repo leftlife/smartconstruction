@@ -273,6 +273,37 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             });
         }
         /******************************************************************************************/
+        if(SmartSingleton.arrSmartEmployees.isEmpty()) {
+            // Equipment Category 값 불러오기 (한번만!!)
+            SmartService smartService = ServiceGenerator.createService(SmartService.class, pref.getValue("pref_access_token", ""));
+            Call<ArrayList<SmartEmployee>> call = smartService.getSmartEmployees();
+
+            call.enqueue(new Callback<ArrayList<SmartEmployee>>() {
+                @Override
+                public void onResponse(Call<ArrayList<SmartEmployee>> call, Response<ArrayList<SmartEmployee>> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        final ArrayList<SmartEmployee> responses = response.body();
+
+                        if (responses.size() != 0) {
+                            Log.d(TAG, "responses : size " + responses.size());
+                            SmartSingleton.arrSmartEmployees.addAll(responses);
+                        } else {
+
+                        }
+                    } else {
+                        Toast.makeText(MainActivity.this, "데이터가 정확하지 않습니다.", Toast.LENGTH_SHORT).show();
+                        Log.d(TAG, "responseEquipmentCategorys : 데이터가 정확하지 않습니다.");
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ArrayList<SmartEmployee>> call, Throwable t) {
+                    Toast.makeText(MainActivity.this, "네트워크 상태가 좋지 않습니다!", Toast.LENGTH_SHORT).show();
+                    Log.d("Error", t.getMessage());
+                }
+            });
+        }
+        /******************************************************************************************/
 
     }
 
@@ -429,6 +460,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             startActivityForResult(intent, 2001);
 
         } else if (id == R.id.nav_manage_employee) {
+            Intent intent = new Intent(MainActivity.this, SmartEmployeeActivity.class);
+            intent.putExtra("intId", "");
+            startActivityForResult(intent, 3001);
 
         } else if (id == R.id.nav_logout) {
             // Settings 값 !!

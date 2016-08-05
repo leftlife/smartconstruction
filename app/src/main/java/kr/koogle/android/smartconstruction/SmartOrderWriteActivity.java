@@ -50,7 +50,6 @@ public class SmartOrderWriteActivity extends AppCompatActivity {
     //private SmartOrder smartOrder;
 
     @Bind(R.id.input_build_name) EditText _buildName;
-    @Bind(R.id.input_title) EditText _title;
     @Bind(R.id.input_content) EditText _content;
     @Bind(R.id.btn_add_photo) ImageView _addPhoto;
     @Bind(R.id.img_photo) ImageView _photo;
@@ -87,7 +86,6 @@ public class SmartOrderWriteActivity extends AppCompatActivity {
             }
             _buildName.setText(strBuildName);
 
-            _title.setText(SmartSingleton.smartOrder.strTitle);
             Spanned str = Html.fromHtml(SmartSingleton.smartOrder.strContent);
             // String str2 = Html.toHtml(str);
             _content.setText(str);
@@ -227,19 +225,6 @@ public class SmartOrderWriteActivity extends AppCompatActivity {
                         })
                         .show();
                 return false;
-            } else if(_title.getText().toString().equals("")) {
-                new MaterialDialog.Builder(SmartOrderWriteActivity.this)
-                        .title("제목 미등록")
-                        .content("제목을 먼저 등록해 주세요.")
-                        .positiveText("확인")
-                        .onAny(new MaterialDialog.SingleButtonCallback() {
-                            @Override
-                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-
-                            }
-                        })
-                        .show();
-                return false;
             } else if(_content.getText().toString().equals("")) {
                 new MaterialDialog.Builder(SmartOrderWriteActivity.this)
                         .title("내용 미등록")
@@ -255,7 +240,6 @@ public class SmartOrderWriteActivity extends AppCompatActivity {
                 return false;
             } else {
                 // 건축주 협의 게시판 수정하기
-                SmartSingleton.smartOrder.strTitle = _title.getText().toString();
                 SmartSingleton.smartOrder.strContent = Html.toHtml(_content.getText());
 
                 Log.d("aaaa", "intId : " + SmartSingleton.smartOrder.intId);
@@ -276,7 +260,6 @@ public class SmartOrderWriteActivity extends AppCompatActivity {
         Map<String, String> mapFields = new HashMap<String, String>();
         mapFields.put("intId", String.valueOf(SmartSingleton.smartOrder.intId));
         mapFields.put("strCate1", SmartSingleton.smartOrder.strBuildCode);
-        mapFields.put("strTitle", SmartSingleton.smartOrder.strTitle);
         mapFields.put("strContent", SmartSingleton.smartOrder.strContent);
         if(SmartSingleton.smartOrder.arrFiles.size() > 0) {
             mapFields.put("strFileCode", String.valueOf(SmartSingleton.smartOrder.arrFiles.get(0).intId));

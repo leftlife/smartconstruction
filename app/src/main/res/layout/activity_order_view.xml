@@ -54,36 +54,26 @@
                 android:paddingLeft="20dp"
                 android:paddingTop="20dp"
                 android:paddingRight="20dp"
-                android:paddingBottom="2dp"
-                android:background="#ffffff">
+                android:paddingBottom="20dp"
+                android:background="#ffffff"
+                android:layout_marginBottom="1dp">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="건축주 협의 게시판"
+                    android:text="업무 지시"
                     android:id="@+id/textView31"
                     android:textSize="12dp"
                     android:textColor="#999999" />
             </LinearLayout>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="타이틀 부분"
-                android:id="@+id/txt_order_view_title"
-                android:textSize="18dp"
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp"
-                android:paddingBottom="10dp"
-                android:background="#ffffff" />
-
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:background="#ffffff"
-                android:layout_marginBottom="1dp">
+                android:layout_marginBottom="1dp"
+                android:paddingTop="5dp">
 
                 <ImageView
                     android:layout_width="30dp"
