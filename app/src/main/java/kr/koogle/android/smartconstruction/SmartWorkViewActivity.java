@@ -12,13 +12,22 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
+import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
+import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
+
 import org.sufficientlysecure.htmltextview.HtmlTextView;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,6 +35,9 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 import kr.koogle.android.smartconstruction.http.ServiceGenerator;
+import kr.koogle.android.smartconstruction.http.SmartBuild;
+import kr.koogle.android.smartconstruction.http.SmartCategory;
+import kr.koogle.android.smartconstruction.http.SmartEmployee;
 import kr.koogle.android.smartconstruction.http.SmartService;
 import kr.koogle.android.smartconstruction.http.SmartSingleton;
 import kr.koogle.android.smartconstruction.http.SmartWork;
@@ -42,6 +54,18 @@ public class SmartWorkViewActivity extends AppCompatActivity {
     @Bind(R.id.txt_work_view_date) TextView _txtDate;
     @Bind(R.id.txt_work_view_weather) TextView _txtWeather;
     @Bind(R.id.txt_work_view_memo) TextView _txtMemo;
+
+    @Bind(R.id.btn_work_view_delete) ImageView _btnDelete;
+    @Bind(R.id.btn_work_view_add_labor) ImageView _btnAddLabor;
+    @Bind(R.id.btn_work_view_add_photo) ImageView _btnAddPhoto;
+
+    @Bind(R.id.ll_work_view_add_labor) LinearLayout _llWorkViewAddLabor;
+    @Bind(R.id.txt_work_view_labor_cate1) TextView _txtWorkViewLaborCate1;
+    @Bind(R.id.txt_work_view_labor_cate2) TextView _txtWorkViewLaborCate2;
+    @Bind(R.id.txt_work_view_labor_count) TextView _txtWorkViewLaborCount;
+    @Bind(R.id.txt_work_view_labor_unit) TextView _txtWorkViewLaborUnit;
+    @Bind(R.id.txt_work_view_labor_memo) TextView _txtWorkViewLaborMemo;
+    @Bind(R.id.btn_work_view_labor_add) Button _btnWorkViewLaborAdd;
 
     public static RecyclerView recyclerViewLabor;
     private SmartWorkLaborAdapter adapterLabor;
@@ -142,6 +166,179 @@ public class SmartWorkViewActivity extends AppCompatActivity {
             }
         });
 
+        // 공사명 선택
+        _txtBuildName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final ArrayList<String> arrBuild = new ArrayList<String>();
+                if (!SmartSingleton.arrSmartBuilds.isEmpty()) {
+                    //ArrayList<SmartBuild> arrBuild = SmartSingleton.arrSmartBuilds;
+                    for (int i = 0; i < SmartSingleton.arrSmartBuilds.size(); i++) {
+                        arrBuild.add(SmartSingleton.arrSmartBuilds.get(i).strName);
+                    }
+                }
+
+                MaterialDialog md = new MaterialDialog.Builder(SmartWorkViewActivity.this)
+                    .title("현장명 선택")
+                    .items(arrBuild)
+                    .itemsCallback(new MaterialDialog.ListCallback() {
+                        @Override
+                        public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                            strBuildCode = SmartSingleton.arrSmartBuilds.get(which).strCode;
+                            _txtBuildName.setText(text);
+                            _txtBuildName.clearFocus();
+                        }
+                    })
+                    .positiveText("창닫기").show();
+            }
+        });
+
+        // 작업일 선택
+        _txtDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Calendar now = Calendar.getInstance();
+                DatePickerDialog dpd = DatePickerDialog.newInstance(new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePickerDialog dialog, int year, int monthOfYear, int dayOfMonth) {
+                        //Your code.
+                        String strMonth = (monthOfYear+1) < 10 ? "0"+(monthOfYear+1) : ""+(monthOfYear+1);
+                        String strDay = dayOfMonth < 10 ? "0"+dayOfMonth : ""+dayOfMonth;
+                        String date = ""+year+"."+strMonth+"."+strDay;
+
+                        _txtDate.setText(date);
+                    }
+                }, now.get(Calendar.YEAR), now.get(Calendar.MONTH), now.get(Calendar.DAY_OF_MONTH));
+                dpd.show(getFragmentManager(), "Datepickerdialog");
+                _txtDate.clearFocus();
+            }
+        });
+
+        // 날씨 선택
+        _txtWeather.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final ArrayList<String> arrBuild = new ArrayList<String>();
+                if (!SmartSingleton.arrWeatherCategorys.isEmpty()) {
+                    for (int i = 0; i < SmartSingleton.arrWeatherCategorys.size(); i++) {
+                        arrBuild.add(SmartSingleton.arrWeatherCategorys.get(i).strName);
+                    }
+                }
+
+                MaterialDialog md = new MaterialDialog.Builder(SmartWorkViewActivity.this)
+                        .title("현장 날씨 선택")
+                        .items(arrBuild)
+                        .itemsCallback(new MaterialDialog.ListCallback() {
+                            @Override
+                            public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                                _txtWeather.setText(text);
+                                _txtWeather.clearFocus();
+                            }
+                        })
+                        .positiveText("창닫기").show();
+            }
+        });
+
+        // 금일작업사항 등록
+        _btnAddLabor.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(_llWorkViewAddLabor.getVisibility() == View.VISIBLE) {
+                    _llWorkViewAddLabor.setVisibility(View.GONE);
+                } else {
+                    _llWorkViewAddLabor.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        // 작업사항 카테고리1 등록
+        _txtWorkViewLaborCate1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final ArrayList<String> arrBuild = new ArrayList<String>();
+                if (!SmartSingleton.arrLaborCategorys.isEmpty()) {
+                    for (int i = 0; i < SmartSingleton.arrLaborCategorys.size(); i++) {
+                        //arrBuild.add(SmartSingleton.arrLaborCategorys.get(0).arrCategory.get(i).strName);
+                        arrBuild.add(SmartSingleton.arrLaborCategorys.get(i).strName);
+                    }
+                }
+
+                new MaterialDialog.Builder(SmartWorkViewActivity.this)
+                        .title("1차 공종 선택")
+                        .items(arrBuild)
+                        .itemsCallback(new MaterialDialog.ListCallback() {
+                            @Override
+                            public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                                _txtWorkViewLaborCate1.setText(text);
+                                _txtWorkViewLaborCate1.clearFocus();
+                            }
+                        })
+                        .positiveText("창닫기").show();
+            }
+        });
+
+        // 작업사항 카테고리2 등록
+        _txtWorkViewLaborCate2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(_txtWorkViewLaborCate1.getText().equals("")) {
+                    Toast.makeText(getApplication(), "1차 카테고리를 먼저 선택해 주세요.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                final ArrayList<String> arrBuild = new ArrayList<String>();
+                if (!SmartSingleton.arrLaborCategorys.isEmpty()) {
+                    final String laborCategory1 = _txtWorkViewLaborCate1.getText().toString();
+                    final ArrayList<SmartCategory> arrSCs = new ArrayList<SmartCategory>();
+                    for (SmartCategory sc2 : SmartSingleton.arrLaborCategorys) {
+                        if (sc2.strName.equals(laborCategory1)) {
+                            arrSCs.addAll(sc2.arrCategory);
+                        }
+                    }
+
+                    for (int i = 0; i < arrSCs.size(); i++) {
+                        arrBuild.add(arrSCs.get(i).strName);
+                    }
+                }
+
+                new MaterialDialog.Builder(SmartWorkViewActivity.this)
+                        .title("1차 공종 선택")
+                        .items(arrBuild)
+                        .itemsCallback(new MaterialDialog.ListCallback() {
+                            @Override
+                            public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                                _txtWorkViewLaborCate2.setText(text);
+                                _txtWorkViewLaborCate2.clearFocus();
+                            }
+                        })
+                        .positiveText("창닫기").show();
+            }
+        });
+
+        // 작업사항 단위 등록
+        _txtWorkViewLaborUnit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final ArrayList<String> arrBuild = new ArrayList<String>();
+                if (!SmartSingleton.arrUnitCategorys.isEmpty()) {
+                    for (int i = 0; i < SmartSingleton.arrUnitCategorys.size(); i++) {
+                        arrBuild.add(SmartSingleton.arrUnitCategorys.get(i).strName);
+                    }
+                }
+
+                new MaterialDialog.Builder(SmartWorkViewActivity.this)
+                        .title("1차 공종 선택")
+                        .items(arrBuild)
+                        .itemsCallback(new MaterialDialog.ListCallback() {
+                            @Override
+                            public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                                _txtWorkViewLaborUnit.setText(text);
+                                _txtWorkViewLaborUnit.clearFocus();
+                            }
+                        })
+                        .positiveText("창닫기").show();
+            }
+        });
+
     }
 
     private void writeWork() {
@@ -160,11 +357,18 @@ public class SmartWorkViewActivity extends AppCompatActivity {
                     final SmartWork responses = response.body();
 
                     if( !responses.strCode.equals("") ) {
-                        Log.d(TAG, "responses : strCode " + responses.strCode);
-
-                        _txtBuildName.setText(responses.strBuildCode);
+                        //Log.d(TAG, "responses : strCode " + responses.strCode);
+                        for (SmartBuild sb : SmartSingleton.arrSmartBuilds) {
+                            if (sb.strCode.equals(responses.strBuildCode)) {
+                                _txtBuildName.setText(sb.strName);
+                            }
+                        }
                         _txtDate.setText(responses.strDate);
-                        _txtWeather.setText(String.valueOf(responses.intWeather));
+                        for (SmartCategory sc : SmartSingleton.arrWeatherCategorys) {
+                            if (sc.strCode.equals(responses.intWeather)) {
+                                _txtWeather.setText(sc.strName);
+                            }
+                        }
                         _txtMemo.setText(responses.strMemo);
 
                         SmartSingleton.smartWork.arrSmartLabors.addAll(responses.arrSmartLabors);
@@ -195,7 +399,6 @@ public class SmartWorkViewActivity extends AppCompatActivity {
         /******************************************************************************************/
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -219,4 +422,5 @@ public class SmartWorkViewActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
 }

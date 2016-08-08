@@ -306,29 +306,29 @@ public class SmartOrderWriteActivity extends AppCompatActivity {
 
             if(_buildName.getText().toString().equals("")) {
                 new MaterialDialog.Builder(SmartOrderWriteActivity.this)
-                        .title("공사명 미등록")
-                        .content("공사명을 먼저 등록해 주세요.")
-                        .positiveText("확인")
-                        .onAny(new MaterialDialog.SingleButtonCallback() {
-                            @Override
-                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                    .title("공사명 미등록")
+                    .content("공사명을 먼저 등록해 주세요.")
+                    .positiveText("확인")
+                    .onAny(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
 
-                            }
-                        })
-                        .show();
+                        }
+                    })
+                    .show();
                 return false;
             } else if(_content.getText().toString().equals("")) {
                 new MaterialDialog.Builder(SmartOrderWriteActivity.this)
-                        .title("내용 미등록")
-                        .content("내용을 먼저 등록해 주세요.")
-                        .positiveText("확인")
-                        .onAny(new MaterialDialog.SingleButtonCallback() {
-                            @Override
-                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                    .title("내용 미등록")
+                    .content("내용을 먼저 등록해 주세요.")
+                    .positiveText("확인")
+                    .onAny(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
 
-                            }
-                        })
-                        .show();
+                        }
+                    })
+                    .show();
                 return false;
             } else {
                 // 건축주 협의 게시판 수정하기

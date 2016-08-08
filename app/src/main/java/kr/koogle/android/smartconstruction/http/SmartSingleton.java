@@ -19,6 +19,8 @@ public class SmartSingleton {
     public static ArrayList<SmartCategory> arrLaborCategorys;
     public static ArrayList<SmartCategory> arrMaterialCategorys;
     public static ArrayList<SmartCategory> arrEquipmentCategorys;
+    public static ArrayList<SmartCategory> arrUnitCategorys;
+    public static ArrayList<SmartCategory> arrWeatherCategorys;
 
     public static ArrayList<SmartComment> arrComments;
 
@@ -44,6 +46,8 @@ public class SmartSingleton {
                     arrLaborCategorys = new ArrayList<SmartCategory>();
                     arrMaterialCategorys = new ArrayList<SmartCategory>();
                     arrEquipmentCategorys = new ArrayList<SmartCategory>();
+                    arrUnitCategorys = new ArrayList<SmartCategory>();
+                    arrWeatherCategorys = new ArrayList<SmartCategory>();
 
                     arrComments = new ArrayList<SmartComment>();
 

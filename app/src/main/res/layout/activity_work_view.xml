@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:fitsSystemWindows="true"
     android:orientation="vertical"
     android:background="#dddddd">
 
@@ -130,7 +133,7 @@
                 <ImageView
                     android:layout_width="28dp"
                     android:layout_height="28dp"
-                    android:id="@+id/imageView"
+                    android:id="@+id/btn_work_view_add_labor"
                     android:src="@drawable/ico_edit"
                     android:layout_marginTop="15dp"
                     android:layout_alignParentRight="true"
@@ -147,6 +150,97 @@
                 android:paddingTop="10dp"
                 android:paddingBottom="20dp"
                 android:minHeight="80dp" />
+
+            <LinearLayout
+                android:id="@+id/ll_work_view_add_labor"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingLeft="20dp"
+                android:paddingTop="20dp"
+                android:paddingRight="20dp"
+                android:paddingBottom="14dp"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:id="@+id/txt_work_view_labor_cate1"
+                        android:textSize="14dp"
+                        android:background="#ffffff"
+                        android:padding="8dp"
+                        android:hint="1차 공종" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:id="@+id/txt_work_view_labor_cate2"
+                        android:textSize="14dp"
+                        android:background="#ffffff"
+                        android:padding="8dp"
+                        android:hint="2차 공종"
+                        android:layout_marginLeft="8dp" />
+
+                    <EditText
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:id="@+id/txt_work_view_labor_count"
+                        android:textSize="14dp"
+                        android:background="#ffffff"
+                        android:padding="8dp"
+                        android:inputType="number"
+                        android:hint="수량"
+                        android:layout_marginLeft="8dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:id="@+id/txt_work_view_labor_unit"
+                        android:textSize="14dp"
+                        android:background="#ffffff"
+                        android:padding="8dp"
+                        android:hint="단위"
+                        android:layout_marginLeft="8dp" />
+
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="8dp">
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:id="@+id/txt_work_view_labor_memo"
+                        android:textSize="14dp"
+                        android:background="#ffffff"
+                        android:padding="8dp"
+                        android:hint="내용을 입력하세요."
+                        android:layout_marginRight="70dp" />
+
+                    <Button
+                        style="?android:attr/buttonStyleSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="38dp"
+                        android:text="추가"
+                        android:id="@+id/btn_work_view_labor_add"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentTop="true" />
+
+                </RelativeLayout>
+            </LinearLayout>
 
             <LinearLayout
                 android:orientation="vertical"
@@ -214,7 +308,7 @@
                 <ImageView
                     android:layout_width="28dp"
                     android:layout_height="28dp"
-                    android:id="@+id/imageView4"
+                    android:id="@+id/btn_work_view_add_photo"
                     android:src="@drawable/ico_edit"
                     android:layout_marginTop="15dp"
                     android:layout_alignParentRight="true"

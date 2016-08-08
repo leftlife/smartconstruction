@@ -273,6 +273,68 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             });
         }
         /******************************************************************************************/
+        if(SmartSingleton.arrUnitCategorys.isEmpty()) {
+            // Unit Category 값 불러오기 (한번만!!)
+            SmartService smartService = ServiceGenerator.createService(SmartService.class, pref.getValue("pref_access_token", ""));
+            Call<ArrayList<SmartCategory>> call = smartService.getUnitCategorys();
+
+            call.enqueue(new Callback<ArrayList<SmartCategory>>() {
+                @Override
+                public void onResponse(Call<ArrayList<SmartCategory>> call, Response<ArrayList<SmartCategory>> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        final ArrayList<SmartCategory> responseUnitCategorys = response.body();
+
+                        if (responseUnitCategorys.size() != 0) {
+                            Log.d(TAG, "responseSmartCategorys : size " + responseUnitCategorys.size());
+                            SmartSingleton.arrUnitCategorys.addAll(responseUnitCategorys);
+                        } else {
+
+                        }
+                    } else {
+                        Toast.makeText(MainActivity.this, "데이터가 정확하지 않습니다.", Toast.LENGTH_SHORT).show();
+                        Log.d(TAG, "responseUnitCategorys : 데이터가 정확하지 않습니다.");
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ArrayList<SmartCategory>> call, Throwable t) {
+                    Toast.makeText(MainActivity.this, "네트워크 상태가 좋지 않습니다!", Toast.LENGTH_SHORT).show();
+                    Log.d("Error", t.getMessage());
+                }
+            });
+        }
+        /******************************************************************************************/
+        if(SmartSingleton.arrWeatherCategorys.isEmpty()) {
+            // Weather Category 값 불러오기 (한번만!!)
+            SmartService smartService = ServiceGenerator.createService(SmartService.class, pref.getValue("pref_access_token", ""));
+            Call<ArrayList<SmartCategory>> call = smartService.getWeatherCategorys();
+
+            call.enqueue(new Callback<ArrayList<SmartCategory>>() {
+                @Override
+                public void onResponse(Call<ArrayList<SmartCategory>> call, Response<ArrayList<SmartCategory>> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        final ArrayList<SmartCategory> responseWeatherCategorys = response.body();
+
+                        if (responseWeatherCategorys.size() != 0) {
+                            Log.d(TAG, "responseSmartCategorys : size " + responseWeatherCategorys.size());
+                            SmartSingleton.arrWeatherCategorys.addAll(responseWeatherCategorys);
+                        } else {
+
+                        }
+                    } else {
+                        Toast.makeText(MainActivity.this, "데이터가 정확하지 않습니다.", Toast.LENGTH_SHORT).show();
+                        Log.d(TAG, "responseWeatherCategorys : 데이터가 정확하지 않습니다.");
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ArrayList<SmartCategory>> call, Throwable t) {
+                    Toast.makeText(MainActivity.this, "네트워크 상태가 좋지 않습니다!", Toast.LENGTH_SHORT).show();
+                    Log.d("Error", t.getMessage());
+                }
+            });
+        }
+        /******************************************************************************************/
         if(SmartSingleton.arrSmartEmployees.isEmpty()) {
             // Equipment Category 값 불러오기 (한번만!!)
             SmartService smartService = ServiceGenerator.createService(SmartService.class, pref.getValue("pref_access_token", ""));
@@ -355,15 +417,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     protected void onDestroy() {
+
         SmartSingleton.getInstance().arrSmartBuilds.clear();
         SmartSingleton.getInstance().arrSmartWorks.clear();
         SmartSingleton.getInstance().arrSmartClients.clear();
         SmartSingleton.getInstance().arrSmartOrders.clear();
         SmartSingleton.getInstance().arrSmartPhotos.clear();
         SmartSingleton.getInstance().arrSmartEmployees.clear();
+
         SmartSingleton.getInstance().arrLaborCategorys.clear();
         SmartSingleton.getInstance().arrMaterialCategorys.clear();
         SmartSingleton.getInstance().arrEquipmentCategorys.clear();
+
+        SmartSingleton.getInstance().arrComments.clear();
 
         super.onDestroy();
     }

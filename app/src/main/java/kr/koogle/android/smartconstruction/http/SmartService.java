@@ -127,6 +127,14 @@ public interface SmartService {
     @GET("equipments")
     Call<ArrayList<SmartCategory>> getEquipmentCategorys();
 
+    // 단위 카테고리
+    @GET("units")
+    Call<ArrayList<SmartCategory>> getUnitCategorys();
+
+    // 날씨 카테고리
+    @GET("weathers")
+    Call<ArrayList<SmartCategory>> getWeatherCategorys();
+
     // 사원목록
     @GET("employees")
     Call<ArrayList<SmartEmployee>> getSmartEmployees();
