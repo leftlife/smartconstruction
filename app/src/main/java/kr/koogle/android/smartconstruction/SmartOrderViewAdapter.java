@@ -46,10 +46,6 @@ public class SmartOrderViewAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         pref = new RbPreference(context.getApplicationContext());
     }
 
-    public void setmOnLoadMoreListener(OnLoadMoreListener mOnLoadMoreListener) {
-        this.mOnLoadMoreListener = mOnLoadMoreListener;
-    }
-
     public void add(SmartComment item, int position) {
         mRows.add(position, item);
         notifyItemInserted(position);
@@ -58,6 +54,10 @@ public class SmartOrderViewAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     public void remove(int position) {
         mRows.remove(position);
         notifyItemRemoved(position);
+    }
+
+    public void setmOnLoadMoreListener(OnLoadMoreListener mOnLoadMoreListener) {
+        this.mOnLoadMoreListener = mOnLoadMoreListener;
     }
 
     @Override

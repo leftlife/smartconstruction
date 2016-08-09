@@ -49,6 +49,8 @@ public class SmartWorkActivity extends AppCompatActivity {
     private static String strBuildCode = "start";
     private static Boolean isNewBuild;
     private static String strWorkTitleTop = "";
+    private static ImageView imageTop;
+    private static String imageTopUrl = "";
 
     private static boolean isLoading;
     private static boolean isTop;
@@ -130,14 +132,7 @@ public class SmartWorkActivity extends AppCompatActivity {
             final CollapsingToolbarLayout collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout_work);
             collapsingToolbar.setTitle(strWorkTitleTop);
 
-            final ImageView imageTop = (ImageView) findViewById(R.id.img_work_top);
-
-            if( !getIntent().getExtras().getString("strImageUrl").isEmpty() ) {
-                Picasso.with(this)
-                        .load(getIntent().getExtras().getString("strImageUrl"))
-                        .fit() // resize(700,400)
-                        .into(imageTop);
-            }
+            imageTop = (ImageView) findViewById(R.id.img_work_top);
         }
 
         /******************************************************************************************/
@@ -207,6 +202,15 @@ public class SmartWorkActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
+        imageTopUrl = getIntent().getExtras().getString("strImageUrl");
+        Log.d(TAG, "imageTopUrl : " + imageTopUrl);
+        if( !imageTopUrl.isEmpty() ) {
+            Picasso.with(this)
+                    .load(imageTopUrl)
+                    .skipMemoryCache()
+                    .fit() // resize(700,400)
+                    .into(imageTop);
+        }
     }
 
     private void addRows() {

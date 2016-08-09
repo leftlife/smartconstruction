@@ -376,45 +376,6 @@ public class SmartOrderViewActivity extends AppCompatActivity {
         /******************************************************************************************/
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data){
-        super.onActivityResult(requestCode, resultCode, data);
-
-        switch(requestCode) {
-
-            case 1001: // 내용 수정 페이지에서 온 경우 내용 새로 고침
-
-                _txtWriter.setText(SmartSingleton.smartOrder.strUserId);
-                _txtDate.setText(SmartSingleton.smartOrder.datWrite);
-                _txtContent.setHtml(SmartSingleton.smartOrder.strContent, new HtmlRemoteImageGetterLee(_txtContent, null, true, _txtContent.getWidth()));
-
-                ScrollView scrollView = (ScrollView) findViewById(R.id.sv_order_view);
-                scrollView.fullScroll(ScrollView.FOCUS_UP);
-                break;
-
-            case 2001: // 댓글에서 사진 추가하기
-
-                if( data != null) {
-                    final String intId = data.getStringExtra("intId");
-                    final String strFileURL = data.getStringExtra("strFileURL");
-                    if (!strFileURL.isEmpty()) {
-                        commentPhotoCode = intId; // 답글 이미지 코드값 저장 !!
-                        Picasso.with(SmartOrderViewActivity.this)
-                                .load(strFileURL)
-                                .fit() // resize(700,400)
-                                .into(_imgCommentPhoto);
-                        //_imgCommentPhoto.getLayoutParams().height = 200;
-                        //_imgCommentPhoto.requestLayout();
-                        _imgCommentPhoto.setVisibility(View.VISIBLE);
-                        scrollView = (ScrollView) findViewById(R.id.sv_order_view);
-                        scrollView.fullScroll(ScrollView.FOCUS_DOWN);
-                        //Toast.makeText(SmartOrderViewActivity.this, "strFileURL : " + strFileURL, Toast.LENGTH_SHORT).show();
-                    }
-                }
-                break;
-        }
-    }
-
     public void registComment() {
         /******************************************************************************************/
         SmartService service = ServiceGenerator.createService(SmartService.class);
@@ -486,6 +447,45 @@ public class SmartOrderViewActivity extends AppCompatActivity {
             }
         });
         /******************************************************************************************/
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch(requestCode) {
+
+            case 1001: // 내용 수정 페이지에서 온 경우 내용 새로 고침
+
+                _txtWriter.setText(SmartSingleton.smartOrder.strUserId);
+                _txtDate.setText(SmartSingleton.smartOrder.datWrite);
+                _txtContent.setHtml(SmartSingleton.smartOrder.strContent, new HtmlRemoteImageGetterLee(_txtContent, null, true, _txtContent.getWidth()));
+
+                ScrollView scrollView = (ScrollView) findViewById(R.id.sv_order_view);
+                scrollView.fullScroll(ScrollView.FOCUS_UP);
+                break;
+
+            case 2001: // 댓글에서 사진 추가하기
+
+                if( data != null) {
+                    final String intId = data.getStringExtra("intId");
+                    final String strFileURL = data.getStringExtra("strFileURL");
+                    if (!strFileURL.isEmpty()) {
+                        commentPhotoCode = intId; // 답글 이미지 코드값 저장 !!
+                        Picasso.with(SmartOrderViewActivity.this)
+                                .load(strFileURL)
+                                .fit() // resize(700,400)
+                                .into(_imgCommentPhoto);
+                        //_imgCommentPhoto.getLayoutParams().height = 200;
+                        //_imgCommentPhoto.requestLayout();
+                        _imgCommentPhoto.setVisibility(View.VISIBLE);
+                        scrollView = (ScrollView) findViewById(R.id.sv_order_view);
+                        scrollView.fullScroll(ScrollView.FOCUS_DOWN);
+                        //Toast.makeText(SmartOrderViewActivity.this, "strFileURL : " + strFileURL, Toast.LENGTH_SHORT).show();
+                    }
+                }
+                break;
+        }
     }
 
     @UiThread

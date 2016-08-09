@@ -138,10 +138,27 @@ public class CameraPicListActivity extends AppCompatActivity {
                 final int intId = SmartSingleton.arrSmartPhotos.get(position).intId;
                 final String strURL = SmartSingleton.arrSmartPhotos.get(position).strURL;
                 final String strName = SmartSingleton.arrSmartPhotos.get(position).strName;
+                final String strThumbnail = SmartSingleton.arrSmartPhotos.get(position).strThumbnail;
+
+                final String strBuildCode = SmartSingleton.arrSmartPhotos.get(position).strBuildCode;
+                final String strBuildName = SmartSingleton.arrSmartPhotos.get(position).strBuildName;
+                final String strLavorCode = SmartSingleton.arrSmartPhotos.get(position).strLavorCode;
+                final String strLocation = SmartSingleton.arrSmartPhotos.get(position).strLocation;
+                final String strMemo = SmartSingleton.arrSmartPhotos.get(position).strMemo;
+                final String datRegist = SmartSingleton.arrSmartPhotos.get(position).datRegist;
                 adapter.notifyItemChanged(position);
 
                 intent.putExtra("intId", String.valueOf(intId));
                 intent.putExtra("strFileURL", strURL + strName);
+                intent.putExtra("strURL", strURL);
+                intent.putExtra("strName", strName);
+                intent.putExtra("strThumbnail", strThumbnail);
+                intent.putExtra("strBuildCode", strBuildCode);
+                intent.putExtra("strBuildName", strBuildName);
+                intent.putExtra("strLavorCode", strLavorCode);
+                intent.putExtra("strLocation", strLocation);
+                intent.putExtra("strMemo", strMemo);
+                intent.putExtra("datRegist", datRegist);
                 CameraPicListActivity.this.setResult(RESULT_OK, intent);
                 finish();
             }

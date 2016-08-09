@@ -22,12 +22,12 @@ import java.util.List;
 
 import kr.koogle.android.smartconstruction.http.SmartComment;
 import kr.koogle.android.smartconstruction.http.SmartSingleton;
-import kr.koogle.android.smartconstruction.http.SmartLabor;
+import kr.koogle.android.smartconstruction.http.SmartEquipment;
 import kr.koogle.android.smartconstruction.util.OnLoadMoreListener;
 import kr.koogle.android.smartconstruction.util.RbPreference;
 
-public class SmartWorkLaborAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private static final String TAG = "SmartWorkLaborAdapter";
+public class SmartWorkEquipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    private static final String TAG = "SmartWorkEquipmentAdapter";
     private RbPreference pref;
     private final int VIEW_TYPE_ITEM = 0;
     private final int VIEW_TYPE_LOADING = 1;
@@ -37,12 +37,12 @@ public class SmartWorkLaborAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     private int lastVisibleItem, totalItemCount;
 
     private Context mContext;
-    private static ArrayList<SmartLabor> mRows;
+    private static ArrayList<SmartEquipment> mRows;
     private Context getContext() {
         return mContext;
     }
 
-    public SmartWorkLaborAdapter(Context context, ArrayList<SmartLabor> arrRows) {
+    public SmartWorkEquipmentAdapter(Context context, ArrayList<SmartEquipment> arrRows) {
         mContext = context;
         mRows = arrRows;
         // Settings 값 !!
@@ -55,7 +55,7 @@ public class SmartWorkLaborAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         notifyDataSetChanged();
     }
 
-    public void add(SmartLabor item, int position) {
+    public void add(SmartEquipment item, int position) {
         mRows.add(position, item);
         notifyItemInserted(position);
     }
@@ -102,7 +102,7 @@ public class SmartWorkLaborAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         // Get the data model based on position
-        SmartLabor row = mRows.get(position);
+        SmartEquipment row = mRows.get(position);
 
         // Set item views based on your views and data model
         if (holder instanceof UserViewHolder) {

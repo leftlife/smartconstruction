@@ -39,7 +39,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/scrollView" >
+        android:id="@+id/sv_work_view" >
 
         <LinearLayout
             android:orientation="vertical"
@@ -123,7 +123,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="금일 작업사항"
+                    android:text="작업사항"
                     android:id="@+id/textView5"
                     android:textSize="14dp"
                     android:textColor="#333333"
@@ -139,17 +139,6 @@
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="20dp" />
             </RelativeLayout>
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/rv_work_view_labors"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="1dp"
-                android:scrollbars="vertical"
-                android:background="#ffffff"
-                android:paddingTop="10dp"
-                android:paddingBottom="20dp"
-                android:minHeight="80dp" />
 
             <LinearLayout
                 android:id="@+id/ll_work_view_add_labor"
@@ -242,6 +231,275 @@
                 </RelativeLayout>
             </LinearLayout>
 
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_work_view_labors"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="1dp"
+                android:scrollbars="vertical"
+                android:background="#ffffff"
+                android:paddingTop="10dp"
+                android:paddingBottom="20dp"
+                android:minHeight="80dp" />
+
+            <RelativeLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:background="#ffffff"
+                android:paddingBottom="20dp" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="자재현황"
+                    android:id="@+id/textView9"
+                    android:textSize="14dp"
+                    android:textColor="#333333"
+                    android:layout_marginTop="22dp"
+                    android:layout_marginLeft="20dp" />
+
+                <ImageView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:id="@+id/btn_work_view_add_material"
+                    android:src="@drawable/ico_edit"
+                    android:layout_marginTop="15dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="20dp" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_work_view_add_material"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingLeft="20dp"
+                android:paddingTop="20dp"
+                android:paddingRight="20dp"
+                android:paddingBottom="14dp"
+                android:visibility="gone" >
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:id="@+id/txt_work_view_material_cate1"
+                        android:textSize="14dp"
+                        android:background="#ffffff"
+                        android:padding="8dp"
+                        android:hint="1차 카테고리" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:id="@+id/txt_work_view_material_cate2"
+                        android:textSize="14dp"
+                        android:background="#ffffff"
+                        android:padding="8dp"
+                        android:hint="2차 카테고리"
+                        android:layout_marginLeft="8dp" />
+
+                    <EditText
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:id="@+id/txt_work_view_material_count"
+                        android:textSize="14dp"
+                        android:background="#ffffff"
+                        android:padding="8dp"
+                        android:inputType="number"
+                        android:hint="수량"
+                        android:layout_marginLeft="8dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:id="@+id/txt_work_view_material_unit"
+                        android:textSize="14dp"
+                        android:background="#ffffff"
+                        android:padding="8dp"
+                        android:hint="단위"
+                        android:layout_marginLeft="8dp" />
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="8dp" >
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:id="@+id/txt_work_view_material_memo"
+                        android:textSize="14dp"
+                        android:background="#ffffff"
+                        android:padding="8dp"
+                        android:hint="내용을 입력하세요."
+                        android:layout_marginRight="70dp" />
+
+                    <Button
+                        style="?android:attr/buttonStyleSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="38dp"
+                        android:text="추가"
+                        android:id="@+id/btn_work_view_material_add"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentTop="true" />
+                </RelativeLayout>
+            </LinearLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_work_view_materials"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="1dp"
+                android:scrollbars="vertical"
+                android:background="#ffffff"
+                android:paddingTop="10dp"
+                android:paddingBottom="20dp"
+                android:minHeight="80dp" />
+
+            <RelativeLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:background="#ffffff"
+                android:paddingBottom="20dp" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="장비현황"
+                    android:id="@+id/textView13"
+                    android:textSize="14dp"
+                    android:textColor="#333333"
+                    android:layout_marginTop="22dp"
+                    android:layout_marginLeft="20dp" />
+
+                <ImageView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:id="@+id/btn_work_view_add_equipment"
+                    android:src="@drawable/ico_edit"
+                    android:layout_marginTop="15dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="20dp" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_work_view_add_equipment"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingLeft="20dp"
+                android:paddingTop="20dp"
+                android:paddingRight="20dp"
+                android:paddingBottom="14dp"
+                android:visibility="gone" >
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:id="@+id/txt_work_view_equipment_cate1"
+                        android:textSize="14dp"
+                        android:background="#ffffff"
+                        android:padding="8dp"
+                        android:hint="1차 카테고리" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:id="@+id/txt_work_view_equipment_cate2"
+                        android:textSize="14dp"
+                        android:background="#ffffff"
+                        android:padding="8dp"
+                        android:hint="2차 카테고리"
+                        android:layout_marginLeft="8dp" />
+
+                    <EditText
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:id="@+id/txt_work_view_equipment_count"
+                        android:textSize="14dp"
+                        android:background="#ffffff"
+                        android:padding="8dp"
+                        android:inputType="number"
+                        android:hint="수량"
+                        android:layout_marginLeft="8dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:id="@+id/txt_work_view_equipment_unit"
+                        android:textSize="14dp"
+                        android:background="#ffffff"
+                        android:padding="8dp"
+                        android:hint="단위"
+                        android:layout_marginLeft="8dp" />
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="8dp" >
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:id="@+id/txt_work_view_equipment_memo"
+                        android:textSize="14dp"
+                        android:background="#ffffff"
+                        android:padding="8dp"
+                        android:hint="내용을 입력하세요."
+                        android:layout_marginRight="70dp" />
+
+                    <Button
+                        style="?android:attr/buttonStyleSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="38dp"
+                        android:text="추가"
+                        android:id="@+id/btn_work_view_equipment_add"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentTop="true" />
+                </RelativeLayout>
+            </LinearLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_work_view_equipments"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="1dp"
+                android:scrollbars="vertical"
+                android:background="#ffffff"
+                android:paddingTop="10dp"
+                android:paddingBottom="20dp"
+                android:minHeight="80dp" />
+
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="match_parent"
@@ -276,7 +534,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="금일 특기사항이 없습니다."
+                    android:hint="특기사항을 등록해 주세요."
                     android:id="@+id/txt_work_view_memo"
                     android:textSize="14dp"
                     android:textColor="#555555"
@@ -321,11 +579,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="1dp"
                 android:background="#ffffff"
-                android:paddingBottom="20dp"
                 android:layout_gravity="right"
-                android:paddingTop="20dp"
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp"
                 android:minHeight="80dp" />
 
         </LinearLayout>

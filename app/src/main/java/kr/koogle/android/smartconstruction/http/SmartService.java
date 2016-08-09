@@ -7,6 +7,7 @@ import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
@@ -41,6 +42,12 @@ public interface SmartService {
     Call<SmartWork> getSmartWork(
         @Path("build") String buildCode,
         @Path("work") String workCode
+    );
+
+    @POST("builds/{build}/works")
+    Call<ResponseBody> registWork(
+        @Path("build") String build,
+        @Body SmartWork smartWork
     );
 
     // 건축주 협의

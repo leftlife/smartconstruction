@@ -1,6 +1,8 @@
 package kr.koogle.android.smartconstruction;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -11,18 +13,22 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import kr.koogle.android.smartconstruction.http.SmartLabor;
 import kr.koogle.android.smartconstruction.http.SmartSingleton;
 import kr.koogle.android.smartconstruction.http.SmartPhoto;
 import kr.koogle.android.smartconstruction.util.OnLoadMoreListener;
+import kr.koogle.android.smartconstruction.util.RbPreference;
 
 public class SmartWorkPhotoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final String TAG = "SmartWorkPhotoAdapter";
+    private RbPreference pref;
     private final int VIEW_TYPE_ITEM = 0;
     private final int VIEW_TYPE_LOADING = 1;
     private OnLoadMoreListener mOnLoadMoreListener;
@@ -39,12 +45,24 @@ public class SmartWorkPhotoAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     public SmartWorkPhotoAdapter(Context context, ArrayList<SmartPhoto> arrRows) {
         mContext = context;
         mRows = arrRows;
+        // Settings 값 !!
+        pref = new RbPreference(context.getApplicationContext());
     }
 
     // Clean all elements of the recycler
     public void clear() {
         mRows.clear();
         notifyDataSetChanged();
+    }
+
+    public void add(SmartPhoto item, int position) {
+        mRows.add(position, item);
+        notifyItemInserted(position);
+    }
+
+    public void remove(int position) {
+        mRows.remove(position);
+        notifyItemRemoved(position);
     }
 
     public void setmOnLoadMoreListener(OnLoadMoreListener mOnLoadMoreListener) {
@@ -61,7 +79,7 @@ public class SmartWorkPhotoAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         Context context = parent.getContext();
 
         if (viewType == VIEW_TYPE_ITEM) {
-            View view = LayoutInflater.from(context).inflate(R.layout.row_work_view_labor, parent, false);
+            View view = LayoutInflater.from(context).inflate(R.layout.row_work_view_photo, parent, false);
             return new UserViewHolder(getContext(), view);
         } else if (viewType == VIEW_TYPE_LOADING) {
             View view = LayoutInflater.from(context).inflate(R.layout.row_loading_item, parent, false);
@@ -92,7 +110,7 @@ public class SmartWorkPhotoAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             UserViewHolder userViewHolder = (UserViewHolder) holder;
 
             ImageView imgPhoto = userViewHolder.imgPhoto;
-            TextView txtBuild = userViewHolder.txtBuild;
+            TextView txtLabor = userViewHolder.txtLabor;
             TextView txtLocation = userViewHolder.txtLocation;
             TextView txtDate = userViewHolder.txtDate;
             TextView txtMemo = userViewHolder.txtMemo;
@@ -106,7 +124,7 @@ public class SmartWorkPhotoAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                         .into(imgPhoto);
             }
 
-            txtBuild.setText(row.strBuildName);
+            txtLabor.setText(row.strLavorCode);
             txtLocation.setText(row.strLocation);
             txtDate.setText(row.datRegist);
             txtMemo.setText(row.strMemo);
@@ -126,14 +144,18 @@ public class SmartWorkPhotoAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     /***************************************************************************/
     private static OnItemClickListener listener;
-
     public interface OnItemClickListener {
         void onItemClick(View itemView, int position);
     }
-
     public void setOnItemClickListener(OnItemClickListener listener) {
         this.listener = listener;
     }
+
+    private static OnItemXClickListener listenerX;
+    public interface OnItemXClickListener {
+        void onItemXClick(View itemView, int position);
+    }
+    public void setOnItemXClickListener(OnItemXClickListener listenerX) { this.listenerX = listenerX; }
     /***************************************************************************/
 
     // 로딩용 뷰홀더 클래스 ########################################################################
@@ -150,28 +172,31 @@ public class SmartWorkPhotoAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     }
 
     // 뷰홀더 클래스 ###############################################################################
-    public static class UserViewHolder extends RecyclerView.ViewHolder  { // implements View.OnClickListener
+    public static class UserViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
 
         private Context context;
+        public int position;
         public ImageView imgPhoto;
-        public TextView txtBuild;
+        public TextView txtLabor;
         public TextView txtLocation;
         public TextView txtDate;
         public TextView txtMemo;
         public Button btnDelete;
         public Button btnModify;
+        // 내부 이벤트 적용을 위한 코드 3-1
+        public ImageView commentDelete;
 
         public UserViewHolder(Context context, final View itemView) {
             super(itemView);
+
+            this.context = context;
             imgPhoto = (ImageView) itemView.findViewById(R.id.img_work_view_photo);
-            txtBuild = (TextView) itemView.findViewById(R.id.txt_work_view_photo_build);
+            txtLabor = (TextView) itemView.findViewById(R.id.txt_work_view_photo_labor);
             txtMemo = (TextView) itemView.findViewById(R.id.txt_work_view_photo_memo);
             txtLocation = (TextView) itemView.findViewById(R.id.txt_work_view_photo_location);
             txtDate = (TextView) itemView.findViewById(R.id.txt_work_view_photo_date);
             btnDelete = (Button) itemView.findViewById(R.id.btn_work_view_photo_delete);
             btnModify = (Button) itemView.findViewById(R.id.btn_work_view_photo_modify);
-
-            this.context = context;
 
             /***************************************************************************/
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -181,9 +206,41 @@ public class SmartWorkPhotoAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                         listener.onItemClick(itemView, getLayoutPosition());
                 }
             });
+
+            btnDelete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (listenerX != null)
+                        listenerX.onItemXClick(itemView, getLayoutPosition());
+                }
+            });
             /***************************************************************************/
         }
 
+        // 내부 이벤트 적용을 위한 코드 3-3
+        @Override
+        public void onClick(View v) {
+            if (v.getId() == btnDelete.getId()){
+
+            }
+            Toast.makeText(v.getContext(), "CLICK : " + String.valueOf(position) + " / " + String.valueOf(btnDelete.getId()), Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public boolean onLongClick(View v) {
+            final AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+            builder.setTitle ("Hello Dialog")
+                    .setMessage ("LONG CLICK : " + String.valueOf(position) + " / " + String.valueOf(btnDelete.getId()))
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    });
+
+            builder.create().show();
+            return true;
+        }
     }
 
 }

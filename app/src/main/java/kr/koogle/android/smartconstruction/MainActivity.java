@@ -192,7 +192,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         final ArrayList<SmartCategory> responseLaborCategorys = response.body();
 
                         if (responseLaborCategorys.size() != 0) {
-                            Log.d(TAG, "responseSmartCategorys : size " + responseLaborCategorys.size());
+                            Log.d(TAG, "arrLaborCategorys : size " + responseLaborCategorys.size());
                             SmartSingleton.arrLaborCategorys.addAll(responseLaborCategorys);
                         } else {
 
@@ -223,7 +223,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         final ArrayList<SmartCategory> responseMaterialCategorys = response.body();
 
                         if (responseMaterialCategorys.size() != 0) {
-                            Log.d(TAG, "responseSmartCategorys : size " + responseMaterialCategorys.size());
+                            Log.d(TAG, "arrMaterialCategorys : size " + responseMaterialCategorys.size());
                             SmartSingleton.arrMaterialCategorys.addAll(responseMaterialCategorys);
                         } else {
 
@@ -254,7 +254,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         final ArrayList<SmartCategory> responseEquipmentCategorys = response.body();
 
                         if (responseEquipmentCategorys.size() != 0) {
-                            Log.d(TAG, "responseSmartCategorys : size " + responseEquipmentCategorys.size());
+                            Log.d(TAG, "arrEquipmentCategorys : size " + responseEquipmentCategorys.size());
                             SmartSingleton.arrEquipmentCategorys.addAll(responseEquipmentCategorys);
                         } else {
 
@@ -285,7 +285,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         final ArrayList<SmartCategory> responseUnitCategorys = response.body();
 
                         if (responseUnitCategorys.size() != 0) {
-                            Log.d(TAG, "responseSmartCategorys : size " + responseUnitCategorys.size());
+                            Log.d(TAG, "arrUnitCategorys : size " + responseUnitCategorys.size());
                             SmartSingleton.arrUnitCategorys.addAll(responseUnitCategorys);
                         } else {
 
@@ -316,7 +316,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         final ArrayList<SmartCategory> responseWeatherCategorys = response.body();
 
                         if (responseWeatherCategorys.size() != 0) {
-                            Log.d(TAG, "responseSmartCategorys : size " + responseWeatherCategorys.size());
+                            Log.d(TAG, "arrWeatherCategorys : size " + responseWeatherCategorys.size());
                             SmartSingleton.arrWeatherCategorys.addAll(responseWeatherCategorys);
                         } else {
 
@@ -347,7 +347,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         final ArrayList<SmartEmployee> responses = response.body();
 
                         if (responses.size() != 0) {
-                            Log.d(TAG, "responses : size " + responses.size());
+                            Log.d(TAG, "arrSmartEmployees : size " + responses.size());
                             SmartSingleton.arrSmartEmployees.addAll(responses);
                         } else {
 
