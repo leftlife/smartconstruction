@@ -37,7 +37,7 @@ public class SmartOrderFragment extends Fragment {
     private RbPreference pref;
 
     public static RecyclerView recyclerView;
-    private SmartOrderAdapter adapter;
+    public static SmartOrderAdapter adapter;
 
     private static String strBuildCode = "start";
     private static Boolean isNewBuild = false;
@@ -99,10 +99,10 @@ public class SmartOrderFragment extends Fragment {
             public void onItemClick(View view, int position) {
                 adapter.notifyItemChanged(position);
 
-                Intent intext = new Intent(getActivity(), SmartOrderViewActivity.class);
+                Intent intent = new Intent(getActivity(), SmartOrderViewActivity.class);
                 final int intId = SmartSingleton.arrSmartOrders.get(position).intId;
-                intext.putExtra("intId", intId);
-                startActivityForResult(intext, 1002);
+                intent.putExtra("intId", intId);
+                startActivityForResult(intent, 31001);
                 //Toast.makeText(getContext(), "intId : " + intId, Toast.LENGTH_SHORT).show();
             }
         });
@@ -182,7 +182,7 @@ public class SmartOrderFragment extends Fragment {
         addItems();
     }
 
-    private void addItems() {
+    public void addItems() {
         /******************************************************************************************/
         // SmartBuild 값 불러오기 (진행중인 현장)
         SmartService smartService = ServiceGenerator.createService(SmartService.class, pref.getValue("pref_access_token", ""));

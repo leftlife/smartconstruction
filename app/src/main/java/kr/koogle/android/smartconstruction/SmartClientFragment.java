@@ -36,7 +36,7 @@ public class SmartClientFragment extends Fragment {
     private RbPreference pref;
 
     public static RecyclerView recyclerView;
-    private SmartClientAdapter adapter;
+    public static SmartClientAdapter adapter;
 
     private static String strBuildCode = "start";
     private static Boolean isNewBuild = false;
@@ -101,7 +101,7 @@ public class SmartClientFragment extends Fragment {
                 Intent intext = new Intent(getActivity(), SmartClientViewActivity.class);
                 final int intId = SmartSingleton.arrSmartClients.get(position).intId;
                 intext.putExtra("intId", intId);
-                startActivityForResult(intext, 1002);
+                startActivityForResult(intext, 21001);
                 //Toast.makeText(getContext(), "intId : " + intId, Toast.LENGTH_SHORT).show();
             }
         });
@@ -181,7 +181,7 @@ public class SmartClientFragment extends Fragment {
         addItems();
     }
 
-    private void addItems() {
+    public void addItems() {
         /******************************************************************************************/
         // SmartClient 값 불러오기 (진행중인 현장)
         Log.d(TAG, "SmartService.getSmartBBSClients 실행!! / pref_access_token : " + pref.getValue("pref_access_token", ""));

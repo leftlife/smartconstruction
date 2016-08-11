@@ -14,6 +14,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import butterknife.ButterKnife;
 import butterknife.Bind;
 import kr.koogle.android.smartconstruction.http.AccessToken;
@@ -29,6 +32,8 @@ public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
     private static final int REQUEST_SIGNUP = 0;
 
+    private RbPreference pref;
+
     @Bind(R.id.input_email) EditText _emailText;
     @Bind(R.id.input_password) EditText _passwordText;
     @Bind(R.id.btn_login) Button _loginButton;
@@ -39,6 +44,8 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
+
+        pref = new RbPreference(getApplicationContext());
 
         _loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,8 +85,11 @@ public class LoginActivity extends AppCompatActivity {
         // get access token
         Log.d(TAG, "loginService.getLoginToken 실행!!");
         LoginService loginService = ServiceGenerator.createService(LoginService.class, email, password);
-        Call<User> call = loginService.getLoginToken();
 
+        final Map<String, String> mapOptions = new HashMap<String, String>();
+        mapOptions.put("fcmToken", pref.getValue("pref_fcm_token",""));
+
+        Call<User> call = loginService.getLoginToken(mapOptions);
         call.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
@@ -92,7 +102,6 @@ public class LoginActivity extends AppCompatActivity {
                     final String basicToken = "Basic " + Base64.encodeToString(credentials.getBytes(), Base64.NO_WRAP);
 
                     Log.d(TAG, "pref_access_token : " + basicToken);
-                    RbPreference pref = new RbPreference(getApplicationContext());
                     pref.put("pref_user_code", user.getPref_user_code());
                     pref.put("pref_user_id", user.getPref_user_id());
                     pref.put("pref_user_name", user.getPref_user_name());

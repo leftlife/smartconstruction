@@ -1,6 +1,9 @@
 package kr.koogle.android.smartconstruction;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -23,6 +26,8 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -132,8 +137,8 @@ public class SmartWorkActivity extends AppCompatActivity {
             final CollapsingToolbarLayout collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout_work);
             collapsingToolbar.setTitle(strWorkTitleTop);
 
-            imageTop = (ImageView) findViewById(R.id.img_work_top);
         }
+        imageTop = (ImageView) findViewById(R.id.img_work_top);
 
         /******************************************************************************************/
         // Adapter 생성
@@ -203,13 +208,33 @@ public class SmartWorkActivity extends AppCompatActivity {
         super.onResume();
 
         imageTopUrl = getIntent().getExtras().getString("strImageUrl");
-        Log.d(TAG, "imageTopUrl : " + imageTopUrl);
         if( !imageTopUrl.isEmpty() ) {
-            Picasso.with(this)
-                    .load(imageTopUrl)
-                    .skipMemoryCache()
-                    .fit() // resize(700,400)
-                    .into(imageTop);
+            new DownloadImageTask(imageTop).execute(imageTopUrl);
+        }
+    }
+    // AsyncTask 탑 이미지 로딩용
+    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+        ImageView bmImage;
+
+        public DownloadImageTask(ImageView bmImage) {
+            this.bmImage = bmImage;
+        }
+
+        protected Bitmap doInBackground(String... urls) {
+            String urldisplay = urls[0];
+            Bitmap mIcon = null;
+            try {
+                //Bitmap image = Picasso.with(this).load(imageTopUrl).get();
+                InputStream in = new java.net.URL(urldisplay).openStream();
+                mIcon = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return mIcon;
+        }
+
+        protected void onPostExecute(Bitmap result) {
+            bmImage.setImageBitmap(result);
         }
     }
 
@@ -234,7 +259,8 @@ public class SmartWorkActivity extends AppCompatActivity {
                         SmartSingleton.arrSmartWorks.addAll(responses);
                         // 최근 카운트 체크
                         int curSize = adapter.getItemCount();
-                        adapter.notifyItemRangeInserted(curSize, responses.size());
+                        //adapter.notifyItemRangeInserted(curSize, responses.size());
+                        adapter.notifyDataSetChanged();
                     } else {
                         Snackbar.make(SmartWorkActivity.recyclerView, "마지막 리스트 입니다.", Snackbar.LENGTH_LONG).setAction("Action", null).show();
                     }

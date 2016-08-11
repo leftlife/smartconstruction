@@ -281,6 +281,8 @@ public class CameraPicActivity extends AppCompatActivity implements TimePickerDi
             strBuildCode = SmartSingleton.arrSmartBuilds.get(0).strCode;
             inputBuildName.setText(SmartSingleton.arrSmartBuilds.get(0).strName);
         }
+        String date = new SimpleDateFormat("yyyy'.'MM'.'dd").format(new Date());
+        inputDate.setText(date);
 
         inputBuildKind.setInputType(0);
         inputBuildKind.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -405,18 +407,7 @@ public class CameraPicActivity extends AppCompatActivity implements TimePickerDi
     }
 
     private void showIndeterminateProgressDialog(boolean horizontal) {
-
-        if(fileURI != null) {
-            md = new MaterialDialog.Builder(this)
-                    .title("이미지 전송중")
-                    .content("이미지 전송중 입니다..")
-                    .progress(true, 0)
-                    .progressIndeterminateStyle(horizontal)
-                    .show();
-            //Log.d(TAG, "fileURI : " + fileURI.toString());
-            uploadFile(new File(testRoot.getPath() + "/" + testFileName )); // 서버에 이미지 업로드 !!
-        } else {
-
+        if(fileURI == null) {
             new MaterialDialog.Builder(CameraPicActivity.this)
                     .title("이미지 미등록")
                     .content("이미지를 먼저 등록해 주세요.")
@@ -428,7 +419,55 @@ public class CameraPicActivity extends AppCompatActivity implements TimePickerDi
                         }
                     })
                     .show();
+            return;
         }
+        if( inputBuildKind.getText().toString().trim().equals("") ) {
+            new MaterialDialog.Builder(CameraPicActivity.this).content("공종을 먼저 입력해 주세요.").positiveText("확인")
+                    .onAny(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        }
+                    }).show();
+            return;
+        }
+        if( inputLocation.getText().toString().trim().equals("") ) {
+            new MaterialDialog.Builder(CameraPicActivity.this).content("위치를 먼저 입력해 주세요.").positiveText("확인")
+                    .onAny(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        }
+                    }).show();
+            return;
+        }
+        if( inputMemo.getText().toString().trim().equals("") ) {
+            new MaterialDialog.Builder(CameraPicActivity.this).content("내용을 먼저 입력해 주세요.").positiveText("확인")
+                    .onAny(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        }
+                    }).show();
+            return;
+        }
+        if( inputDate.getText().toString().trim().equals("") ) {
+            new MaterialDialog.Builder(CameraPicActivity.this).content("날짜를 먼저 입력해 주세요.").positiveText("확인")
+                    .onAny(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        }
+                    }).show();
+            return;
+        }
+
+
+        md = new MaterialDialog.Builder(this)
+                .title("이미지 전송중")
+                .content("이미지 전송중 입니다..")
+                .cancelable(false)
+                .progress(true, 0)
+                .progressIndeterminateStyle(horizontal)
+                .show();
+        //Log.d(TAG, "fileURI : " + fileURI.toString());
+        uploadFile(new File(testRoot.getPath() + "/" + testFileName )); // 서버에 이미지 업로드 !!
     }
 
     @Override
@@ -659,7 +698,7 @@ public class CameraPicActivity extends AppCompatActivity implements TimePickerDi
             fileCacheItem.createNewFile();
             out = new FileOutputStream(fileCacheItem);
             //160 부분을 자신이 원하는 크기로 변경할 수 있습니다.
-            bitmap = Bitmap.createScaledBitmap(bitmap, 1000, height/(width/1000), true);
+            bitmap = Bitmap.createScaledBitmap(bitmap, 800, height/(width/800), true);
             bitmap.compress(Bitmap.CompressFormat.JPEG, 60, out);
         } catch (Exception e) {
             e.printStackTrace();

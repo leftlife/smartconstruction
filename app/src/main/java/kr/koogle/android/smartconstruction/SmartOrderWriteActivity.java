@@ -57,10 +57,14 @@ public class SmartOrderWriteActivity extends AppCompatActivity {
     @Bind(R.id.img_photo) ImageView _photo;
 
     // intent 로 넘어온 값 받기
-    private Intent intent;
+    private Intent intentG;
 
     // 담당자 배열값
-    private Integer[] arrWho;
+    private ArrayList<Integer> arrWho;
+
+    // UTILITY METHODS
+    private Toast mToast;
+    private MaterialDialog md;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +72,7 @@ public class SmartOrderWriteActivity extends AppCompatActivity {
         setContentView(R.layout.activity_order_write);
         ButterKnife.bind(this);
         // intent 등록
-        intent = getIntent();
+        intentG = getIntent();
 
         // SmartSingleton 생성 !!
         SmartSingleton.getInstance();
@@ -76,11 +80,11 @@ public class SmartOrderWriteActivity extends AppCompatActivity {
         pref = new RbPreference(getApplicationContext());
 
         //smartOrder = new SmartOrder();
-        arrWho = new Integer[]{};
+        arrWho = new ArrayList<Integer>();
 
         // 리스트 클릭시 넘어온값 받기 !!
         SmartSingleton.smartOrder.intId = getIntent().getExtras().getInt("intId");
-        //Toast.makeText(SmartOrderWriteActivity.this, "intId : " + intId, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(SmartOrderWriteActivity.this, "intId : " + SmartSingleton.smartOrder.intId, Toast.LENGTH_SHORT).show();
         if( SmartSingleton.smartOrder.intId > 0 ) {
 
             final String strBuildCode = SmartSingleton.smartOrder.strBuildCode;
@@ -92,16 +96,21 @@ public class SmartOrderWriteActivity extends AppCompatActivity {
             }
             _buildName.setText(strBuildName);
 
+            arrWho.clear();
             String strWhoCode = "";
             String strWho = "";
+            int i = 0;
             for (String whoCode : SmartSingleton.smartOrder.arrWhoCodes) {
-                int i = 0;
+                int j = 0;
                 for (SmartEmployee se : SmartSingleton.arrSmartEmployees) {
                     if (se.strCode.equals(whoCode)) {
-                        if(i > 0) strWho += ",";
+                        if(i > 0) strWho += ", ";
                         strWho += se.strName;
+                        arrWho.add(j);
                         i++;
+                        Log.d("aaaa", "j : " + j + "i : " + i + " / strWho : " + strWho);
                     }
+                    j++;
                 }
                 strWhoCode += "|" + whoCode;
             }
@@ -157,9 +166,10 @@ public class SmartOrderWriteActivity extends AppCompatActivity {
                         }
                     }
 
-                    MaterialDialog md = new MaterialDialog.Builder(SmartOrderWriteActivity.this)
+                    md = new MaterialDialog.Builder(SmartOrderWriteActivity.this)
                             .title("현장선택")
                             .items(arrBuild)
+                            .cancelable(false)
                             .itemsCallback(new MaterialDialog.ListCallback() {
                                 @Override
                                 public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
@@ -186,25 +196,28 @@ public class SmartOrderWriteActivity extends AppCompatActivity {
                         }
                     }
 
+                    Integer[] arrWhoWhich = arrWho.toArray(new Integer[arrWho.size()]); // ArrayList 배열로 변환 !!
+                    _who.clearFocus();
+
                     new MaterialDialog.Builder(SmartOrderWriteActivity.this)
                             .title("담당직원 선택")
                             .items(arrEmployee)
-                            .itemsCallbackMultiChoice(arrWho, new MaterialDialog.ListCallbackMultiChoice() {
+                            .itemsCallbackMultiChoice(arrWhoWhich, new MaterialDialog.ListCallbackMultiChoice() {
                                 @Override
                                 public boolean onSelection(MaterialDialog dialog, Integer[] which, CharSequence[] text) {
                                     StringBuilder str = new StringBuilder();
                                     SmartSingleton.smartOrder.arrWhoCodes.clear(); // arrWhoCodes 값 초기화
+                                    arrWho.clear();
                                     for (int i = 0; i < which.length; i++) {
                                         if (i > 0) {
                                             str.append(',');
                                             str.append('\n');
                                         }
                                         str.append(text[i]);
-                                        SmartSingleton.smartOrder.arrWhoCodes.add(SmartSingleton.arrSmartEmployees.get(i).strCode); // arrWhoCodes 에 값 추가
+                                        SmartSingleton.smartOrder.arrWhoCodes.add(SmartSingleton.arrSmartEmployees.get(which[i]).strCode); // arrWhoCodes 에 값 추가
+                                        arrWho.add(which[i]); // 선택된 which 배열값
                                     }
-                                    arrWho = which; // 선택된 which 배열값
                                     _who.setText(str);
-                                    _who.clearFocus();
                                     return true; // allow selection
                                 }
                             })
@@ -234,6 +247,7 @@ public class SmartOrderWriteActivity extends AppCompatActivity {
                             .alwaysCallMultiChoiceCallback()
                             .positiveText("선택완료")
                             .autoDismiss(false)
+                            .cancelable(false)
                             .neutralText("초기화")
                             //.itemsDisabledIndices(0, 1)
                             .show();
@@ -247,7 +261,7 @@ public class SmartOrderWriteActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(SmartOrderWriteActivity.this, CameraPicListActivity.class);
                 //intent.putExtra("intId", SmartSingleton.smartOrder.intId);
-                startActivityForResult(intent, 1001);
+                startActivityForResult(intent, 32001);
                 //Toast.makeText(SmartOrderViewActivity.this, "intId : " + smartOrder.intId, Toast.LENGTH_SHORT).show();
             }
         });
@@ -261,7 +275,7 @@ public class SmartOrderWriteActivity extends AppCompatActivity {
 
             switch (requestCode) {
 
-                case 1001: // 첨부파일에 사진 추가하기
+                case 32001: // 첨부파일에 사진 추가하기
 
                     if (data != null) {
                         final int intId = Integer.valueOf(data.getStringExtra("intId"));
@@ -309,6 +323,7 @@ public class SmartOrderWriteActivity extends AppCompatActivity {
                     .title("공사명 미등록")
                     .content("공사명을 먼저 등록해 주세요.")
                     .positiveText("확인")
+                    .cancelable(false)
                     .onAny(new MaterialDialog.SingleButtonCallback() {
                         @Override
                         public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
@@ -322,6 +337,7 @@ public class SmartOrderWriteActivity extends AppCompatActivity {
                     .title("내용 미등록")
                     .content("내용을 먼저 등록해 주세요.")
                     .positiveText("확인")
+                    .cancelable(false)
                     .onAny(new MaterialDialog.SingleButtonCallback() {
                         @Override
                         public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
@@ -334,7 +350,13 @@ public class SmartOrderWriteActivity extends AppCompatActivity {
                 // 건축주 협의 게시판 수정하기
                 SmartSingleton.smartOrder.strContent = Html.toHtml(_content.getText());
 
-                Log.d("aaaa", "intId : " + SmartSingleton.smartOrder.intId);
+                md = new MaterialDialog.Builder(this)
+                        .title("서버 전송중")
+                        .content("서버 전송중 입니다..")
+                        .cancelable(false)
+                        .progress(true, 0)
+                        .progressIndeterminateStyle(true)
+                        .show();
                 //Toast.makeText(getBaseContext(), "intId " + SmartSingleton.smartOrder.intId, Toast.LENGTH_SHORT).show();
                 registOrder(SmartSingleton.smartOrder.intId);
                 return true;
@@ -385,14 +407,16 @@ public class SmartOrderWriteActivity extends AppCompatActivity {
                     try {
                         Log.v("registOrder", "수정 / " + response.body().string());
 
+                        md.dismiss();
                         new MaterialDialog.Builder(SmartOrderWriteActivity.this)
-                                .title("협의게시판 등록 완료")
+                                .title("작업지시 등록 완료")
                                 .content("글이 정상적으로 등록 되었습니다.")
                                 .positiveText("확인")
+                                .cancelable(false)
                                 .onAny(new MaterialDialog.SingleButtonCallback() {
                                     @Override
                                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                        SmartOrderWriteActivity.this.setResult(RESULT_OK, intent);
+                                        SmartOrderWriteActivity.this.setResult(RESULT_OK, intentG);
                                         finish();
                                     }
                                 })
@@ -406,6 +430,8 @@ public class SmartOrderWriteActivity extends AppCompatActivity {
                 @Override
                 public void onFailure(Call<ResponseBody> call, Throwable t) {
                     Log.e("Upload error:", t.getMessage());
+
+                    md.dismiss();
                 }
             });
         } else { // 신규 등록
@@ -416,10 +442,12 @@ public class SmartOrderWriteActivity extends AppCompatActivity {
                     try {
                         Log.v("registOrder", "신규등록 / " + response.body().string());
 
+                        md.dismiss();
                         new MaterialDialog.Builder(SmartOrderWriteActivity.this)
-                                .title("협의게시판 등록 완료")
+                                .title("작업지시 등록 완료")
                                 .content("글이 정상적으로 등록 되었습니다.")
                                 .positiveText("확인")
+                                .cancelable(false)
                                 .onAny(new MaterialDialog.SingleButtonCallback() {
                                     @Override
                                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
@@ -436,6 +464,8 @@ public class SmartOrderWriteActivity extends AppCompatActivity {
                 @Override
                 public void onFailure(Call<ResponseBody> call, Throwable t) {
                     Log.e("Upload error:", t.getMessage());
+
+                    md.dismiss();
                 }
             });
         }

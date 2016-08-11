@@ -2,24 +2,26 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#bbbbbb">
+    android:background="#ffffff">
 
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="250dp"
+        android:layout_height="200dp"
         android:id="@+id/r_camera_pic_photo"
         android:background="#aaaaaa"
-        android:layout_marginBottom="1dp"
-        android:scaleType="centerCrop" />
+        android:scaleType="fitCenter"
+        android:layout_marginLeft="4dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginRight="4dp" />
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="false"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp">
+        android:layout_marginTop="33dp"
+        android:layout_marginLeft="33dp"
+        android:layout_marginRight="33dp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -71,4 +73,32 @@
             android:textColor="#ffffff"
             android:layout_marginBottom="5dp" />
     </LinearLayout>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView"
+        android:src="@drawable/cwac_cam2_ic_close_white"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="30dp"
+        android:layout_marginRight="30dp" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView4"
+        android:src="@drawable/abc_ic_menu_selectall_mtrl_alpha"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="65dp"
+        android:layout_marginRight="30dp" />
+
+    <ImageView
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:id="@+id/imageView5"
+        android:src="@drawable/fab_add"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="28dp"
+        android:layout_marginTop="98dp" />
 </RelativeLayout>

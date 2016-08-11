@@ -20,36 +20,42 @@ import com.google.firebase.messaging.RemoteMessage;
 import java.util.List;
 import java.util.Map;
 
+import kr.koogle.android.smartconstruction.IntroActivity;
 import kr.koogle.android.smartconstruction.MainActivity;
+import kr.koogle.android.smartconstruction.R;
 
 public class MyFcmListenerService extends FirebaseMessagingService {
+    /**
+     * Foreground에서 메세지를 수신했을 때의 Callback입니다.
+     * @param message 레퍼런스(https://developers.google.com/android/reference/com/google/firebase/messaging/RemoteMessage)를 참조하세요.
+     */
 
     @Override
     public void onMessageReceived(RemoteMessage message){
         String from = message.getFrom();
-        Map data = message.getData();
-        String result = "dddddddddddd"; //data.getString("data");
-        //Log.e("result : ", result);
+        Map<String, String> data = message.getData();
+        String title = data.get("title");
+        String msg = data.get("message");
 
         // Non-blocking methods. No need to use AsyncTask or background thread.
         //FirebaseMessaging.getInstance().subscribeToTopic("mytopic");
         //FirebaseMessaging.getInstance().unsubscribeToTopic("mytopic");
 
-        if ( getRunningProcess(getBaseContext()).equals("kr.koogle.android.smartconstruction") ) // 앱이 실행중이면..
+        if ( getRunningProcess(getBaseContext()).equals("kr.koogle.android.smartconstruction") && false ) // 앱이 실행중이면..
         {
 
         }
         else
         {
             // 큰 아이콘
-            Bitmap bitmap = BitmapFactory.decodeResource(getResources(), android.R.drawable.ic_menu_gallery);
+            Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ico_face);
 
             // 알림 사운드
             Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
             // 알림 클릭시 이동할 인텐트
             //Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://developers.google.com/cloud-messaging/"));
-            Intent intent = new Intent(this, MainActivity.class);
+            Intent intent = new Intent(this, IntroActivity.class);
 
             // 노티피케이션을 생성할때 매개변수는 PendingIntent 이므로 Intent를 PendingIntent 로 만들어 주어야함.
             PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
@@ -59,8 +65,9 @@ public class MyFcmListenerService extends FirebaseMessagingService {
                     .setSmallIcon(android.R.drawable.ic_menu_gallery)
                     .setTicker("새로운 공지사항 등록")
                     .setLargeIcon(bitmap)
-                    .setContentTitle(getRunningProcess(getBaseContext()))
-                    .setContentText(result)
+                    //.setSmallIcon(2)
+                    .setContentTitle(title)
+                    .setContentText(msg)
                     .setAutoCancel(true)
                     .setNumber(5)
                     .setSound(soundUri)
@@ -69,7 +76,7 @@ public class MyFcmListenerService extends FirebaseMessagingService {
             NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
             // 노티피케이션을 생성합니다.
-            notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+            notificationManager.notify(0 /* ID of notification 알림 지울때 사용 */, notificationBuilder.build());
         }
     }
 

@@ -11,6 +11,7 @@ public class SmartWork {
     public int intWeather;
     public String strMemo;
     public String strImageURL;
+    public String strId;
 
     public ArrayList<SmartLabor> arrSmartLabors;
     public ArrayList<SmartLabor> arrSmartLaborNexts;
@@ -24,6 +25,23 @@ public class SmartWork {
         arrSmartMaterials = new ArrayList<SmartMaterial>();
         arrSmartEquipments = new ArrayList<SmartEquipment>();
         arrSmartPhotos = new ArrayList<SmartPhoto>();
+    }
+
+    public void reset() {
+        this.strCode = "";
+        this.intLevel = 1;
+        this.strBuildCode = "";
+        this.strDate = "";
+        this.intWeather = 1;
+        this.strMemo = "";
+        this.strImageURL = "";
+        this.strId = "";
+
+        this.arrSmartLabors.clear();
+        this.arrSmartLaborNexts.clear();
+        this.arrSmartMaterials.clear();
+        this.arrSmartEquipments.clear();
+        this.arrSmartPhotos.clear();
     }
 
 }

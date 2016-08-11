@@ -1,5 +1,6 @@
 package kr.koogle.android.smartconstruction;
 
+import android.content.ClipData;
 import android.os.Bundle;
 import android.content.Intent;
 import android.os.Handler;
@@ -20,10 +21,12 @@ import android.support.v7.widget.Toolbar;
 
 import android.net.Uri;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,11 +34,13 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
 import kr.koogle.android.smartconstruction.http.*;
 import kr.koogle.android.smartconstruction.util.BackPressCloseHandler;
+import kr.koogle.android.smartconstruction.util.HtmlRemoteImageGetterLee;
 import kr.koogle.android.smartconstruction.util.RbPreference;
 import me.leolin.shortcutbadger.ShortcutBadger;
 import retrofit2.Call;
@@ -44,10 +49,13 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, SmartFragment.OnHeadlineSelectedListener {
     private static final String TAG = "MainActivity";
-    private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private static BackPressCloseHandler backPressCloseHandler;
     private static RbPreference pref;
     public static FloatingActionButton fab;
+
+    public static Fragment tempFragmentBuild;
+    public static Fragment tempFragmentClient;
+    public static Fragment tempFragmentOrder;
 
     private static ImageView navImage;
     private static TextView navName;
@@ -73,13 +81,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Settings 값 !!
         pref = new RbPreference(getApplicationContext());
 
-        if (checkPlayServices()) {
-            // GCM 서비스 등록
-            String token = FirebaseInstanceId.getInstance().getToken();
-            Log.d(TAG, "GCM 시작 / token : " + token);
-            // 이 token을 서버에 전달 한다.
-        }
-
         // ToolBar 관련
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_main);
         setSupportActionBar(toolbar);
@@ -97,6 +98,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         // 네비게이션 이벤트
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
@@ -121,6 +123,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // 네비게이션 연동
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        // 건축주이면 메뉴 숨기기
+        if(pref.getValue("pref_user_type","").equals("client")) {
+            final Menu menu = navigationView.getMenu();
+            menu.findItem(R.id.nav_smart_order).setVisible(false);
+            menu.findItem(R.id.nav_manage_employee).setVisible(false);
+        }
 
         // Settings 버튼 클릭 이벤트
         View navHeaderView = navigationView.getHeaderView(0);
@@ -428,12 +437,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         SmartSingleton.getInstance().arrLaborCategorys.clear();
         SmartSingleton.getInstance().arrMaterialCategorys.clear();
         SmartSingleton.getInstance().arrEquipmentCategorys.clear();
+        SmartSingleton.getInstance().arrUnitCategorys.clear();
+        SmartSingleton.getInstance().arrWeatherCategorys.clear();
 
         SmartSingleton.getInstance().arrComments.clear();
 
         super.onDestroy();
     }
-
 
     // Drawer Layout 관련
     @Override
@@ -467,22 +477,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 case 0: // 스마트 현장
                     Intent intent = new Intent(MainActivity.this, SmartWorkViewActivity.class);
                     intent.putExtra("strCode", "");
-                    //SmartSingleton.smartClient = new SmartClient();
-                    startActivityForResult(intent, 1001);
+                    startActivityForResult(intent, 10001);
                     break;
 
                 case 1: // 건축주 협의
                     intent = new Intent(MainActivity.this, SmartClientWriteActivity.class);
                     intent.putExtra("intId", 0);
-                    //SmartSingleton.smartClient = new SmartClient();
-                    startActivityForResult(intent, 1001);
+                    startActivityForResult(intent, 20001);
                     break;
 
                 case 2: // 작업지시
                     intent = new Intent(MainActivity.this, SmartOrderWriteActivity.class);
                     intent.putExtra("intId", 0);
-                    //SmartSingleton.smartClient = new SmartClient();
-                    startActivityForResult(intent, 1001);
+                    startActivityForResult(intent, 30001);
                     break;
 
                 default:
@@ -505,30 +512,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (id == R.id.nav_smart_build) {
             Intent intent = new Intent(MainActivity.this, SmartWorkViewActivity.class);
             intent.putExtra("strCode", "");
-            //SmartSingleton.smartClient = new SmartClient();
-            startActivityForResult(intent, 1001);
+            startActivityForResult(intent, 10001);
 
         } else if (id == R.id.nav_smart_client) {
             Intent intent = new Intent(MainActivity.this, SmartClientWriteActivity.class);
             intent.putExtra("intId", 0);
-            //SmartSingleton.smartClient = new SmartClient();
-            startActivityForResult(intent, 1001);
+            startActivityForResult(intent, 20001);
 
         } else if (id == R.id.nav_smart_order) {
             Intent intent = new Intent(MainActivity.this, SmartOrderWriteActivity.class);
             intent.putExtra("intId", 0);
-            //SmartSingleton.smartClient = new SmartClient();
-            startActivityForResult(intent, 1001);
+            startActivityForResult(intent, 30001);
 
         } else if (id == R.id.nav_manage_photo) {
             Intent intent = new Intent(MainActivity.this, CameraPicListActivity.class);
             intent.putExtra("intId", SmartSingleton.smartClient.intId);
-            startActivityForResult(intent, 2001);
+            startActivityForResult(intent, 40001);
 
         } else if (id == R.id.nav_manage_employee) {
             Intent intent = new Intent(MainActivity.this, SmartEmployeeActivity.class);
             intent.putExtra("intId", "");
-            startActivityForResult(intent, 3001);
+            startActivityForResult(intent, 50001);
 
         } else if (id == R.id.nav_logout) {
             // Settings 값 !!
@@ -566,6 +570,68 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         */
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch(requestCode) {
+
+            case 10001:
+                if( data != null) {
+                }
+                /*
+                SmartBuildFragment fragment1 = (SmartBuildFragment) MainActivity.tempFragmentBuild;
+                if(fragment1 != null) {
+                    fragment1.adapter.clear();
+                    fragment1.addItems();
+                }
+                */
+                break;
+
+            case 20001:
+                if( data != null) {
+                }
+                SmartClientFragment fragment2 = (SmartClientFragment) MainActivity.tempFragmentClient;
+                if(fragment2 != null) {
+                    fragment2.adapter.clear();
+                    fragment2.addItems();
+                }
+                break;
+
+            case 30001:
+                if( data != null) {
+                }
+                SmartOrderFragment fragment3 = (SmartOrderFragment) MainActivity.tempFragmentOrder;
+                if(fragment3 != null) {
+                    fragment3.adapter.clear();
+                    fragment3.addItems();
+                }
+                break;
+        }
+
+        if( data != null) {
+            switch(data.getIntExtra("requestCode", 0)) {
+
+                case 21001:
+                    SmartClientFragment fragment2 = (SmartClientFragment) MainActivity.tempFragmentClient;
+                    if(fragment2 != null) {
+                        fragment2.adapter.clear();
+                        fragment2.addItems();
+                    }
+                    break;
+
+                case 31001:
+                    SmartOrderFragment fragment = (SmartOrderFragment) MainActivity.tempFragmentOrder;
+                    if(fragment != null) {
+                        fragment.adapter.clear();
+                        fragment.addItems();
+                    }
+                    break;
+            }
+            Log.d(TAG, "requestCode : " + requestCode + " / data : " + data.getIntExtra("requestCode", 0) + " ----------------------------------------------");
+        }
+    }
+
     /*
      * viewPager 관련 Adapter 클래스 ##################################################################
      */
@@ -585,7 +651,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         @Override
         public int getCount() {
-            return 3;
+            int count;
+            if(pref.getValue("pref_user_type","").equals("client")) {   // 건축주이면 2개 메뉴 구성
+                count = 2;
+            }else{                                                          // 현장소장이면 3개 메뉴 구성
+                count = 3;
+            }
+
+            return count;
         }
 
         @Override
@@ -602,43 +675,31 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         private Fragment getFragment(int idx) {
-            Fragment tempFragment = null;
+            //tempFragmentBuild = null;
+            //tempFragmentClient = null;
+            //tempFragmentOrder = null;
 
+            Fragment fragment = null;
             switch(idx) {
                 case 0:
-                    tempFragment = new SmartBuildFragment();
+                    tempFragmentBuild = new SmartBuildFragment();
+                    fragment = tempFragmentBuild;
                     break;
                 case 1:
-                    tempFragment = new SmartClientFragment();
+                    tempFragmentClient = new SmartClientFragment();
+                    fragment = tempFragmentClient;
                     break;
                 case 2:
-                    tempFragment = new SmartOrderFragment();
+                    tempFragmentOrder = new SmartOrderFragment();
+                    fragment = tempFragmentOrder;
                     break;
                 default:
                     Log.d("getFragment", "Unhandle Case");
                     break;
             }
-            return tempFragment;
-        }
-    }
 
-    /*
-     * Util 함수들 ##################################################################
-     */
-    // GCM 이 가능한지 체크
-    private boolean checkPlayServices() {
-        GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
-        int resultCode = apiAvailability.isGooglePlayServicesAvailable(this);
-        if (resultCode != ConnectionResult.SUCCESS) {
-            if (apiAvailability.isUserResolvableError(resultCode)) {
-                apiAvailability.getErrorDialog(this, resultCode, PLAY_SERVICES_RESOLUTION_REQUEST).show();
-            } else {
-                Log.i(TAG, "This device is not supported.");
-                finish();
-            }
-            return false;
+            return fragment;
         }
-        return true;
     }
 
 }

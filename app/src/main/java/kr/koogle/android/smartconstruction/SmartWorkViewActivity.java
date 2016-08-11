@@ -240,15 +240,9 @@ public class SmartWorkViewActivity extends AppCompatActivity {
         /***************************************************************************/
 
         // 내용 넣는 부분
+        SmartSingleton.smartWork.reset();
         if( !strWorkCode.equals("") ) { // 기존 내용 보기이면..
             writeWork();
-        } else { // 신규 등록이면..
-            SmartSingleton.smartWork.strCode = "";
-            SmartSingleton.smartWork.strBuildCode = "";
-            SmartSingleton.smartWork.strDate = "";
-            SmartSingleton.smartWork.strMemo = "";
-            SmartSingleton.smartWork.intWeather = 0;
-            SmartSingleton.smartWork.strImageURL = "";
         }
 
         // 툴바 세팅
@@ -757,18 +751,21 @@ public class SmartWorkViewActivity extends AppCompatActivity {
                         }
                         _txtDate.setText(responses.strDate);
                         for (SmartCategory sc : SmartSingleton.arrWeatherCategorys) {
-                            if (sc.strCode.equals(responses.intWeather)) {
+                            if (sc.strCode.equals(String.valueOf(responses.intWeather))) {
                                 _txtWeather.setText(sc.strName);
                             }
+                            Log.d("aaaa", "strCode : " + sc.strCode + " / intWeather : " + responses.intWeather);
                         }
                         _txtMemo.setText(responses.strMemo);
 
                         SmartSingleton.smartWork.strCode = responses.strCode;
                         SmartSingleton.smartWork.strBuildCode = responses.strBuildCode;
                         SmartSingleton.smartWork.strDate = responses.strDate;
+                        SmartSingleton.smartWork.intLevel = responses.intLevel;
                         SmartSingleton.smartWork.strMemo = responses.strMemo;
                         SmartSingleton.smartWork.intWeather = responses.intWeather;
                         SmartSingleton.smartWork.strImageURL = responses.strImageURL;
+                        SmartSingleton.smartWork.strId = responses.strId;
 
                         SmartSingleton.smartWork.arrSmartLabors.addAll(responses.arrSmartLabors);
                         int curSizeLabor = adapterLabor.getItemCount();
@@ -785,6 +782,21 @@ public class SmartWorkViewActivity extends AppCompatActivity {
                         SmartSingleton.smartWork.arrSmartPhotos.addAll(responses.arrSmartPhotos);
                         int curSizePhoto = adapterPhoto.getItemCount();
                         adapterPhoto.notifyItemRangeInserted(curSizePhoto, responses.arrSmartPhotos.size());
+
+                        // 쓰기 권한 체크
+                        if(SmartSingleton.smartWork.strId.equals(pref.getValue("pref_user_id",""))) {
+                            _btnDelete.setVisibility(View.VISIBLE);
+                            _btnAddLabor.setVisibility(View.VISIBLE);
+                            _btnAddMaterial.setVisibility(View.VISIBLE);
+                            _btnAddEquipment.setVisibility(View.VISIBLE);
+                            _btnAddPhoto.setVisibility(View.VISIBLE);
+                        } else {
+                            _btnDelete.setVisibility(View.GONE);
+                            _btnAddLabor.setVisibility(View.GONE);
+                            _btnAddMaterial.setVisibility(View.GONE);
+                            _btnAddEquipment.setVisibility(View.GONE);
+                            _btnAddPhoto.setVisibility(View.GONE);
+                        }
 
                     } else {
                         Snackbar.make(SmartWorkActivity.recyclerView, "마지막 리스트 입니다.", Snackbar.LENGTH_LONG).setAction("Action", null).show();
@@ -950,6 +962,7 @@ public class SmartWorkViewActivity extends AppCompatActivity {
                     }).show();
             return;
         }
+        /*
         if( _txtWorkViewEquipmentCate2.getText().toString().trim().equals("") ) {
             new MaterialDialog.Builder(SmartWorkViewActivity.this).content("2차 카테고리를 정확하게 입력해 주세요.").positiveText("확인")
                     .onAny(new MaterialDialog.SingleButtonCallback() {
@@ -959,6 +972,7 @@ public class SmartWorkViewActivity extends AppCompatActivity {
                     }).show();
             return;
         }
+        */
         if( _txtWorkViewEquipmentCount.getText().toString().trim().equals("") ) {
             new MaterialDialog.Builder(SmartWorkViewActivity.this).content("수량을 정확하게 입력해 주세요.").positiveText("확인")
                     .onAny(new MaterialDialog.SingleButtonCallback() {
@@ -1029,6 +1043,35 @@ public class SmartWorkViewActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+
+            if( _txtBuildName.getText().toString().trim().equals("") ) {
+                new MaterialDialog.Builder(SmartWorkViewActivity.this).content("현장명을 먼저 선택해 주세요.").positiveText("확인")
+                        .onAny(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                            }
+                        }).show();
+                return true;
+            }
+            if( _txtDate.getText().toString().trim().equals("") ) {
+                new MaterialDialog.Builder(SmartWorkViewActivity.this).content("작업일을 먼저 입력해 주세요.").positiveText("확인")
+                        .onAny(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                            }
+                        }).show();
+                return true;
+            }
+            if( _txtMemo.getText().toString().trim().equals("") ) {
+                new MaterialDialog.Builder(SmartWorkViewActivity.this).content("특기사항을 먼저 입력해 주세요.").positiveText("확인")
+                        .onAny(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                            }
+                        }).show();
+                return true;
+            }
+
             // 프로그래스 실행 !!
             showIndeterminateProgressDialog(true);
             return true;

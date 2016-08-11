@@ -11,7 +11,7 @@ public class SmartClient {
     public String strTitle;
     public String strContent;
     public String strWriter;
-    public String UserId;
+    public String strUserId;
     public int intState;
     public int intLevel;
     public int intCount;

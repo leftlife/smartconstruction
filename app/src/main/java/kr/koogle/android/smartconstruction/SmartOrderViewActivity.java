@@ -87,7 +87,7 @@ public class SmartOrderViewActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager layoutManager;
 
     // intent 로 넘어온 값 받기
-    private Intent intent;
+    private Intent intentG;
     private String orderCode;
 
     @Override
@@ -96,15 +96,15 @@ public class SmartOrderViewActivity extends AppCompatActivity {
         setContentView(R.layout.activity_order_view);
         ButterKnife.bind(this);
         // intent 등록
-        intent = getIntent();
+        intentG = getIntent();
+        // 리스트 클릭시 넘어온값 받기 !!
+        orderCode = String.valueOf(getIntent().getExtras().getInt("intId"));
 
         // SmartSingleton 생성 !!
         SmartSingleton.getInstance();
         // Settings 값 !!
         pref = new RbPreference(getApplicationContext());
 
-        // 리스트 클릭시 넘어온값 받기 !!
-        orderCode = String.valueOf(getIntent().getExtras().getInt("intId"));
 
         // RecyclerView 저장
         recyclerView = (RecyclerView) findViewById(R.id.rv_order_view_comments);
@@ -166,7 +166,7 @@ public class SmartOrderViewActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(SmartOrderViewActivity.this, SmartOrderWriteActivity.class);
                 intent.putExtra("intId", SmartSingleton.smartOrder.intId);
-                startActivityForResult(intent, 1001);
+                startActivityForResult(intent, 32001);
             }
         });
 
@@ -203,7 +203,7 @@ public class SmartOrderViewActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(SmartOrderViewActivity.this, CameraPicListActivity.class);
                 intent.putExtra("intId", SmartSingleton.smartOrder.intId);
-                startActivityForResult(intent, 2001);
+                startActivityForResult(intent, 32006);
                 //Toast.makeText(SmartOrderViewActivity.this, "intId : " + smartOrder.intId, Toast.LENGTH_SHORT).show();
             }
         });
@@ -255,7 +255,7 @@ public class SmartOrderViewActivity extends AppCompatActivity {
                 final String commentCode = String.valueOf(SmartSingleton.arrComments.get(position).intId);
                 SmartService smartService = ServiceGenerator.createService(SmartService.class, pref.getValue("pref_access_token", ""));
                 Call<ResponseBody> call = smartService.deleteComment(commentCode);
-                Toast.makeText(SmartOrderViewActivity.this, "commentCode : " + commentCode, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(SmartOrderViewActivity.this, "commentCode : " + commentCode, Toast.LENGTH_SHORT).show();
 
                 call.enqueue(new Callback<ResponseBody>() {
                     @Override
@@ -291,6 +291,8 @@ public class SmartOrderViewActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful() && response.body() != null) {
+                    Intent intent = new Intent(SmartOrderViewActivity.this, CameraPicListActivity.class);
+                    intent.putExtra("requestCode", 31001);
                     SmartOrderViewActivity.this.setResult(RESULT_OK, intent);
                     finish();
                 }
@@ -358,6 +360,16 @@ public class SmartOrderViewActivity extends AppCompatActivity {
                         // comment 리스트 출력 !!
                         //int curSize = adapter.getItemCount();
                         //adapter.notifyItemRangeInserted(curSize, smartOrder.arrComments.size());
+
+                        // 쓰기 권한 체크
+                        if(SmartSingleton.smartOrder.strUserId.equals(pref.getValue("pref_user_id",""))) {
+                            _btnModify.setVisibility(View.VISIBLE);
+                            _btnDelete.setVisibility(View.VISIBLE);
+                        } else {
+                            _btnModify.setVisibility(View.GONE);
+                            _btnDelete.setVisibility(View.GONE);
+                        }
+
                         Log.d(TAG, "curSize : " + adapter.getItemCount() + " / arrComments.size : " + SmartSingleton.smartOrder.arrComments.size());
 
                     } else {
@@ -455,7 +467,7 @@ public class SmartOrderViewActivity extends AppCompatActivity {
 
         switch(requestCode) {
 
-            case 1001: // 내용 수정 페이지에서 온 경우 내용 새로 고침
+            case 32001: // 내용 수정 페이지에서 온 경우 내용 새로 고침
 
                 _txtWriter.setText(SmartSingleton.smartOrder.strUserId);
                 _txtDate.setText(SmartSingleton.smartOrder.datWrite);
@@ -465,7 +477,7 @@ public class SmartOrderViewActivity extends AppCompatActivity {
                 scrollView.fullScroll(ScrollView.FOCUS_UP);
                 break;
 
-            case 2001: // 댓글에서 사진 추가하기
+            case 32006: // 댓글에서 사진 추가하기
 
                 if( data != null) {
                     final String intId = data.getStringExtra("intId");

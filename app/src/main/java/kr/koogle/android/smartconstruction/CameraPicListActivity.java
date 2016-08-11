@@ -1,6 +1,7 @@
 package kr.koogle.android.smartconstruction;
 
 import android.content.Intent;
+import android.graphics.Camera;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.NestedScrollView;
@@ -31,6 +32,8 @@ import kr.koogle.android.smartconstruction.http.SmartPhoto;
 import kr.koogle.android.smartconstruction.http.SmartService;
 import kr.koogle.android.smartconstruction.http.SmartSingleton;
 import kr.koogle.android.smartconstruction.http.SmartWork;
+import kr.koogle.android.smartconstruction.util.EndlessScrollListener;
+import kr.koogle.android.smartconstruction.util.EndlessScrollView;
 import kr.koogle.android.smartconstruction.util.RbPreference;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -45,6 +48,8 @@ public class CameraPicListActivity extends AppCompatActivity {
     // Pull to Refresh 4-1
     private SwipeRefreshLayout swipeContainer;
 
+    private LinearLayout layoutEmpty;
+    private View viewEmpty;
     // recycleViewer
     private static RecyclerView recyclerView;
     private CameraPicListAdapter adapter;
@@ -66,6 +71,7 @@ public class CameraPicListActivity extends AppCompatActivity {
         // Settings 값 !!
         pref = new RbPreference(this);
 
+        //layoutEmpty = (LinearLayout) findViewById(R.id.emp_layout_camera_pic_list);
         // RecyclerView 저장
         recyclerView = (RecyclerView) findViewById(R.id.rv_camera_pics);
         // LayoutManager 저장
@@ -165,43 +171,6 @@ public class CameraPicListActivity extends AppCompatActivity {
         });
         /***************************************************************************/
 
-        /*
-        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
-            @Override
-            public void onChanged() {
-                super.onChanged();
-                notifyDataSetChanged();
-            }
-
-            @Override
-            public void onItemRangeChanged(int positionStart, int itemCount) {
-                Log.d(TAG, "onItemRangeChanged " + itemCount);
-                int headerCount = getHeaderCount();
-                notifyItemRangeChanged(positionStart + headerCount, itemCount);
-            }
-
-            @Override
-            public void onItemRangeInserted(int positionStart, int itemCount) {
-                int headerCount = getHeaderCount();
-                notifyItemRangeInserted(positionStart + headerCount, itemCount);
-            }
-
-            @Override
-            public void onItemRangeRemoved(int positionStart, int itemCount) {
-                Log.d(TAG, "onItemRangeRemoved " + "itemCount : " + itemCount);
-                int headerCount = getHeaderCount();
-                notifyItemRangeRemoved(positionStart + headerCount, itemCount);
-            }
-
-            @Override
-            public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
-                int headerCount = getHeaderCount();
-                notifyItemMoved(fromPosition + headerCount, toPosition + headerCount);
-                // TODO itemcount가 1일 경우이므로 1보다 크면 제대로 동작하지 않는다.
-            }
-        });
-        */
-
         // Pull to Refresh 4-2
         // Lookup the swipe container view
         swipeContainer = (SwipeRefreshLayout) findViewById(R.id.srl_camera_pic_list);
@@ -248,9 +217,11 @@ public class CameraPicListActivity extends AppCompatActivity {
                         //adapter.notifyItemRangeInserted(curSize, responses.size());
                         adapter.notifyDataSetChanged();
 
-
+                        //if(viewEmpty != null) viewEmpty.setVisibility(View.GONE);
                     } else {
                         Snackbar.make(CameraPicListActivity.recyclerView, "마지막 리스트 입니다.", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+
+                        //viewEmpty = View.inflate(CameraPicListActivity.this, R.layout.row_empty, layoutEmpty);
                     }
                 } else {
                     Toast.makeText(getApplication(), "데이터가 정확하지 않습니다.", Toast.LENGTH_SHORT).show();
@@ -265,6 +236,9 @@ public class CameraPicListActivity extends AppCompatActivity {
             public void onFailure(Call<ArrayList<SmartPhoto>> call, Throwable t) {
                 Toast.makeText(getApplicationContext(), "네트워크 상태가 좋지 않습니다!!!", Toast.LENGTH_SHORT).show();
                 Log.d("Error", t.getMessage());
+
+                // Pull to Refresh 4-4
+                swipeContainer.setRefreshing(false);
             }
 
         });
@@ -290,7 +264,7 @@ public class CameraPicListActivity extends AppCompatActivity {
             // 사진 촬영 엑티비티 열기 !!
             Intent intent = new Intent(CameraPicListActivity.this, CameraPicActivity.class);
             intent.putExtra("intId", 0);
-            startActivityForResult(intent, 2001);
+            startActivityForResult(intent, 40001);
             return true;
         }
 
@@ -303,7 +277,7 @@ public class CameraPicListActivity extends AppCompatActivity {
 
         switch(requestCode) {
 
-            case 2001: // 리스트 다시 읽기
+            case 40001: // 리스트 다시 읽기
                 SmartSingleton.arrSmartPhotos.clear();
                 addRows();
                 break;

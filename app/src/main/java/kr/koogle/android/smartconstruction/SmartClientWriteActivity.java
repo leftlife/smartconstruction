@@ -58,6 +58,10 @@ public class SmartClientWriteActivity extends AppCompatActivity {
     // intent 로 넘어온 값 받기
     private Intent intent;
 
+    // UTILITY METHODS
+    private Toast mToast;
+    private MaterialDialog md;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -129,7 +133,7 @@ public class SmartClientWriteActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(SmartClientWriteActivity.this, CameraPicListActivity.class);
                 //intent.putExtra("intId", SmartSingleton.smartClient.intId);
-                startActivityForResult(intent, 1001);
+                startActivityForResult(intent, 22001);
                 //Toast.makeText(SmartClientViewActivity.this, "intId : " + smartClient.intId, Toast.LENGTH_SHORT).show();
             }
         });
@@ -149,6 +153,7 @@ public class SmartClientWriteActivity extends AppCompatActivity {
 
                     MaterialDialog md = new MaterialDialog.Builder(SmartClientWriteActivity.this)
                             .title("현장선택")
+                            .cancelable(false)
                             .items(arrBuild)
                             .itemsCallback(new MaterialDialog.ListCallback() {
                                 @Override
@@ -171,7 +176,7 @@ public class SmartClientWriteActivity extends AppCompatActivity {
 
             switch (requestCode) {
 
-                case 1001: // 첨부파일에 사진 추가하기
+                case 22001: // 첨부파일에 사진 추가하기
 
                     if (data != null) {
                         final int intId = Integer.valueOf(data.getStringExtra("intId"));
@@ -218,6 +223,7 @@ public class SmartClientWriteActivity extends AppCompatActivity {
                 new MaterialDialog.Builder(SmartClientWriteActivity.this)
                         .title("공사명 미등록")
                         .content("공사명을 먼저 등록해 주세요.")
+                        .cancelable(false)
                         .positiveText("확인")
                         .onAny(new MaterialDialog.SingleButtonCallback() {
                             @Override
@@ -231,6 +237,7 @@ public class SmartClientWriteActivity extends AppCompatActivity {
                 new MaterialDialog.Builder(SmartClientWriteActivity.this)
                         .title("제목 미등록")
                         .content("제목을 먼저 등록해 주세요.")
+                        .cancelable(false)
                         .positiveText("확인")
                         .onAny(new MaterialDialog.SingleButtonCallback() {
                             @Override
@@ -244,6 +251,7 @@ public class SmartClientWriteActivity extends AppCompatActivity {
                 new MaterialDialog.Builder(SmartClientWriteActivity.this)
                         .title("내용 미등록")
                         .content("내용을 먼저 등록해 주세요.")
+                        .cancelable(false)
                         .positiveText("확인")
                         .onAny(new MaterialDialog.SingleButtonCallback() {
                             @Override
@@ -258,8 +266,14 @@ public class SmartClientWriteActivity extends AppCompatActivity {
                 SmartSingleton.smartClient.strTitle = _title.getText().toString();
                 SmartSingleton.smartClient.strContent = Html.toHtml(_content.getText());
 
-                Log.d("aaaa", "intId : " + SmartSingleton.smartClient.intId);
-                Toast.makeText(getBaseContext(), "intId " + SmartSingleton.smartClient.intId, Toast.LENGTH_SHORT).show();
+                md = new MaterialDialog.Builder(this)
+                        .title("서버 전송중")
+                        .content("서버 전송중 입니다..")
+                        .cancelable(false)
+                        .progress(true, 0)
+                        .progressIndeterminateStyle(true)
+                        .show();
+                //Toast.makeText(getBaseContext(), "intId " + SmartSingleton.smartClient.intId, Toast.LENGTH_SHORT).show();
                 registClient(SmartSingleton.smartClient.intId);
                 return true;
             }
@@ -292,6 +306,7 @@ public class SmartClientWriteActivity extends AppCompatActivity {
                     try {
                         Log.v("registClient", "수정 / " + response.body().string());
 
+                        md.dismiss();
                         new MaterialDialog.Builder(SmartClientWriteActivity.this)
                                 .title("협의게시판 등록 완료")
                                 .content("글이 정상적으로 등록 되었습니다.")
@@ -313,6 +328,8 @@ public class SmartClientWriteActivity extends AppCompatActivity {
                 @Override
                 public void onFailure(Call<ResponseBody> call, Throwable t) {
                     Log.e("Upload error:", t.getMessage());
+
+                    md.dismiss();
                 }
             });
         } else { // 신규 등록
@@ -323,6 +340,7 @@ public class SmartClientWriteActivity extends AppCompatActivity {
                     try {
                         Log.v("registClient", "신규등록 / " + response.body().string());
 
+                        md.dismiss();
                         new MaterialDialog.Builder(SmartClientWriteActivity.this)
                                 .title("협의게시판 등록 완료")
                                 .content("글이 정상적으로 등록 되었습니다.")
@@ -343,6 +361,8 @@ public class SmartClientWriteActivity extends AppCompatActivity {
                 @Override
                 public void onFailure(Call<ResponseBody> call, Throwable t) {
                     Log.e("Upload error:", t.getMessage());
+
+                    md.dismiss();
                 }
             });
         }

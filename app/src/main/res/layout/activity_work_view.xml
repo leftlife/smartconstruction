@@ -55,7 +55,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="공사명"
                     android:id="@+id/txt_work_view_build_name"
                     android:layout_alignParentTop="true"
                     android:layout_alignParentLeft="true"
@@ -64,7 +63,8 @@
                     android:layout_marginRight="10dp"
                     android:layout_marginLeft="20dp"
                     android:layout_marginBottom="10dp"
-                    android:textColor="#222222" />
+                    android:textColor="#222222"
+                    android:hint="공사현장명" />
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -88,27 +88,28 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="2016.07.12"
                     android:id="@+id/txt_work_view_date"
                     android:textSize="14dp"
                     android:layout_alignParentTop="true"
                     android:layout_alignParentLeft="true"
                     android:layout_marginTop="15dp"
                     android:layout_marginLeft="20dp"
-                    android:textColor="#777777" />
+                    android:textColor="#777777"
+                    android:hint="0000.00.00" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="흐림"
                     android:id="@+id/txt_work_view_weather"
                     android:textSize="14dp"
                     android:layout_alignParentTop="true"
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="20dp"
                     android:layout_marginTop="15dp"
-                    android:textColor="#777777" />
+                    android:textColor="#777777"
+                    android:hint="기상정보"
+                    android:gravity="right" />
             </RelativeLayout>
 
             <RelativeLayout
@@ -128,7 +129,8 @@
                     android:textSize="14dp"
                     android:textColor="#333333"
                     android:layout_marginTop="22dp"
-                    android:layout_marginLeft="20dp" />
+                    android:layout_marginLeft="20dp"
+                    android:textStyle="bold" />
 
                 <ImageView
                     android:layout_width="28dp"
@@ -240,7 +242,7 @@
                 android:background="#ffffff"
                 android:paddingTop="10dp"
                 android:paddingBottom="20dp"
-                android:minHeight="80dp" />
+                android:minHeight="50dp" />
 
             <RelativeLayout
                 android:orientation="horizontal"
@@ -259,7 +261,8 @@
                     android:textSize="14dp"
                     android:textColor="#333333"
                     android:layout_marginTop="22dp"
-                    android:layout_marginLeft="20dp" />
+                    android:layout_marginLeft="20dp"
+                    android:textStyle="bold" />
 
                 <ImageView
                     android:layout_width="28dp"
@@ -369,7 +372,7 @@
                 android:background="#ffffff"
                 android:paddingTop="10dp"
                 android:paddingBottom="20dp"
-                android:minHeight="80dp" />
+                android:minHeight="50dp" />
 
             <RelativeLayout
                 android:orientation="horizontal"
@@ -388,7 +391,8 @@
                     android:textSize="14dp"
                     android:textColor="#333333"
                     android:layout_marginTop="22dp"
-                    android:layout_marginLeft="20dp" />
+                    android:layout_marginLeft="20dp"
+                    android:textStyle="bold" />
 
                 <ImageView
                     android:layout_width="28dp"
@@ -498,7 +502,7 @@
                 android:background="#ffffff"
                 android:paddingTop="10dp"
                 android:paddingBottom="20dp"
-                android:minHeight="80dp" />
+                android:minHeight="50dp" />
 
             <LinearLayout
                 android:orientation="vertical"
@@ -517,7 +521,8 @@
                     android:textSize="14dp"
                     android:textColor="#333333"
                     android:layout_marginTop="22dp"
-                    android:layout_marginLeft="20dp" />
+                    android:layout_marginLeft="20dp"
+                    android:textStyle="bold" />
             </LinearLayout>
 
             <LinearLayout
@@ -528,7 +533,7 @@
                 android:background="#ffffff"
                 android:paddingTop="10dp"
                 android:paddingBottom="20dp"
-                android:minHeight="80dp">
+                android:minHeight="50dp">
 
                 <TextView
                     android:layout_width="match_parent"
@@ -561,7 +566,8 @@
                     android:textSize="14dp"
                     android:textColor="#333333"
                     android:layout_marginTop="22dp"
-                    android:layout_marginLeft="20dp" />
+                    android:layout_marginLeft="20dp"
+                    android:textStyle="bold" />
 
                 <ImageView
                     android:layout_width="28dp"
@@ -580,7 +586,8 @@
                 android:layout_marginTop="1dp"
                 android:background="#ffffff"
                 android:layout_gravity="right"
-                android:minHeight="80dp" />
+                android:minHeight="50dp"
+                android:paddingBottom="30dp" />
 
         </LinearLayout>
 

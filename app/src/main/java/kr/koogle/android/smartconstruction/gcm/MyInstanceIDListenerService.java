@@ -6,24 +6,26 @@ import android.util.Log;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 
-public class MyInstanceIDListenerService extends FirebaseInstanceIdService {
+import kr.koogle.android.smartconstruction.util.RbPreference;
 
+public class MyInstanceIDListenerService extends FirebaseInstanceIdService {
     private static final String TAG = "MyInstanceIDListerner";
 
     /**
-     * Called if InstanceID token is updated. This may occur if the security of
-     * the previous token had been compromised. Note that this is also called
-     * when the InstanceID token is initially generated, so this is where
-     * you retrieve the token.
+     * 새로 토큰이 업데이트 되었을 때 여기로 Callback이 옵니다.
      */
     // [START refresh_token]
     @Override
     public void onTokenRefresh() {
+        // Settings 값 !!
+        RbPreference pref = new RbPreference(getApplicationContext());
+
         // Get updated InstanceID token.
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
         Log.d(TAG, "Refreshed token: " + refreshedToken);
-        // 이 토큰을 서버에 전달한다.
-        //sendRegistrationToServer(refreshedToken);
+        pref.put("pref_fcm_token", refreshedToken);
+        // 이제 이 이후에 Token을 등록하는 코드를 넣어주세요.
+
     }
 
 }

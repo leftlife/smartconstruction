@@ -165,7 +165,7 @@ public class SmartClientViewActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(SmartClientViewActivity.this, SmartClientWriteActivity.class);
                 intent.putExtra("intId", SmartSingleton.smartClient.intId);
-                startActivityForResult(intent, 1001);
+                startActivityForResult(intent, 22001);
             }
         });
 
@@ -202,7 +202,7 @@ public class SmartClientViewActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(SmartClientViewActivity.this, CameraPicListActivity.class);
                 intent.putExtra("intId", SmartSingleton.smartClient.intId);
-                startActivityForResult(intent, 2001);
+                startActivityForResult(intent, 22006);
                 //Toast.makeText(SmartClientViewActivity.this, "intId : " + smartClient.intId, Toast.LENGTH_SHORT).show();
             }
         });
@@ -290,6 +290,8 @@ public class SmartClientViewActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful() && response.body() != null) {
+                    Intent intent = new Intent(SmartClientViewActivity.this, CameraPicListActivity.class);
+                    intent.putExtra("requestCode", 21001);
                     SmartClientViewActivity.this.setResult(RESULT_OK, intent);
                     finish();
                 }
@@ -344,6 +346,16 @@ public class SmartClientViewActivity extends AppCompatActivity {
                         // comment 리스트 출력 !!
                         //int curSize = adapter.getItemCount();
                         //adapter.notifyItemRangeInserted(curSize, smartClient.arrComments.size());
+
+                        // 쓰기 권한 체크
+                        if(SmartSingleton.smartClient.strUserId.equals(pref.getValue("pref_user_id",""))) {
+                            _btnModify.setVisibility(View.VISIBLE);
+                            _btnDelete.setVisibility(View.VISIBLE);
+                        } else {
+                            _btnModify.setVisibility(View.GONE);
+                            _btnDelete.setVisibility(View.GONE);
+                        }
+
                         Log.d(TAG, "curSize : " + adapter.getItemCount() + " / arrComments.size : " + SmartSingleton.smartClient.arrComments.size());
 
                     } else {
@@ -368,7 +380,7 @@ public class SmartClientViewActivity extends AppCompatActivity {
 
         switch(requestCode) {
 
-            case 1001: // 내용 수정 페이지에서 온 경우 내용 새로 고침
+            case 22001: // 내용 수정 페이지에서 온 경우 내용 새로 고침
 
                 _txtTitle.setText(SmartSingleton.smartClient.strTitle);
                 _txtWriter.setText(SmartSingleton.smartClient.strWriter);
@@ -379,7 +391,7 @@ public class SmartClientViewActivity extends AppCompatActivity {
                 scrollView.fullScroll(ScrollView.FOCUS_UP);
                 break;
 
-            case 2001: // 댓글에서 사진 추가하기
+            case 22006: // 댓글에서 사진 추가하기
 
                 if( data != null) {
                     final String intId = data.getStringExtra("intId");
