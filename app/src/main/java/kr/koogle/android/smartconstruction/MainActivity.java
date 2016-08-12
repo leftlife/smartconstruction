@@ -172,6 +172,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                         break;
 
                                     case 1: // 동영상 촬영
+                                        intent = new Intent(MainActivity.this, CameraMovActivity.class);
+                                        startActivity(intent);
                                         break;
                                 }
                             }

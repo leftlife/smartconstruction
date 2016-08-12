@@ -2,18 +2,21 @@ package kr.koogle.android.smartconstruction;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.MediaScannerConnection;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -30,15 +33,22 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.VideoView;
 import android.widget.ViewFlipper;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.commonsware.cwac.cam2.AbstractCameraActivity;
 import com.commonsware.cwac.cam2.CameraActivity;
+import com.commonsware.cwac.cam2.ChronoType;
 import com.commonsware.cwac.cam2.Facing;
 import com.commonsware.cwac.cam2.FlashMode;
+import com.commonsware.cwac.cam2.OrientationLockMode;
+import com.commonsware.cwac.cam2.VideoRecorderActivity;
 import com.commonsware.cwac.cam2.ZoomStyle;
 import com.commonsware.cwac.security.RuntimePermissionUtils;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
@@ -79,8 +89,8 @@ import static android.Manifest.permission.CAMERA;
 import static android.Manifest.permission.RECORD_AUDIO;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
-public class CameraPicActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener, DatePickerDialog.OnDateSetListener {
-    private static final String TAG = "CameraPicActivity";
+public class CameraMovActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener, DatePickerDialog.OnDateSetListener {
+    private static final String TAG = "CameraMovActivity";
     private RbPreference pref;
     private static final String[] PERMS_ALL={
             CAMERA,
@@ -101,6 +111,9 @@ public class CameraPicActivity extends AppCompatActivity implements TimePickerDi
     private static final String STATE_IS_VIDEO="cwac_cam2_demo_is_video";
     private static final String STATE_MY_BITMAP="cwac_my_bitmap";
 
+    private static final String STATE_OUTPUT="com.commonsware.cwac.cam2.playground.VideoActivity.STATE_OUTPUT";
+    private Uri output=null;
+
     private File testRoot;
     private File testZip;
     private String testFileName;
@@ -112,6 +125,7 @@ public class CameraPicActivity extends AppCompatActivity implements TimePickerDi
     private ImageView imgContent;
     private Bitmap myBitmap;
 
+    private LinearLayout llVideoView;
     private ImageView imgPicture;
     private String strBuildCode;
     private TextView inputBuildName;
@@ -120,6 +134,8 @@ public class CameraPicActivity extends AppCompatActivity implements TimePickerDi
     private TextView inputMemo;
     private TextView inputDate;
     private Uri fileURI;
+    private VideoView videoView;
+    private MediaController mediaController;
 
     private LocationManager locationManager = null; // 위치 정보 프로바이더
     private LocationListener locationListener = null; //위치 정보가 업데이트시 동작
@@ -134,12 +150,21 @@ public class CameraPicActivity extends AppCompatActivity implements TimePickerDi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_camera_pic);
+        setContentView(R.layout.activity_camera_mov);
         // Settings 값 !!
         pref = new RbPreference(getApplicationContext());
 
+        llVideoView = (LinearLayout) findViewById(R.id.vv_camera_mov);
+        videoView = (VideoView) findViewById(R.id.videoView);
+        /*
+        videoView.setVideoPath();
+        videoView.setVideoURL(url);
+        */
+        mediaController = new MediaController(this);
+        videoView.setMediaController(mediaController);
+
         // ToolBar 관련
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_camera_pic);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_camera_mov);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationIcon(R.drawable.ico_back);
@@ -148,7 +173,7 @@ public class CameraPicActivity extends AppCompatActivity implements TimePickerDi
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CameraPicActivity.this.finish();
+                CameraMovActivity.this.finish();
             }
         });
 
@@ -170,10 +195,12 @@ public class CameraPicActivity extends AppCompatActivity implements TimePickerDi
             filename = filename.replaceAll(" ", "_");
 
             testRoot = new File(getExternalFilesDir(null), filename);
+            testRoot.mkdirs();
 
             String baseDir = testRoot.getAbsolutePath();
             //Toast.makeText(this, baseDir, Toast.LENGTH_LONG).show();
         } else {
+            output = savedInstanceState.getParcelable(STATE_OUTPUT);
             //wizardBody.setDisplayedChild(savedInstanceState.getInt(STATE_PAGE, 0));
             testRoot = new File(savedInstanceState.getString(STATE_TEST_ROOT));
             isVideo = savedInstanceState.getBoolean(STATE_IS_VIDEO, false);
@@ -221,16 +248,18 @@ public class CameraPicActivity extends AppCompatActivity implements TimePickerDi
             @Override
             public void onClick(View view) {
                 Intent i;
-                i = new CameraActivity.IntentBuilder(getApplication())
-                        .skipConfirm()
+
+                i=new VideoRecorderActivity.IntentBuilder(getApplication())
                         .facing(Facing.BACK)
                         .facingExactMatch()
-                        .to(new File(testRoot, "portrait-rear.jpg"))
+                        .to(new File(testRoot, "portrait-rear.mp4"))
+                        .quality(VideoRecorderActivity.Quality.HIGH)
                         .updateMediaStore()
+                        //.chronoType(ChronoType.COUNT_DOWN)
+                        .durationLimit(10000)
+                        .orientationLockMode(OrientationLockMode.LANDSCAPE)
                         .debug()
-                        .debugSavePreviewFrame()
                         .flashModes(FLASH_MODES)
-                        .zoomStyle(ZoomStyle.SEEKBAR)
                         .build();
 
                 startActivityForResult(i, REQUEST_PORTRAIT_RFC);
@@ -258,7 +287,7 @@ public class CameraPicActivity extends AppCompatActivity implements TimePickerDi
                     }
 
                     imgPicture.requestFocus();
-                    MaterialDialog md = new MaterialDialog.Builder(CameraPicActivity.this)
+                    MaterialDialog md = new MaterialDialog.Builder(CameraMovActivity.this)
                             .title("현장선택")
                             .items(arrBuild)
                             .itemsCallback(new MaterialDialog.ListCallback() {
@@ -295,7 +324,7 @@ public class CameraPicActivity extends AppCompatActivity implements TimePickerDi
                         }
                     }
 
-                    new MaterialDialog.Builder(CameraPicActivity.this)
+                    new MaterialDialog.Builder(CameraMovActivity.this)
                             .title("공종선택")
                             .items(arrBuild)
                             .itemsCallback(new MaterialDialog.ListCallback() {
@@ -317,7 +346,7 @@ public class CameraPicActivity extends AppCompatActivity implements TimePickerDi
                 if(b) {
                     Calendar now = Calendar.getInstance();
                     DatePickerDialog dpd = DatePickerDialog.newInstance(
-                            CameraPicActivity.this,
+                            CameraMovActivity.this,
                             now.get(Calendar.YEAR),
                             now.get(Calendar.MONTH),
                             now.get(Calendar.DAY_OF_MONTH)
@@ -334,7 +363,7 @@ public class CameraPicActivity extends AppCompatActivity implements TimePickerDi
     protected void onDestroy() {
         if (!isChangingConfigurations()) {
             if (testRoot.exists()) {
-                testRoot.delete();
+                //testRoot.delete();
             }
 
             if (testZip.exists()) {
@@ -361,6 +390,8 @@ public class CameraPicActivity extends AppCompatActivity implements TimePickerDi
         outState.putString(STATE_TEST_ROOT, testRoot.getAbsolutePath());
         outState.putBoolean(STATE_IS_VIDEO, isVideo);
         outState.putParcelable(STATE_MY_BITMAP, myBitmap);
+
+        outState.putParcelable(STATE_OUTPUT, output);
     }
 
 
@@ -406,9 +437,9 @@ public class CameraPicActivity extends AppCompatActivity implements TimePickerDi
 
     private void showIndeterminateProgressDialog(boolean horizontal) {
         if(fileURI == null) {
-            new MaterialDialog.Builder(CameraPicActivity.this)
-                    .title("이미지 미등록")
-                    .content("이미지를 먼저 등록해 주세요.")
+            new MaterialDialog.Builder(CameraMovActivity.this)
+                    .title("동영상 미등록")
+                    .content("동영상을 먼저 등록해 주세요.")
                     .positiveText("확인")
                     .onAny(new MaterialDialog.SingleButtonCallback() {
                         @Override
@@ -420,7 +451,7 @@ public class CameraPicActivity extends AppCompatActivity implements TimePickerDi
             return;
         }
         if( inputBuildKind.getText().toString().trim().equals("") ) {
-            new MaterialDialog.Builder(CameraPicActivity.this).content("공종을 먼저 입력해 주세요.").positiveText("확인")
+            new MaterialDialog.Builder(CameraMovActivity.this).content("공종을 먼저 입력해 주세요.").positiveText("확인")
                     .onAny(new MaterialDialog.SingleButtonCallback() {
                         @Override
                         public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
@@ -429,7 +460,7 @@ public class CameraPicActivity extends AppCompatActivity implements TimePickerDi
             return;
         }
         if( inputLocation.getText().toString().trim().equals("") ) {
-            new MaterialDialog.Builder(CameraPicActivity.this).content("위치를 먼저 입력해 주세요.").positiveText("확인")
+            new MaterialDialog.Builder(CameraMovActivity.this).content("위치를 먼저 입력해 주세요.").positiveText("확인")
                     .onAny(new MaterialDialog.SingleButtonCallback() {
                         @Override
                         public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
@@ -438,7 +469,7 @@ public class CameraPicActivity extends AppCompatActivity implements TimePickerDi
             return;
         }
         if( inputMemo.getText().toString().trim().equals("") ) {
-            new MaterialDialog.Builder(CameraPicActivity.this).content("내용을 먼저 입력해 주세요.").positiveText("확인")
+            new MaterialDialog.Builder(CameraMovActivity.this).content("내용을 먼저 입력해 주세요.").positiveText("확인")
                     .onAny(new MaterialDialog.SingleButtonCallback() {
                         @Override
                         public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
@@ -447,7 +478,7 @@ public class CameraPicActivity extends AppCompatActivity implements TimePickerDi
             return;
         }
         if( inputDate.getText().toString().trim().equals("") ) {
-            new MaterialDialog.Builder(CameraPicActivity.this).content("날짜를 먼저 입력해 주세요.").positiveText("확인")
+            new MaterialDialog.Builder(CameraMovActivity.this).content("날짜를 먼저 입력해 주세요.").positiveText("확인")
                     .onAny(new MaterialDialog.SingleButtonCallback() {
                         @Override
                         public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
@@ -464,7 +495,7 @@ public class CameraPicActivity extends AppCompatActivity implements TimePickerDi
                 .progressIndeterminateStyle(horizontal)
                 .show();
         //Log.d(TAG, "fileURI : " + fileURI.toString());
-        uploadFile(new File(testRoot.getPath() + "/" + testFileName )); // 서버에 이미지 업로드 !!
+        uploadFile(new File(testRoot.getPath() + "/" + "portrait-rear.mp4" )); // 서버에 이미지 업로드 !!
     }
 
     @Override
@@ -474,17 +505,43 @@ public class CameraPicActivity extends AppCompatActivity implements TimePickerDi
             case REQUEST_PORTRAIT_RFC:
 
                 if( data != null) {
+                    if (resultCode == Activity.RESULT_OK) {
+                        Intent i=new Intent(Intent.ACTION_VIEW, output);
+                        try {
+                            fileURI = data.getData();
+                            String videoFile = String.valueOf(fileURI);
+                            Log.d(TAG, "videoFile : " + videoFile + "----------------------------------------");
+
+                            videoView.setVideoPath(videoFile);
+                            Bitmap thumbnail = ThumbnailUtils.createVideoThumbnail(videoFile, MediaStore.Images.Thumbnails.MINI_KIND);
+
+                            BitmapDrawable bitmapDrawable = new BitmapDrawable(thumbnail);
+                            videoView.setBackgroundDrawable(bitmapDrawable);
+                            videoView.start();
+
+                            llVideoView.setVisibility(View.VISIBLE);
+                            imgPicture.setVisibility(View.GONE);
+                        }
+                        catch (ActivityNotFoundException e) {
+                            //i.setClass(this, VideoPlayerActivity.class);
+                            //startActivity(i);
+                        }
+                        Log.d(TAG, " data : " + data.getData());
+                    }
+
                     //Toast.makeText(this, data.getDataString(), Toast.LENGTH_LONG).show();
                     //String fileName = data.getDataString();
 
                     //txtContent = (TextView) findViewById(R.id.txt_content);
                     //txtContent.setText(fileName);
 
-                    imgContent = (ImageView) findViewById(R.id.img_picture);
+//                    imgContent = (ImageView) findViewById(R.id.img_picture);
                     //imgContent.setImageURI(Uri.fromFile(new File(fileName)));
 
-                    fileURI = data.getData();
+//                    fileURI = data.getData();
+                    /*
                     try {
+
                         myBitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), fileURI);
                         final Bitmap bm = Bitmap.createScaledBitmap(myBitmap, 600, 400, true);
                         imgContent.setImageBitmap(myBitmap);
@@ -494,7 +551,11 @@ public class CameraPicActivity extends AppCompatActivity implements TimePickerDi
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
+                    */
                     //imgContent.setImageBitmap(myBitmap);
+                } else {
+                    llVideoView.setVisibility(View.GONE);
+                    imgPicture.setVisibility(View.VISIBLE);
                 }
 
         }
@@ -609,15 +670,15 @@ public class CameraPicActivity extends AppCompatActivity implements TimePickerDi
                     Log.v("Upload", "success / " + response.body().string());
                     md.hide();
 
-                    new MaterialDialog.Builder(CameraPicActivity.this)
-                            .title("사진 업로드 완료")
-                            .content("사진이 정상적으로 업로드 되었습니다.")
+                    new MaterialDialog.Builder(CameraMovActivity.this)
+                            .title("동영상 업로드 완료")
+                            .content("동영상이 정상적으로 업로드 되었습니다.")
                             .positiveText("확인")
                             .onAny(new MaterialDialog.SingleButtonCallback() {
                                 @Override
                                 public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                     md.dismiss();
-                                    CameraPicActivity.this.finish();
+                                    CameraMovActivity.this.finish();
                                 }
                             })
                             .show();
