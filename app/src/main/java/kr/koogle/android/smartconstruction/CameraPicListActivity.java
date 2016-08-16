@@ -27,6 +27,7 @@ import java.util.Map;
 
 import butterknife.ButterKnife;
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
+import kr.koogle.android.smartconstruction.http.FileUploadService;
 import kr.koogle.android.smartconstruction.http.ServiceGenerator;
 import kr.koogle.android.smartconstruction.http.SmartPhoto;
 import kr.koogle.android.smartconstruction.http.SmartService;
@@ -35,6 +36,7 @@ import kr.koogle.android.smartconstruction.http.SmartWork;
 import kr.koogle.android.smartconstruction.util.EndlessScrollListener;
 import kr.koogle.android.smartconstruction.util.EndlessScrollView;
 import kr.koogle.android.smartconstruction.util.RbPreference;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -56,20 +58,20 @@ public class CameraPicListActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager layoutManager;
 
     // intent 로 넘어온 값 받기
-    private Intent intent;
+    private Intent intentGet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera_pic_list);
         ButterKnife.bind(this);
-        // intent 등록
-        intent = getIntent();
 
         // SmartSingleton 생성 !!
         SmartSingleton.getInstance();
         // Settings 값 !!
         pref = new RbPreference(this);
+        // intent 등록 !!
+        intentGet = getIntent();
 
         //layoutEmpty = (LinearLayout) findViewById(R.id.emp_layout_camera_pic_list);
         // RecyclerView 저장
@@ -139,34 +141,82 @@ public class CameraPicListActivity extends AppCompatActivity {
         adapter.setOnItemClickListener(new CameraPicListAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
+                Log.d("onItemClick", "onItemClick : " + view.getId() + " ----------------------------------------------");
 
-                // 클릭된 사진정보 부모 엑티비티에 전달
-                final int intId = SmartSingleton.arrSmartPhotos.get(position).intId;
-                final String strURL = SmartSingleton.arrSmartPhotos.get(position).strURL;
-                final String strName = SmartSingleton.arrSmartPhotos.get(position).strName;
-                final String strThumbnail = SmartSingleton.arrSmartPhotos.get(position).strThumbnail;
+                switch(view.getId()) {
 
-                final String strBuildCode = SmartSingleton.arrSmartPhotos.get(position).strBuildCode;
-                final String strBuildName = SmartSingleton.arrSmartPhotos.get(position).strBuildName;
-                final String strLavorCode = SmartSingleton.arrSmartPhotos.get(position).strLavorCode;
-                final String strLocation = SmartSingleton.arrSmartPhotos.get(position).strLocation;
-                final String strMemo = SmartSingleton.arrSmartPhotos.get(position).strMemo;
-                final String datRegist = SmartSingleton.arrSmartPhotos.get(position).datRegist;
-                adapter.notifyItemChanged(position);
+                    case R.id.btn_row_camera_pic_delete:
+                        // 사진 삭제 !!
+                        FileUploadService service = ServiceGenerator.createService(FileUploadService.class);
+                        int intId = SmartSingleton.arrSmartPhotos.get(position).intId;
+                        Call<ResponseBody> call = service.deleteUpload(intId);
+                        Toast.makeText(CameraPicListActivity.this, "intId : " + intId, Toast.LENGTH_SHORT).show();
 
-                intent.putExtra("intId", String.valueOf(intId));
-                intent.putExtra("strFileURL", strURL + strName);
-                intent.putExtra("strURL", strURL);
-                intent.putExtra("strName", strName);
-                intent.putExtra("strThumbnail", strThumbnail);
-                intent.putExtra("strBuildCode", strBuildCode);
-                intent.putExtra("strBuildName", strBuildName);
-                intent.putExtra("strLavorCode", strLavorCode);
-                intent.putExtra("strLocation", strLocation);
-                intent.putExtra("strMemo", strMemo);
-                intent.putExtra("datRegist", datRegist);
-                CameraPicListActivity.this.setResult(RESULT_OK, intent);
-                finish();
+                        call.enqueue(new Callback<ResponseBody>() {
+                            @Override
+                            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                                if (response.isSuccessful() && response.body() != null) {
+                                    //smartClient = response.body();
+                                    Log.d(TAG, response.body().toString());
+                                    //Log.d(TAG, "title : " + smartClient.arrComments.get(0).strContent.toString());
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                                Toast.makeText(CameraPicListActivity.this, "네트워크 상태가 좋지 않습니다!", Toast.LENGTH_SHORT).show();
+                                Log.d("Error", t.getMessage());
+                            }
+                        });
+
+                        adapter.remove(position);
+                        break;
+
+                    case R.id.btn_row_camera_pic_modify:
+                        if(SmartSingleton.arrSmartPhotos.get(position).strType.equals("image")) {
+                            // 사진 촬영 엑티비티 열기 !!
+                            Intent intent = new Intent(CameraPicListActivity.this, CameraPicActivity.class);
+                            intent.putExtra("intId", SmartSingleton.arrSmartPhotos.get(position).intId);
+                            startActivityForResult(intent, 40001);
+                        } else {
+                            // 동영상 촬영 엑티비티 열기 !!
+                            Intent intent = new Intent(CameraPicListActivity.this, CameraMovActivity.class);
+                            intent.putExtra("intId", SmartSingleton.arrSmartPhotos.get(position).intId);
+                            startActivityForResult(intent, 40001);
+                        }
+                        break;
+
+                    case R.id. btn_row_camera_pic_add:
+                        // 클릭된 사진정보 부모 엑티비티에 전달
+                        intId = SmartSingleton.arrSmartPhotos.get(position).intId;
+                        final String strURL = SmartSingleton.arrSmartPhotos.get(position).strURL;
+                        final String strName = SmartSingleton.arrSmartPhotos.get(position).strName;
+                        final String strThumbnail = SmartSingleton.arrSmartPhotos.get(position).strThumbnail;
+
+                        final String strBuildCode = SmartSingleton.arrSmartPhotos.get(position).strBuildCode;
+                        final String strBuildName = SmartSingleton.arrSmartPhotos.get(position).strBuildName;
+                        final String strLavorCode = SmartSingleton.arrSmartPhotos.get(position).strLavorCode;
+                        final String strLocation = SmartSingleton.arrSmartPhotos.get(position).strLocation;
+                        final String strMemo = SmartSingleton.arrSmartPhotos.get(position).strMemo;
+                        final String datRegist = SmartSingleton.arrSmartPhotos.get(position).datRegist;
+                        adapter.notifyItemChanged(position);
+
+                        intentGet.putExtra("intId", String.valueOf(intId));
+                        intentGet.putExtra("strFileURL", strURL + strName);
+                        intentGet.putExtra("strURL", strURL);
+                        intentGet.putExtra("strName", strName);
+                        intentGet.putExtra("strThumbnail", strThumbnail);
+                        intentGet.putExtra("strBuildCode", strBuildCode);
+                        intentGet.putExtra("strBuildName", strBuildName);
+                        intentGet.putExtra("strLavorCode", strLavorCode);
+                        intentGet.putExtra("strLocation", strLocation);
+                        intentGet.putExtra("strMemo", strMemo);
+                        intentGet.putExtra("datRegist", datRegist);
+                        CameraPicListActivity.this.setResult(RESULT_OK, intentGet);
+                        finish();
+                        break;
+
+                }
             }
         });
         /***************************************************************************/

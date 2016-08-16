@@ -86,17 +86,6 @@ public class SmartWorkLaborAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             return new LoadingViewHolder(getContext(), view);
         }
         return null;
-
-        /*
-        LayoutInflater inflater = LayoutInflater.from(context);
-
-        // Inflate the custom layout
-        View smartWorkView = inflater.inflate(R.layout.row_smart_work, parent, false);
-
-        // Return a new holder instance
-        ViewHolder viewHolder = new ViewHolder(getContext(), smartWorkView);
-        return viewHolder;
-        */
     }
 
     @Override

@@ -135,14 +135,13 @@ public class SmartWorkViewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_work_view);
         ButterKnife.bind(this);
-        // intent 등록
-        intent = getIntent();
 
         // SmartSingleton 생성 !!
         SmartSingleton.getInstance();
         // Settings 값 !!
         pref = new RbPreference(this);
-
+        // intent 등록
+        intent = getIntent();
         // 리스트 클릭시 넘어온값 받기 !!
         strBuildCode = getIntent().getExtras().getString("strBuildCode");
         strWorkCode = getIntent().getExtras().getString("strCode");

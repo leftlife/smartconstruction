@@ -28,6 +28,7 @@ public class SmartSingleton {
     public static SmartWork smartWork;
     public static SmartClient smartClient;
     public static SmartOrder smartOrder;
+    public static SmartPhoto smartPhoto;
 
     public static SmartSingleton getInstance() {
         if (uniqueInstance == null) {
@@ -55,6 +56,7 @@ public class SmartSingleton {
                     smartWork = new SmartWork();
                     smartClient = new SmartClient();
                     smartOrder = new SmartOrder();
+                    smartPhoto = new SmartPhoto();
 
                 }
             }

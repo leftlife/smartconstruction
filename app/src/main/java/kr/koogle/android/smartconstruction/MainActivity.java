@@ -1,6 +1,8 @@
 package kr.koogle.android.smartconstruction;
 
+import android.annotation.TargetApi;
 import android.content.ClipData;
+import android.os.Build;
 import android.os.Bundle;
 import android.content.Intent;
 import android.os.Handler;
@@ -31,6 +33,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.commonsware.cwac.security.RuntimePermissionUtils;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -47,10 +50,24 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static android.Manifest.permission.CAMERA;
+import static android.Manifest.permission.RECORD_AUDIO;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, SmartFragment.OnHeadlineSelectedListener {
     private static final String TAG = "MainActivity";
     private static BackPressCloseHandler backPressCloseHandler;
     private static RbPreference pref;
+
+    // 퍼미션 체크 요청 3-1
+    private static final int RESULT_PERMS_ALL = 1341;
+    private static final String[] PERMS_ALL = {
+            CAMERA,
+            RECORD_AUDIO,
+            WRITE_EXTERNAL_STORAGE
+    };
+    private RuntimePermissionUtils utils;
+
     public static FloatingActionButton fab;
 
     public static Fragment tempFragmentBuild;
@@ -72,6 +89,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private Thread mThread;
     private Handler mHandler;
 
+    @TargetApi(Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,6 +98,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         SmartSingleton.getInstance();
         // Settings 값 !!
         pref = new RbPreference(getApplicationContext());
+
+        // 퍼미션 체크 요청 3-2
+        utils = new RuntimePermissionUtils(this);
+        // 퍼미션 채크해서 퍼미션 요청 !!!
+        if (!haveNecessaryPermissions() && utils.useRuntimePermissions()) {
+            requestPermissions(PERMS_ALL, RESULT_PERMS_ALL);
+        }
+        else {
+            // handlePage();
+        }
 
         // ToolBar 관련
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_main);
@@ -168,11 +196,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 switch(which) {
                                     case 0: // 사진 촬영
                                         Intent intent = new Intent(MainActivity.this, CameraPicActivity.class);
+                                        intent.putExtra("intId", 0);
                                         startActivity(intent);
                                         break;
 
                                     case 1: // 동영상 촬영
                                         intent = new Intent(MainActivity.this, CameraMovActivity.class);
+                                        intent.putExtra("intId", 0);
                                         startActivity(intent);
                                         break;
                                 }
@@ -378,6 +408,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         /******************************************************************************************/
 
+    }
+
+    // 퍼미션 체크 요청 3-2
+    private boolean haveNecessaryPermissions() {
+        return(utils.hasPermission(CAMERA) &&
+                utils.hasPermission(RECORD_AUDIO) &&
+                utils.hasPermission(WRITE_EXTERNAL_STORAGE));
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (haveNecessaryPermissions()) {
+            //handlePage();
+        }
+        else {
+            finish();
+        }
     }
 
     //  ############## Fragment 통신 ##################  // SmartFragment 용

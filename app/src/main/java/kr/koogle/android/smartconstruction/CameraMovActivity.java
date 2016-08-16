@@ -92,11 +92,6 @@ import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 public class CameraMovActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener, DatePickerDialog.OnDateSetListener {
     private static final String TAG = "CameraMovActivity";
     private RbPreference pref;
-    private static final String[] PERMS_ALL={
-            CAMERA,
-            RECORD_AUDIO,
-            WRITE_EXTERNAL_STORAGE
-    };
     private static final FlashMode[] FLASH_MODES={
             FlashMode.ALWAYS,
             FlashMode.AUTO
@@ -105,7 +100,6 @@ public class CameraMovActivity extends AppCompatActivity implements TimePickerDi
     private static final int REQUEST_PORTRAIT_FFC=REQUEST_PORTRAIT_RFC+1;
     private static final int REQUEST_LANDSCAPE_RFC=REQUEST_PORTRAIT_RFC+2;
     private static final int REQUEST_LANDSCAPE_FFC=REQUEST_PORTRAIT_RFC+3;
-    private static final int RESULT_PERMS_ALL=REQUEST_PORTRAIT_RFC+4;
     private static final String STATE_PAGE="cwac_cam2_demo_page";
     private static final String STATE_TEST_ROOT="cwac_cam2_demo_test_root";
     private static final String STATE_IS_VIDEO="cwac_cam2_demo_is_video";
@@ -146,13 +140,23 @@ public class CameraMovActivity extends AppCompatActivity implements TimePickerDi
     private Toast mToast;
     private MaterialDialog md;
 
+    // intent 로 넘어온 값 받기
+    private Intent intentGet;
+
     @TargetApi(23)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera_mov);
+
+        // SmartSingleton 생성 !!
+        SmartSingleton.getInstance();
         // Settings 값 !!
         pref = new RbPreference(getApplicationContext());
+        // intent 등록 !!
+        intentGet = getIntent();
+        // 리스트 클릭시 넘어온값 받기 !!
+        SmartSingleton.smartPhoto.intId = getIntent().getExtras().getInt("intId");
 
         llVideoView = (LinearLayout) findViewById(R.id.vv_camera_mov);
         videoView = (VideoView) findViewById(R.id.videoView);
@@ -182,12 +186,6 @@ public class CameraMovActivity extends AppCompatActivity implements TimePickerDi
             finish();
         }
 
-        //previewFrame = new File(getExternalCacheDir(), "cam2-preview.jpg");
-        //Toast.makeText(this, previewFrame.getAbsolutePath(), Toast.LENGTH_LONG).show();
-
-        // 퍼미션 체크 요청 유틸 !!
-        utils = new RuntimePermissionUtils(this);
-
         if (savedInstanceState == null) { // 처음 앱이 실행될 때 !!
             String filename="cam2_"+ Build.MANUFACTURER+"_"+Build.PRODUCT
                     +"_"+new SimpleDateFormat("yyyyMMdd'-'HHmmss").format(new Date());
@@ -216,14 +214,6 @@ public class CameraMovActivity extends AppCompatActivity implements TimePickerDi
         }
 
         testZip = new File(testRoot.getAbsolutePath()+".zip");
-
-        // 퍼미션 채크해서 퍼미션 요청 !!!
-        if (!haveNecessaryPermissions() && utils.useRuntimePermissions()) {
-            requestPermissions(PERMS_ALL, RESULT_PERMS_ALL);
-        }
-        else {
-            // handlePage();
-        }
 
         // 위치정보 얻기 !!
         locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
@@ -392,23 +382,6 @@ public class CameraMovActivity extends AppCompatActivity implements TimePickerDi
         outState.putParcelable(STATE_MY_BITMAP, myBitmap);
 
         outState.putParcelable(STATE_OUTPUT, output);
-    }
-
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        if (haveNecessaryPermissions()) {
-            //handlePage();
-        }
-        else {
-            finish();
-        }
-    }
-
-    private boolean haveNecessaryPermissions() {
-        return(utils.hasPermission(CAMERA) &&
-                utils.hasPermission(RECORD_AUDIO) &&
-                utils.hasPermission(WRITE_EXTERNAL_STORAGE));
     }
 
     @Override

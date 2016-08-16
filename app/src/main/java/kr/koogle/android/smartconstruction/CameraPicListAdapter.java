@@ -12,6 +12,8 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 
 import kr.koogle.android.smartconstruction.http.SmartPhoto;
@@ -50,8 +52,7 @@ public class CameraPicListAdapter extends RecyclerView.Adapter<RecyclerView.View
         notifyItemInserted(position);
     }
 
-    public void remove(SmartPhoto item) {
-        int position = mRows.indexOf(item);
+    public void remove(int position) {
         mRows.remove(position);
         notifyItemRemoved(position);
     }
@@ -100,6 +101,7 @@ public class CameraPicListAdapter extends RecyclerView.Adapter<RecyclerView.View
             ImageView ivPhoto = userViewHolder.picPhoto;
             TextView tvBuildName = userViewHolder.buildName;
             TextView tvLaborName = userViewHolder.laborName;
+            TextView tvLocation = userViewHolder.location;
             TextView tvContent = userViewHolder.content;
             TextView tvDate = userViewHolder.date;
 
@@ -111,6 +113,7 @@ public class CameraPicListAdapter extends RecyclerView.Adapter<RecyclerView.View
             }
             tvBuildName.setText(row.strBuildName);
             tvLaborName.setText(row.strLavorCode);
+            tvLocation.setText(row.strLocation);
             tvContent.setText(row.strMemo);
             tvDate.setText(row.datRegist);
 
@@ -131,11 +134,9 @@ public class CameraPicListAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     /***************************************************************************/
     private static OnItemClickListener listener;
-
     public interface OnItemClickListener {
         void onItemClick(View itemView, int position);
     }
-
     public void setOnItemClickListener(OnItemClickListener listener) {
         this.listener = listener;
     }
@@ -159,25 +160,58 @@ public class CameraPicListAdapter extends RecyclerView.Adapter<RecyclerView.View
         public ImageView picPhoto;
         public TextView buildName;
         public TextView laborName;
+        public TextView location;
         public TextView content;
         public TextView date;
+
+        public ImageView btnDelete;
+        public ImageView btnModify;
+        public ImageView btnAdd;
 
         public UserViewHolder(Context context, final View itemView) {
             super(itemView);
             picPhoto = (ImageView) itemView.findViewById(R.id.r_camera_pic_photo);
             buildName = (TextView) itemView.findViewById(R.id.r_camera_pic_build_name);
             laborName = (TextView) itemView.findViewById(R.id.r_camera_pic_labor_name);
+            location = (TextView) itemView.findViewById(R.id.r_camera_pic_location);
             content = (TextView) itemView.findViewById(R.id.r_camera_pic_content);
             date = (TextView) itemView.findViewById(R.id.r_camera_pic_date);
+
+            btnDelete = (ImageView) itemView.findViewById(R.id.btn_row_camera_pic_delete);
+            btnModify = (ImageView) itemView.findViewById(R.id.btn_row_camera_pic_modify);
+            btnAdd = (ImageView) itemView.findViewById(R.id.btn_row_camera_pic_add);
 
             this.context = context;
 
             /***************************************************************************/
+            /*
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (listener != null)
                         listener.onItemClick(itemView, getLayoutPosition());
+                }
+            });
+            */
+            btnDelete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (listener != null)
+                        listener.onItemClick(btnDelete, getLayoutPosition());
+                }
+            });
+            btnModify.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (listener != null)
+                        listener.onItemClick(btnModify, getLayoutPosition());
+                }
+            });
+            btnAdd.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (listener != null)
+                        listener.onItemClick(btnAdd, getLayoutPosition());
                 }
             });
             /***************************************************************************/

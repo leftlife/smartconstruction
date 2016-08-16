@@ -96,7 +96,8 @@ public class SmartWorkAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             TextView tvWork1 = userViewHolder.work2;
             TextView tvWork2 = userViewHolder.work3;
 
-            if( !row.strImageURL.isEmpty() ) {
+            if( row.arrSmartPhotos.size() > 0 ) {
+                row.strImageURL = row.arrSmartPhotos.get(0).strURL + row.arrSmartPhotos.get(0).strThumbnail;
                 Picasso.with(getContext())
                         .load(row.strImageURL)
                         .fit() // resize(700,400)
