@@ -50,6 +50,12 @@ public interface SmartService {
         @Body SmartWork smartWork
     );
 
+    @DELETE("builds/{build}/works/{work}")
+    Call<ResponseBody> deleteWork(
+        @Path("build") String buildCode,
+        @Path("work") String workCode
+    );
+
     // 건축주 협의
     @GET("clients")
     Call<ArrayList<SmartClient>> getSmartBBSClients();

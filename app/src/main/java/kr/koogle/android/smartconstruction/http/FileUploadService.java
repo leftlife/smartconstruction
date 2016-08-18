@@ -24,7 +24,18 @@ public interface FileUploadService {
     @Multipart
     @POST("upload")
     //Call<ResponseBody> upload(@Part("description") RequestBody description, @Part MultipartBody.Part file);
-    Call<ResponseBody> upload(@PartMap Map<String, RequestBody> options, @Part MultipartBody.Part file);
+    Call<ResponseBody> upload(
+            @PartMap Map<String, RequestBody> options,
+            @Part MultipartBody.Part file
+    );
+
+    @Multipart
+    @POST("upload")
+    Call<ResponseBody> uploadMulti(
+            @PartMap Map<String, RequestBody> options,
+            @Part MultipartBody.Part file1,
+            @Part MultipartBody.Part file2
+    );
 
     @Multipart
     @POST("upload/{intId}")

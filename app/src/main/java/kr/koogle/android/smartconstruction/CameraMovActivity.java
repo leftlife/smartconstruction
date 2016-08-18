@@ -15,6 +15,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.media.MediaMetadataRetriever;
 import android.media.MediaScannerConnection;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
@@ -51,6 +52,8 @@ import com.commonsware.cwac.cam2.OrientationLockMode;
 import com.commonsware.cwac.cam2.VideoRecorderActivity;
 import com.commonsware.cwac.cam2.ZoomStyle;
 import com.commonsware.cwac.security.RuntimePermissionUtils;
+import com.pnikosis.materialishprogress.ProgressWheel;
+import com.squareup.picasso.Picasso;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
@@ -58,6 +61,7 @@ import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 import org.w3c.dom.Text;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -74,6 +78,7 @@ import butterknife.OnClick;
 import kr.koogle.android.smartconstruction.http.FileUploadService;
 import kr.koogle.android.smartconstruction.http.ServiceGenerator;
 import kr.koogle.android.smartconstruction.http.SmartBuild;
+import kr.koogle.android.smartconstruction.http.SmartPhoto;
 import kr.koogle.android.smartconstruction.http.SmartSingleton;
 import kr.koogle.android.smartconstruction.util.RbPreference;
 import okhttp3.MediaType;
@@ -119,6 +124,7 @@ public class CameraMovActivity extends AppCompatActivity implements TimePickerDi
     private ImageView imgContent;
     private Bitmap myBitmap;
 
+    private String uploadType = "create";
     private LinearLayout llVideoView;
     private ImageView imgPicture;
     private String strBuildCode;
@@ -143,6 +149,8 @@ public class CameraMovActivity extends AppCompatActivity implements TimePickerDi
     // intent 로 넘어온 값 받기
     private Intent intentGet;
 
+    private ProgressWheel wheel;
+
     @TargetApi(23)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -157,6 +165,15 @@ public class CameraMovActivity extends AppCompatActivity implements TimePickerDi
         intentGet = getIntent();
         // 리스트 클릭시 넘어온값 받기 !!
         SmartSingleton.smartPhoto.intId = getIntent().getExtras().getInt("intId");
+        Toast.makeText(this, String.valueOf(SmartSingleton.smartPhoto.intId), Toast.LENGTH_LONG);
+
+        // 사진 상세내용 저장 !!
+        imgPicture = (ImageView) findViewById(R.id.img_picture);
+        inputBuildName = (TextView) findViewById(R.id.input_build_name);
+        inputBuildKind = (TextView) findViewById(R.id.input_build_kind);
+        inputLocation = (TextView) findViewById(R.id.input_location);
+        inputMemo = (TextView) findViewById(R.id.input_memo);
+        inputDate = (TextView) findViewById(R.id.input_date);
 
         llVideoView = (LinearLayout) findViewById(R.id.vv_camera_mov);
         videoView = (VideoView) findViewById(R.id.videoView);
@@ -166,6 +183,32 @@ public class CameraMovActivity extends AppCompatActivity implements TimePickerDi
         */
         mediaController = new MediaController(this);
         videoView.setMediaController(mediaController);
+
+        if(SmartSingleton.smartPhoto.intId > 0) { // intId 값이 있으면 !!
+            uploadType = "modify";
+
+            wheel = (ProgressWheel) findViewById(R.id.progress_wheel);
+            wheel.setVisibility(View.VISIBLE);
+            wheel.setBarColor(R.color.colorPrimary);
+            wheel.spin();
+
+            imgPicture.setVisibility(View.GONE);
+            llVideoView.setVisibility(View.VISIBLE);
+            // 해당값 불러오기
+            drawView(SmartSingleton.smartPhoto.intId);
+        } else {
+            uploadType = "create";
+
+            // 초기값 설정
+            if( !SmartSingleton.arrSmartBuilds.isEmpty() ) {
+                SmartSingleton.smartPhoto.strBuildCode = SmartSingleton.arrSmartBuilds.get(0).strCode;
+                SmartSingleton.smartPhoto.strBuildName = SmartSingleton.arrSmartBuilds.get(0).strName;
+                inputBuildName.setText(SmartSingleton.arrSmartBuilds.get(0).strName);
+            }
+            String date = new SimpleDateFormat("yyyy'.'MM'.'dd").format(new Date());
+            SmartSingleton.smartPhoto.strBuildDate = date;
+            inputDate.setText(date);
+        }
 
         // ToolBar 관련
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_camera_mov);
@@ -191,10 +234,8 @@ public class CameraMovActivity extends AppCompatActivity implements TimePickerDi
                     +"_"+new SimpleDateFormat("yyyyMMdd'-'HHmmss").format(new Date());
 
             filename = filename.replaceAll(" ", "_");
-
             testRoot = new File(getExternalFilesDir(null), filename);
             testRoot.mkdirs();
-
             String baseDir = testRoot.getAbsolutePath();
             //Toast.makeText(this, baseDir, Toast.LENGTH_LONG).show();
         } else {
@@ -204,7 +245,6 @@ public class CameraMovActivity extends AppCompatActivity implements TimePickerDi
             isVideo = savedInstanceState.getBoolean(STATE_IS_VIDEO, false);
             String baseDir = testRoot.getAbsolutePath();
             //Toast.makeText(this, STATE_TEST_ROOT, Toast.LENGTH_LONG).show();
-
             myBitmap = savedInstanceState.getParcelable(STATE_MY_BITMAP); // myBitmap 값을 받아온다 !!!!!
             try {
                 imgContent.setImageBitmap(myBitmap);
@@ -233,7 +273,6 @@ public class CameraMovActivity extends AppCompatActivity implements TimePickerDi
         }
 
         // 이미지 클릭시 촬영 시작 !!
-        imgPicture = (ImageView) findViewById(R.id.img_picture);
         imgPicture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -242,7 +281,7 @@ public class CameraMovActivity extends AppCompatActivity implements TimePickerDi
                 i=new VideoRecorderActivity.IntentBuilder(getApplication())
                         .facing(Facing.BACK)
                         .facingExactMatch()
-                        .to(new File(testRoot, "portrait-rear.mp4"))
+                        .to(new File(testRoot, "sc_app.mp4"))
                         .quality(VideoRecorderActivity.Quality.HIGH)
                         .updateMediaStore()
                         //.chronoType(ChronoType.COUNT_DOWN)
@@ -255,13 +294,6 @@ public class CameraMovActivity extends AppCompatActivity implements TimePickerDi
                 startActivityForResult(i, REQUEST_PORTRAIT_RFC);
             }
         });
-
-        // 사진 상세내용 저장 !!
-        inputBuildName = (TextView) findViewById(R.id.input_build_name);
-        inputBuildKind = (TextView) findViewById(R.id.input_build_kind);
-        inputLocation = (TextView) findViewById(R.id.input_location);
-        inputMemo = (TextView) findViewById(R.id.input_memo);
-        inputDate = (TextView) findViewById(R.id.input_date);
 
         inputBuildName.setInputType(0);
         inputBuildName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -283,7 +315,8 @@ public class CameraMovActivity extends AppCompatActivity implements TimePickerDi
                             .itemsCallback(new MaterialDialog.ListCallback() {
                                 @Override
                                 public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                                    strBuildCode = SmartSingleton.arrSmartBuilds.get(which).strCode;
+                                    SmartSingleton.smartPhoto.strBuildCode = SmartSingleton.arrSmartBuilds.get(which).strCode;
+                                    SmartSingleton.smartPhoto.strBuildName = text.toString();
                                     inputBuildName.setText(text);
                                     inputBuildName.clearFocus();
                                 }
@@ -320,6 +353,7 @@ public class CameraMovActivity extends AppCompatActivity implements TimePickerDi
                             .itemsCallback(new MaterialDialog.ListCallback() {
                                 @Override
                                 public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                                    SmartSingleton.smartPhoto.strLavorCode = text.toString();
                                     inputBuildKind.setText(text);
                                     inputBuildKind.clearFocus();
                                 }
@@ -342,6 +376,7 @@ public class CameraMovActivity extends AppCompatActivity implements TimePickerDi
                             now.get(Calendar.DAY_OF_MONTH)
                     );
                     dpd.show(getFragmentManager(), "Datepickerdialog");
+                    SmartSingleton.smartPhoto.strBuildDate = inputDate.getText().toString();
                     inputDate.clearFocus();
                 }
             }
@@ -409,19 +444,21 @@ public class CameraMovActivity extends AppCompatActivity implements TimePickerDi
     }
 
     private void showIndeterminateProgressDialog(boolean horizontal) {
-        if(fileURI == null) {
-            new MaterialDialog.Builder(CameraMovActivity.this)
-                    .title("동영상 미등록")
-                    .content("동영상을 먼저 등록해 주세요.")
-                    .positiveText("확인")
-                    .onAny(new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+        if(uploadType.equals("create")) { // 최초 등록시에만 활성화 !!
+            if (fileURI == null) {
+                new MaterialDialog.Builder(CameraMovActivity.this)
+                        .title("동영상 미등록")
+                        .content("동영상을 먼저 등록해 주세요.")
+                        .positiveText("확인")
+                        .onAny(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
 
-                        }
-                    })
-                    .show();
-            return;
+                            }
+                        })
+                        .show();
+                return;
+            }
         }
         if( inputBuildKind.getText().toString().trim().equals("") ) {
             new MaterialDialog.Builder(CameraMovActivity.this).content("공종을 먼저 입력해 주세요.").positiveText("확인")
@@ -461,14 +498,19 @@ public class CameraMovActivity extends AppCompatActivity implements TimePickerDi
         }
 
         md = new MaterialDialog.Builder(this)
-                .title("이미지 전송중")
-                .content("이미지 전송중 입니다..")
+                .title("동영상 정보 전송중")
+                .content("동영상 정보 전송중 입니다..")
                 .cancelable(false)
                 .progress(true, 0)
                 .progressIndeterminateStyle(horizontal)
                 .show();
         //Log.d(TAG, "fileURI : " + fileURI.toString());
-        uploadFile(new File(testRoot.getPath() + "/" + "portrait-rear.mp4" )); // 서버에 이미지 업로드 !!
+        if(uploadType.equals("create")) {
+            uploadFileCreate(new File(testRoot.getPath() + "/" + "sc_app.mp4" )); // 서버에 이미지 업로드 !!
+        } else {
+            uploadFileModify();
+        }
+
     }
 
     @Override
@@ -483,13 +525,18 @@ public class CameraMovActivity extends AppCompatActivity implements TimePickerDi
                         try {
                             fileURI = data.getData();
                             String videoFile = String.valueOf(fileURI);
+                            Log.d(TAG, "Environment.getExternalStorageDirectory() : " + Environment.getExternalStorageDirectory());
                             Log.d(TAG, "videoFile : " + videoFile + "----------------------------------------");
 
                             videoView.setVideoPath(videoFile);
-                            Bitmap thumbnail = ThumbnailUtils.createVideoThumbnail(videoFile, MediaStore.Images.Thumbnails.MINI_KIND);
-
-                            BitmapDrawable bitmapDrawable = new BitmapDrawable(thumbnail);
-                            videoView.setBackgroundDrawable(bitmapDrawable);
+                            //Bitmap thumbnail = ThumbnailUtils.createVideoThumbnail(videoFile.replace("file://",""), MediaStore.Images.Thumbnails.MINI_KIND);
+                            //Bitmap thumbnail = ThumbnailUtils.createVideoThumbnail(videoFile.replace("file://",""), MediaStore.Video.Thumbnails.MICRO_KIND);
+                            Bitmap thumbnail = getVideoFrame(videoFile.replace("file://",""), 1);
+                            //BitmapDrawable bitmapDrawable = new BitmapDrawable(thumbnail);
+                            //videoView.setBackgroundDrawable(bitmapDrawable);
+                            //imgPicture.setImageBitmap(thumbnail);
+                            // 썸네일 이미지 저장 !!
+                            saveBitmaptoJpeg(thumbnail, "smartconstruction", "sc_thumbnail");
                             videoView.start();
 
                             llVideoView.setVisibility(View.VISIBLE);
@@ -601,27 +648,88 @@ public class CameraMovActivity extends AppCompatActivity implements TimePickerDi
         inputDate.setText(date);
     }
 
-    public void uploadFile(File fileImage) {
+    public void drawView(int intId) {
+        /******************************************************************************************/
+        // SmartPhoto 값 불러오기
+        FileUploadService smartService = ServiceGenerator.createService(FileUploadService.class, pref.getValue("pref_access_token", ""));
+        //final Map<String, String> mapOptions = new HashMap<String, String>();
+        //mapOptions.put("offset", String.valueOf(layoutManager.getItemCount()));
+        Call<SmartPhoto> call = smartService.getUpload(intId);
+
+        call.enqueue(new Callback<SmartPhoto>() {
+            @Override
+            public void onResponse(Call<SmartPhoto> call, Response<SmartPhoto> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    final SmartPhoto responses = response.body();
+
+                    if( responses.intId > 0 ) {
+                        SmartSingleton.smartPhoto = responses;
+
+                        uploadType = "modify";
+                        inputBuildName.setText(SmartSingleton.smartPhoto.strBuildName);
+                        inputBuildKind.setText(SmartSingleton.smartPhoto.strLavorCode);
+                        inputLocation.setText(SmartSingleton.smartPhoto.strLocation);
+                        inputMemo.setText(SmartSingleton.smartPhoto.strMemo);
+                        inputDate.setText(SmartSingleton.smartPhoto.strBuildDate);
+                        if ( !SmartSingleton.smartPhoto.strThumbnail.isEmpty() ) {
+                            String videoFile = SmartSingleton.smartPhoto.strURL + SmartSingleton.smartPhoto.strName;
+                            videoView.setVideoURI(Uri.parse(videoFile));
+                            //Uri videoFile = Uri.parse("android.resource://" + getPackageName() + "/raw/a"); 이렇게 지정 가능 !
+                            //Bitmap thumbnail = ThumbnailUtils.createVideoThumbnail(videoFile, MediaStore.Images.Thumbnails.MINI_KIND);
+                            //BitmapDrawable bitmapDrawable = new BitmapDrawable(thumbnail);
+                            //videoView.setBackgroundDrawable(bitmapDrawable);
+                            videoView.start();
+                        }
+
+                    } else {
+                        Toast.makeText(getApplication(), "데이터가 정확하지 않습니다.", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(getApplication(), "데이터가 정확하지 않습니다.", Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, "responses : 데이터가 정확하지 않습니다.");
+                }
+
+                wheel.stopSpinning();
+                wheel.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onFailure(Call<SmartPhoto> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "네트워크 상태가 좋지 않습니다!!!", Toast.LENGTH_SHORT).show();
+                Log.d("Error", t.getMessage());
+
+                wheel.stopSpinning();
+                wheel.setVisibility(View.GONE);
+            }
+        });
+        /******************************************************************************************/
+    }
+
+    public void uploadFileCreate(File fileImage) {
         /******************************************************************************************/
         FileUploadService service = ServiceGenerator.createService(FileUploadService.class);
         // https://github.com/iPaulPro/aFileChooser/blob/master/aFileChooser/src/com/ipaulpro/afilechooser/utils/FileUtils.java
         File file = fileImage; //FileUtils.getFile(this, fileUri); // Uri 값을 받을 경우 !!
+        File fileThumbnail = new File(String.valueOf(Uri.parse(Environment.getExternalStorageDirectory().getAbsolutePath() + "/smartconstruction/sc_thumbnail.jpg")));
 
-        // Toast.makeText(getBaseContext(), "name : " + file.getName() + " / size : " + file.length() , Toast.LENGTH_SHORT).show();
         RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+        RequestBody requestFileThumbnail = RequestBody.create(MediaType.parse("multipart/form-data"), fileThumbnail);
         // MultipartBody.Part 에 업로드 할 파일 추가 !!
-        MultipartBody.Part body = MultipartBody.Part.createFormData("userfile1", file.getName(), requestFile);
+        MultipartBody.Part body1 = MultipartBody.Part.createFormData("userfile1", file.getName(), requestFile);
+        MultipartBody.Part body2 = MultipartBody.Part.createFormData("userfile2", fileThumbnail.getName(), requestFileThumbnail);
 
+        SmartSingleton.smartPhoto.strLocation = inputLocation.getText().toString();
+        SmartSingleton.smartPhoto.strMemo = inputMemo.getText().toString();
         // multipart request 에 전달할 값 추가 !!
         Map<String, RequestBody> querys = new HashMap<>();
         RequestBody rbSiteId = RequestBody.create(MediaType.parse("multipart/form-data"), pref.getValue("pref_user_group", ""));
         RequestBody rbWriter = RequestBody.create(MediaType.parse("multipart/form-data"), pref.getValue("pref_user_id", ""));
-        RequestBody rbBuildCode = RequestBody.create(MediaType.parse("multipart/form-data"), strBuildCode);
-        RequestBody rbBuildName = RequestBody.create(MediaType.parse("multipart/form-data"), String.valueOf(inputBuildName.getText()));
-        RequestBody rbBuildKind = RequestBody.create(MediaType.parse("multipart/form-data"), String.valueOf(inputBuildKind.getText()));
-        RequestBody rbLocation = RequestBody.create(MediaType.parse("multipart/form-data"), String.valueOf(inputLocation.getText()));
-        RequestBody rbMemo = RequestBody.create(MediaType.parse("multipart/form-data"), String.valueOf(inputMemo.getText()));
-        RequestBody rbDate = RequestBody.create(MediaType.parse("multipart/form-data"), String.valueOf(inputDate.getText()));
+        RequestBody rbBuildCode = RequestBody.create(MediaType.parse("multipart/form-data"), SmartSingleton.smartPhoto.strBuildCode);
+        RequestBody rbBuildName = RequestBody.create(MediaType.parse("multipart/form-data"), SmartSingleton.smartPhoto.strBuildName);
+        RequestBody rbBuildKind = RequestBody.create(MediaType.parse("multipart/form-data"), SmartSingleton.smartPhoto.strLavorCode);
+        RequestBody rbLocation = RequestBody.create(MediaType.parse("multipart/form-data"), SmartSingleton.smartPhoto.strLocation);
+        RequestBody rbMemo = RequestBody.create(MediaType.parse("multipart/form-data"), SmartSingleton.smartPhoto.strMemo);
+        RequestBody rbDate = RequestBody.create(MediaType.parse("multipart/form-data"), SmartSingleton.smartPhoto.strBuildDate);
         RequestBody rbLng = RequestBody.create(MediaType.parse("multipart/form-data"), String.valueOf(SmartSingleton.getInstance().strLng));
         RequestBody rbLat = RequestBody.create(MediaType.parse("multipart/form-data"), String.valueOf(SmartSingleton.getInstance().strLat));
         querys.put("strSiteId", rbSiteId);
@@ -635,7 +743,69 @@ public class CameraMovActivity extends AppCompatActivity implements TimePickerDi
         querys.put("strLng", rbLng);
         querys.put("strLat", rbLat);
 
-        Call<ResponseBody> call = service.upload(querys, body);
+        Call<ResponseBody> call = service.uploadMulti(querys, body1, body2);
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                try {
+                    Log.v("Upload", "success / " + response.body().string());
+                    md.hide();
+
+                    new MaterialDialog.Builder(CameraMovActivity.this)
+                            .title("동영상 업로드 완료")
+                            .content("동영상이 정상적으로 업로드 되었습니다.")
+                            .positiveText("확인")
+                            .onAny(new MaterialDialog.SingleButtonCallback() {
+                                @Override
+                                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                    md.dismiss();
+                                    CameraMovActivity.this.finish();
+                                }
+                            })
+                            .show();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.e("Upload error:", t.getMessage());
+            }
+        });
+        /******************************************************************************************/
+    }
+
+    public void uploadFileModify() {
+        /******************************************************************************************/
+        FileUploadService service = ServiceGenerator.createService(FileUploadService.class);
+
+        SmartSingleton.smartPhoto.strLocation = inputLocation.getText().toString();
+        SmartSingleton.smartPhoto.strMemo = inputMemo.getText().toString();
+        // multipart request 에 전달할 값 추가 !!
+        Map<String, RequestBody> querys = new HashMap<>();
+        RequestBody rbSiteId = RequestBody.create(MediaType.parse("multipart/form-data"), pref.getValue("pref_user_group", ""));
+        RequestBody rbWriter = RequestBody.create(MediaType.parse("multipart/form-data"), pref.getValue("pref_user_id", ""));
+        RequestBody rbBuildCode = RequestBody.create(MediaType.parse("multipart/form-data"), SmartSingleton.smartPhoto.strBuildCode);
+        RequestBody rbBuildName = RequestBody.create(MediaType.parse("multipart/form-data"), SmartSingleton.smartPhoto.strBuildName);
+        RequestBody rbBuildKind = RequestBody.create(MediaType.parse("multipart/form-data"), SmartSingleton.smartPhoto.strLavorCode);
+        RequestBody rbLocation = RequestBody.create(MediaType.parse("multipart/form-data"), SmartSingleton.smartPhoto.strLocation);
+        RequestBody rbMemo = RequestBody.create(MediaType.parse("multipart/form-data"), SmartSingleton.smartPhoto.strMemo);
+        RequestBody rbDate = RequestBody.create(MediaType.parse("multipart/form-data"), SmartSingleton.smartPhoto.strBuildDate);
+        RequestBody rbLng = RequestBody.create(MediaType.parse("multipart/form-data"), String.valueOf(SmartSingleton.getInstance().strLng));
+        RequestBody rbLat = RequestBody.create(MediaType.parse("multipart/form-data"), String.valueOf(SmartSingleton.getInstance().strLat));
+        querys.put("strSiteId", rbSiteId);
+        querys.put("strWriter", rbWriter);
+        querys.put("strBuildCode", rbBuildCode);
+        querys.put("strBuildName", rbBuildName);
+        querys.put("strLavorCode", rbBuildKind);
+        querys.put("strLocation", rbLocation);
+        querys.put("strMemo", rbMemo);
+        querys.put("strBuildDate", rbDate);
+        querys.put("strLng", rbLng);
+        querys.put("strLat", rbLat);
+
+        Call<ResponseBody> call = service.modifyUpload(SmartSingleton.smartPhoto.intId, querys);
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -744,6 +914,64 @@ public class CameraMovActivity extends AppCompatActivity implements TimePickerDi
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    public Bitmap getVideoFrame(String FD, long time) {
+        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+        try {
+            retriever.setDataSource(FD);
+            return retriever.getFrameAtTime(time * 1000, MediaMetadataRetriever.OPTION_CLOSEST);
+        } catch (IllegalArgumentException ex) {
+            ex.printStackTrace();
+        } catch (RuntimeException ex) {
+            ex.printStackTrace();
+        } finally {
+            try {
+                retriever.release();
+            } catch (RuntimeException ex) {
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Image SDCard Save (input Bitmap -> saved file JPEG)
+     * Writer intruder(Kwangseob Kim)
+     * @param bitmap : input bitmap file
+     * @param folder : input folder name
+     * @param name   : output file name
+     */
+    public static void saveBitmaptoJpeg(Bitmap bitmap, String folder, String name){
+        String ex_storage = Environment.getExternalStorageDirectory().getAbsolutePath();
+        // Get Absolute Path in External Sdcard
+        String foler_name = "/"+folder+"/";
+        String file_name = name+".jpg";
+        String string_path = ex_storage+foler_name;
+
+        File file_path;
+        try{
+            file_path = new File(string_path);
+            if(!file_path.isDirectory()){
+                file_path.mkdirs();
+            }
+            FileOutputStream out = new FileOutputStream(string_path+file_name);
+            Log.d(TAG, "Uri : " + string_path + file_name);
+
+            int height=bitmap.getHeight();
+            int width=bitmap.getWidth();
+            if(height > width) {
+                bitmap = Bitmap.createScaledBitmap(bitmap, 800, 1400, true);
+            } else {
+                bitmap = Bitmap.createScaledBitmap(bitmap, 1400, 800, true);
+            }
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 60, out);
+            out.close();
+
+        }catch(FileNotFoundException exception){
+            Log.e("FileNotFoundException", exception.getMessage());
+        }catch(IOException exception){
+            Log.e("IOException", exception.getMessage());
         }
     }
 

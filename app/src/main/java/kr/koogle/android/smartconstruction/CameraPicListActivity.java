@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.pnikosis.materialishprogress.ProgressWheel;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -60,6 +61,8 @@ public class CameraPicListActivity extends AppCompatActivity {
     // intent 로 넘어온 값 받기
     private Intent intentGet;
 
+    private ProgressWheel wheel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,6 +98,12 @@ public class CameraPicListActivity extends AppCompatActivity {
         adapter = new CameraPicListAdapter(this, SmartSingleton.arrSmartPhotos);
         SmartSingleton.arrSmartPhotos.clear();
         if(SmartSingleton.arrSmartPhotos.isEmpty()) {
+
+            wheel = (ProgressWheel) findViewById(R.id.progress_wheel);
+            wheel.setVisibility(View.VISIBLE);
+            wheel.setBarColor(R.color.colorPrimary);
+            wheel.spin();
+
             addRows();
             Log.d(TAG, "최초실행 : SmartSingleton.arrSmartPhotos.size() : " + SmartSingleton.arrSmartPhotos.size());
         }
@@ -202,7 +211,7 @@ public class CameraPicListActivity extends AppCompatActivity {
                         adapter.notifyItemChanged(position);
 
                         intentGet.putExtra("intId", String.valueOf(intId));
-                        intentGet.putExtra("strFileURL", strURL + strName);
+                        intentGet.putExtra("strFileURL", strURL + strThumbnail);
                         intentGet.putExtra("strURL", strURL);
                         intentGet.putExtra("strName", strName);
                         intentGet.putExtra("strThumbnail", strThumbnail);
@@ -273,6 +282,7 @@ public class CameraPicListActivity extends AppCompatActivity {
 
                         //viewEmpty = View.inflate(CameraPicListActivity.this, R.layout.row_empty, layoutEmpty);
                     }
+
                 } else {
                     Toast.makeText(getApplication(), "데이터가 정확하지 않습니다.", Toast.LENGTH_SHORT).show();
                     Log.d(TAG, "responseSmartWorks : 데이터가 정확하지 않습니다.");
@@ -280,6 +290,8 @@ public class CameraPicListActivity extends AppCompatActivity {
 
                 // Pull to Refresh 4-4
                 swipeContainer.setRefreshing(false);
+                wheel.stopSpinning();
+                wheel.setVisibility(View.GONE);
             }
 
             @Override
@@ -289,6 +301,8 @@ public class CameraPicListActivity extends AppCompatActivity {
 
                 // Pull to Refresh 4-4
                 swipeContainer.setRefreshing(false);
+                wheel.stopSpinning();
+                wheel.setVisibility(View.GONE);
             }
 
         });

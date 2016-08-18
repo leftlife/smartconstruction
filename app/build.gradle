@@ -8,8 +8,8 @@ android {
         applicationId "kr.koogle.android.smartconstruction"
         minSdkVersion 16
         targetSdkVersion 21
-        versionCode 5
-        versionName "1.0.1"
+        versionCode 7
+        versionName "1.0.2"
 
         multiDexEnabled true
     }
@@ -69,6 +69,7 @@ dependencies {
     compile 'com.wdullaer:materialdatetimepicker:2.4.0'
     compile 'org.jsoup:jsoup:1.9.2'
     compile 'org.sufficientlysecure:html-textview:1.8'
+    compile 'com.pnikosis:materialish-progress:1.7'
 }
 
 apply plugin: 'com.google.gms.google-services'

@@ -39,6 +39,7 @@
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
+        xmlns:wheel="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
@@ -201,6 +202,18 @@
 
             </LinearLayout>
         </ScrollView>
+
+        <com.pnikosis.materialishprogress.ProgressWheel
+            android:id="@+id/progress_wheel"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:background="#33ffffff"
+            android:clickable="true"
+            android:visibility="gone"
+            wheel:matProg_barColor="#ff08c2ff"
+            wheel:matProg_progressIndeterminate="true" />
 
     </RelativeLayout>
 

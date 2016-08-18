@@ -114,6 +114,10 @@ public class SmartWorkLaborAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             txtTitle.setText(row.strMemo);
             txtDetail.setText(row.strCate1);
 
+            if( !SmartSingleton.smartWork.strId.equals(pref.getValue("pref_user_id","")) ) {
+                btnDelete.setVisibility(View.GONE);
+            }
+
         } else if (holder instanceof LoadingViewHolder) {
             LoadingViewHolder loadingViewHolder = (LoadingViewHolder) holder;
             loadingViewHolder.progressBar.setIndeterminate(true);

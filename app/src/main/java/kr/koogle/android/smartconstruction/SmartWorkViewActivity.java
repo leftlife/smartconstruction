@@ -1,7 +1,9 @@
 package kr.koogle.android.smartconstruction;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -20,12 +22,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.pnikosis.materialishprogress.ProgressWheel;
 import com.squareup.picasso.Picasso;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
@@ -129,6 +133,7 @@ public class SmartWorkViewActivity extends AppCompatActivity {
     // UTILITY METHODS
     private Toast mToast;
     private MaterialDialog md;
+    private ProgressWheel wheel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -241,6 +246,12 @@ public class SmartWorkViewActivity extends AppCompatActivity {
         // 내용 넣는 부분
         SmartSingleton.smartWork.reset();
         if( !strWorkCode.equals("") ) { // 기존 내용 보기이면..
+
+            wheel = (ProgressWheel) findViewById(R.id.progress_wheel);
+            wheel.setVisibility(View.VISIBLE);
+            wheel.setBarColor(R.color.colorPrimary);
+            wheel.spin();
+
             writeWork();
         }
 
@@ -255,6 +266,24 @@ public class SmartWorkViewActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 SmartWorkViewActivity.this.finish();
+            }
+        });
+
+        // 스마트 일보 삭제
+        _btnDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new MaterialDialog.Builder(SmartWorkViewActivity.this)
+                        .title("스마트일보 삭제")
+                        .content("삭제된 데이터는 복구되지 않습니다. 정말로 삭제하시겠습니까?")
+                        .positiveText("확인")
+                        .onAny(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                deleteWork(SmartSingleton.smartWork.strCode);
+                            }
+                        })
+                        .show();
             }
         });
 
@@ -796,7 +825,6 @@ public class SmartWorkViewActivity extends AppCompatActivity {
                             _btnAddEquipment.setVisibility(View.GONE);
                             _btnAddPhoto.setVisibility(View.GONE);
                         }
-
                     } else {
                         Snackbar.make(SmartWorkActivity.recyclerView, "마지막 리스트 입니다.", Snackbar.LENGTH_LONG).setAction("Action", null).show();
                     }
@@ -804,10 +832,60 @@ public class SmartWorkViewActivity extends AppCompatActivity {
                     Toast.makeText(getApplication(), "데이터가 정확하지 않습니다.", Toast.LENGTH_SHORT).show();
                     Log.d(TAG, "responses : 데이터가 정확하지 않습니다.");
                 }
+
+                wheel.stopSpinning();
+                wheel.setVisibility(View.GONE);
             }
 
             @Override
             public void onFailure(Call<SmartWork> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "네트워크 상태가 좋지 않습니다!!!", Toast.LENGTH_SHORT).show();
+                Log.d("Error", t.getMessage());
+
+                wheel.stopSpinning();
+                wheel.setVisibility(View.GONE);
+            }
+        });
+        /******************************************************************************************/
+    }
+
+    private void deleteWork(String strCode) {
+        if(strCode.equals("")) {
+            this.finish();
+            return;
+        }
+        /******************************************************************************************/
+        SmartService smartService = ServiceGenerator.createService(SmartService.class, pref.getValue("pref_access_token", ""));
+        //final Map<String, String> mapOptions = new HashMap<String, String>();
+        //mapOptions.put("offset", String.valueOf(layoutManager.getItemCount()));
+        Call<ResponseBody> call = smartService.deleteWork(strBuildCode, strWorkCode);
+
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    //smartClient = response.body();
+                    Log.d(TAG, response.body().toString());
+                    //Log.d(TAG, "title : " + smartClient.arrComments.get(0).strContent.toString());
+                    new MaterialDialog.Builder(SmartWorkViewActivity.this)
+                            .title("스마트일보 삭제 완료")
+                            .content("데이터가 정상적으로 삭제 되었습니다.")
+                            .positiveText("확인")
+                            .onAny(new MaterialDialog.SingleButtonCallback() {
+                                @Override
+                                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                    SmartWorkViewActivity.this.finish();
+                                }
+                            })
+                            .show();
+                } else {
+                    Toast.makeText(getApplication(), "데이터가 정확하지 않습니다.", Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, "responses : 데이터가 정확하지 않습니다.");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
                 Toast.makeText(getApplicationContext(), "네트워크 상태가 좋지 않습니다!!!", Toast.LENGTH_SHORT).show();
                 Log.d("Error", t.getMessage());
             }
@@ -1042,6 +1120,17 @@ public class SmartWorkViewActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+
+            // 쓰기 권한 체크
+            if( !SmartSingleton.smartWork.strId.equals(pref.getValue("pref_user_id","")) ) {
+                new MaterialDialog.Builder(SmartWorkViewActivity.this).content("현장소장만 등록이 가능합니다.").positiveText("확인")
+                        .onAny(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                            }
+                        }).show();
+                return true;
+            }
 
             if( _txtBuildName.getText().toString().trim().equals("") ) {
                 new MaterialDialog.Builder(SmartWorkViewActivity.this).content("현장명을 먼저 선택해 주세요.").positiveText("확인")

@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.pnikosis.materialishprogress.ProgressWheel;
 import com.squareup.picasso.Picasso;
 
 import org.sufficientlysecure.htmltextview.HtmlTextView;
@@ -89,6 +90,8 @@ public class SmartClientViewActivity extends AppCompatActivity {
     private Intent intent;
     private String clientCode;
 
+    private ProgressWheel wheel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -127,6 +130,12 @@ public class SmartClientViewActivity extends AppCompatActivity {
         // Adapter 생성
         adapter = new SmartClientViewAdapter(this, SmartSingleton.arrComments);
         //if(SmartSingleton.arrComments.isEmpty() || true) {
+
+            //wheel = (ProgressWheel) findViewById(R.id.progress_wheel);
+            //wheel.setVisibility(View.VISIBLE);
+            //wheel.setBarColor(R.color.colorPrimary);
+            //wheel.spin();
+
             addRows();
         //}
         // RecycleView 에 Adapter 세팅
@@ -363,12 +372,18 @@ public class SmartClientViewActivity extends AppCompatActivity {
                         Log.d(TAG, "smartClient : 데이터가 정확하지 않습니다.");
                     }
                 }
+
+                //wheel.stopSpinning();
+                //wheel.setVisibility(View.GONE);
             }
 
             @Override
             public void onFailure(Call<SmartClient> call, Throwable t) {
                 Toast.makeText(SmartClientViewActivity.this, "네트워크 상태가 좋지 않습니다!", Toast.LENGTH_SHORT).show();
                 Log.d("Error", t.getMessage());
+
+                //wheel.stopSpinning();
+                //wheel.setVisibility(View.GONE);
             }
         });
         /******************************************************************************************/

@@ -1,71 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical">
+    xmlns:wheel="http://schemas.android.com/tools">
 
-    <android.support.design.widget.AppBarLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar_camera_pic_list"
+        <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="사진관리"
-                android:textSize="18sp"
-                android:layout_gravity="center"
-                android:id="@+id/toolbar_title"
-                android:textStyle="bold"
-                android:textColor="@android:color/white"/>
-
-        </android.support.v7.widget.Toolbar>
-
-    </android.support.design.widget.AppBarLayout>
-
-    <android.support.v4.widget.SwipeRefreshLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/srl_camera_pic_list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:id="@+id/nsv_camera_pic_list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            tools:showIn="@layout/activity_camera_pic_list">
+            android:theme="@style/AppTheme.AppBarOverlay">
 
-            <kr.koogle.android.smartconstruction.util.EndlessScrollView
-                android:id="@+id/sv_camera_pic_list"
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar_camera_pic_list"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:popupTheme="@style/AppTheme.PopupOverlay">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="사진관리"
+                    android:textSize="18sp"
+                    android:layout_gravity="center"
+                    android:id="@+id/toolbar_title"
+                    android:textStyle="bold"
+                    android:textColor="@android:color/white"/>
+
+            </android.support.v7.widget.Toolbar>
+
+        </android.support.design.widget.AppBarLayout>
+
+        <android.support.v4.widget.SwipeRefreshLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/srl_camera_pic_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/nsv_camera_pic_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#dddddd"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:fitsSystemWindows="true">
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                tools:showIn="@layout/activity_camera_pic_list">
 
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/rv_camera_pics"
+                <kr.koogle.android.smartconstruction.util.EndlessScrollView
+                    android:id="@+id/sv_camera_pic_list"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:scrollbars="vertical" />
+                    android:layout_height="match_parent"
+                    android:background="#dddddd"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:fitsSystemWindows="true">
 
-            </kr.koogle.android.smartconstruction.util.EndlessScrollView>
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/rv_camera_pics"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:scrollbars="vertical" />
 
-        </android.support.v4.widget.NestedScrollView>
+                </kr.koogle.android.smartconstruction.util.EndlessScrollView>
 
-    </android.support.v4.widget.SwipeRefreshLayout>
+            </android.support.v4.widget.NestedScrollView>
 
-</LinearLayout>
+        </android.support.v4.widget.SwipeRefreshLayout>
+
+    </LinearLayout>
+
+    <com.pnikosis.materialishprogress.ProgressWheel
+        android:id="@+id/progress_wheel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:background="#33ffffff"
+        android:clickable="true"
+        android:visibility="gone"
+        wheel:matProg_barColor="#ff08c2ff"
+        wheel:matProg_progressIndeterminate="true" />
+
+</RelativeLayout>

@@ -6,6 +6,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.content.Intent;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.NavigationView;
@@ -32,6 +33,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.commonsware.cwac.security.RuntimePermissionUtils;
 import com.google.android.gms.common.ConnectionResult;
@@ -155,6 +157,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // 건축주이면 메뉴 숨기기
         if(pref.getValue("pref_user_type","").equals("client")) {
             final Menu menu = navigationView.getMenu();
+            menu.findItem(R.id.nav_smart_build).setVisible(false);
             menu.findItem(R.id.nav_smart_order).setVisible(false);
             menu.findItem(R.id.nav_manage_employee).setVisible(false);
         }
@@ -215,7 +218,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
 
         // 삼성런처에서만 가능한 벳지 카운트
-        ShortcutBadger.applyCount(this, 10);
+        ShortcutBadger.applyCount(this, 0);
 
         // 닫힐때 한번 더 확인
         backPressCloseHandler = new BackPressCloseHandler(this);
@@ -523,6 +526,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             switch(mViewPager.getCurrentItem()) {
 
                 case 0: // 스마트 현장
+
+                    // 쓰기 권한 체크
+                    if( !pref.getValue("pref_user_type","").equals("employee") ) {
+                        new MaterialDialog.Builder(this).content("현장소장만 등록이 가능합니다.")
+                                .positiveText("확인")
+                                .onAny(new MaterialDialog.SingleButtonCallback() {
+                                    @Override
+                                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                    }
+                                }).show();
+                        return true;
+                    }
                     Intent intent = new Intent(MainActivity.this, SmartWorkViewActivity.class);
                     intent.putExtra("strCode", "");
                     startActivityForResult(intent, 10001);
@@ -558,6 +573,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
 
         if (id == R.id.nav_smart_build) {
+
+            // 쓰기 권한 체크
+            if( !pref.getValue("pref_user_type","").equals("employee") ) {
+                new MaterialDialog.Builder(this).content("현장소장만 등록이 가능합니다.")
+                        .positiveText("확인")
+                        .onAny(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                            }
+                        }).show();
+                return true;
+            }
             Intent intent = new Intent(MainActivity.this, SmartWorkViewActivity.class);
             intent.putExtra("strCode", "");
             startActivityForResult(intent, 10001);

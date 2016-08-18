@@ -41,6 +41,7 @@ import com.commonsware.cwac.cam2.Facing;
 import com.commonsware.cwac.cam2.FlashMode;
 import com.commonsware.cwac.cam2.ZoomStyle;
 import com.commonsware.cwac.security.RuntimePermissionUtils;
+import com.pnikosis.materialishprogress.ProgressWheel;
 import com.squareup.picasso.Picasso;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
@@ -131,6 +132,8 @@ public class CameraPicActivity extends AppCompatActivity implements TimePickerDi
     // intent 로 넘어온 값 받기
     private Intent intentGet;
 
+    private ProgressWheel wheel;
+
     @TargetApi(23)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -156,6 +159,11 @@ public class CameraPicActivity extends AppCompatActivity implements TimePickerDi
 
         if(SmartSingleton.smartPhoto.intId > 0) { // intId 값이 있으면 !!
             uploadType = "modify";
+
+            wheel = (ProgressWheel) findViewById(R.id.progress_wheel);
+            wheel.setVisibility(View.VISIBLE);
+            wheel.setBarColor(R.color.colorPrimary);
+            wheel.spin();
 
             // 해당값 불러오기
             drawView(SmartSingleton.smartPhoto.intId);
@@ -455,8 +463,8 @@ public class CameraPicActivity extends AppCompatActivity implements TimePickerDi
         }
 
         md = new MaterialDialog.Builder(this)
-                .title("이미지 전송중")
-                .content("이미지 전송중 입니다..")
+                .title("이미지 정보 전송중")
+                .content("이미지 정보 전송중 입니다..")
                 .cancelable(false)
                 .progress(true, 0)
                 .progressIndeterminateStyle(horizontal)
@@ -605,12 +613,18 @@ public class CameraPicActivity extends AppCompatActivity implements TimePickerDi
                     Toast.makeText(getApplication(), "데이터가 정확하지 않습니다.", Toast.LENGTH_SHORT).show();
                     Log.d(TAG, "responses : 데이터가 정확하지 않습니다.");
                 }
+
+                wheel.stopSpinning();
+                wheel.setVisibility(View.GONE);
             }
 
             @Override
             public void onFailure(Call<SmartPhoto> call, Throwable t) {
                 Toast.makeText(getApplicationContext(), "네트워크 상태가 좋지 않습니다!!!", Toast.LENGTH_SHORT).show();
                 Log.d("Error", t.getMessage());
+
+                wheel.stopSpinning();
+                wheel.setVisibility(View.GONE);
             }
         });
         /******************************************************************************************/

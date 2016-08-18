@@ -129,6 +129,10 @@ public class SmartWorkPhotoAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             txtDate.setText(row.datRegist);
             txtMemo.setText(row.strMemo);
 
+            if( !SmartSingleton.smartWork.strId.equals(pref.getValue("pref_user_id","")) ) {
+                btnDelete.setVisibility(View.GONE);
+            }
+
         } else if (holder instanceof LoadingViewHolder) {
             LoadingViewHolder loadingViewHolder = (LoadingViewHolder) holder;
             loadingViewHolder.progressBar.setIndeterminate(true);

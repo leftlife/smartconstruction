@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -24,6 +25,9 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.pnikosis.materialishprogress.ProgressWheel;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
@@ -64,6 +68,8 @@ public class SmartWorkActivity extends AppCompatActivity {
     // Pull to Refresh 4-1
     private SwipeRefreshLayout swipeContainer;
 
+    private ProgressWheel wheel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,6 +79,8 @@ public class SmartWorkActivity extends AppCompatActivity {
         SmartSingleton.getInstance();
         // Settings 값 !!
         pref = new RbPreference(this);
+
+        wheel = (ProgressWheel) findViewById(R.id.progress_wheel);
 
         // RecyclerView 저장
         recyclerView = (RecyclerView) findViewById(R.id.rv_smart_work);
@@ -113,13 +121,28 @@ public class SmartWorkActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-            //Snackbar.make(view, "스마트 일보를 등록합니다.", Snackbar.LENGTH_LONG).setAction("Action", null).show();
-            Intent intent = new Intent(SmartWorkActivity.this, SmartWorkViewActivity.class);
-            intent.putExtra("strCode", "");
-            //SmartSingleton.smartClient = new SmartClient();
-            startActivityForResult(intent, 1001);
+
+                // 쓰기 권한 체크
+                if( !pref.getValue("pref_user_type","").equals("employee") ) {
+                    new MaterialDialog.Builder(SmartWorkActivity.this).content("현장소장만 등록이 가능합니다.").positiveText("확인")
+                            .onAny(new MaterialDialog.SingleButtonCallback() {
+                                @Override
+                                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                }
+                            }).show();
+                    return;
+                }
+
+                //Snackbar.make(view, "스마트 일보를 등록합니다.", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                Intent intent = new Intent(SmartWorkActivity.this, SmartWorkViewActivity.class);
+                intent.putExtra("strCode", "");
+                //SmartSingleton.smartClient = new SmartClient();
+                startActivityForResult(intent, 1001);
             }
         });
+        if( !pref.getValue("pref_user_type","").equals("employee") ) {
+            fab.setVisibility(View.GONE);
+        }
 
         loadBackdrop();
 
@@ -136,7 +159,6 @@ public class SmartWorkActivity extends AppCompatActivity {
 
             final CollapsingToolbarLayout collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout_work);
             collapsingToolbar.setTitle(strWorkTitleTop);
-
         }
         imageTop = (ImageView) findViewById(R.id.img_work_top);
 
@@ -144,6 +166,11 @@ public class SmartWorkActivity extends AppCompatActivity {
         // Adapter 생성
         adapter = new SmartWorkAdapter(this, SmartSingleton.arrSmartWorks);
         if(isNewBuild || SmartSingleton.arrSmartWorks.isEmpty()) {
+
+            wheel.setVisibility(View.VISIBLE);
+            wheel.setBarColor(R.color.colorPrimary);
+            wheel.spin();
+
             addRows();
         }
         // RecycleView 에 Adapter 세팅
@@ -271,6 +298,8 @@ public class SmartWorkActivity extends AppCompatActivity {
 
                 // Pull to Refresh 4-4
                 swipeContainer.setRefreshing(false);
+                wheel.stopSpinning();
+                wheel.setVisibility(View.GONE);
             }
 
             @Override
@@ -280,6 +309,8 @@ public class SmartWorkActivity extends AppCompatActivity {
 
                 // Pull to Refresh 4-4
                 swipeContainer.setRefreshing(false);
+                wheel.stopSpinning();
+                wheel.setVisibility(View.GONE);
             }
         });
         /******************************************************************************************/
@@ -334,5 +365,18 @@ public class SmartWorkActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch(requestCode) {
+
+            case 1002: // 리스트 다시 읽기
+                SmartSingleton.arrSmartWorks.clear();
+                addRows();
+                break;
+        }
     }
 }

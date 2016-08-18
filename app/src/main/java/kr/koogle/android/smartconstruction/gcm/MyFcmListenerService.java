@@ -69,7 +69,7 @@ public class MyFcmListenerService extends FirebaseMessagingService {
                     .setContentTitle(title)
                     .setContentText(msg)
                     .setAutoCancel(true)
-                    .setNumber(5)
+                    .setNumber(1)
                     .setSound(soundUri)
                     .setContentIntent(pendingIntent);
 

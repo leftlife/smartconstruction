@@ -67,4 +67,9 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <!-- 로딩바 스타일 -->
+    <style name="CircularProgress" parent="Theme.AppCompat.Light">
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
 </resources>
