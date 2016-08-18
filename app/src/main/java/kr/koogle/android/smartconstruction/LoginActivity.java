@@ -14,6 +14,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.pnikosis.materialishprogress.ProgressWheel;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,11 +41,15 @@ public class LoginActivity extends AppCompatActivity {
     @Bind(R.id.btn_login) Button _loginButton;
     @Bind(R.id.link_signup) TextView _signupLink;
 
+    private ProgressWheel wheel;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
+
+        wheel = (ProgressWheel) findViewById(R.id.progress_wheel);
 
         pref = new RbPreference(getApplicationContext());
 
@@ -76,10 +82,16 @@ public class LoginActivity extends AppCompatActivity {
         }
         _loginButton.setEnabled(false);
 
+        wheel.setVisibility(View.VISIBLE);
+        wheel.setBarColor(R.color.colorPrimary);
+        wheel.spin();
+
+        /*
         final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this, R.style.AppTheme_Light_Dialog);
         progressDialog.setIndeterminate(true);
         progressDialog.setMessage("로그인 중 입니다.");
         progressDialog.show();
+        */
 
         /******************************************************************************************/
         // get access token
@@ -118,7 +130,9 @@ public class LoginActivity extends AppCompatActivity {
                 }
 
                 _loginButton.setEnabled(true);
-                progressDialog.dismiss();
+                //progressDialog.dismiss();
+                wheel.stopSpinning();
+                wheel.setVisibility(View.GONE);
             }
 
             @Override
@@ -128,7 +142,9 @@ public class LoginActivity extends AppCompatActivity {
                 Log.d("Error", t.getMessage());
 
                 _loginButton.setEnabled(true);
-                progressDialog.dismiss();
+                //progressDialog.dismiss();
+                wheel.stopSpinning();
+                wheel.setVisibility(View.GONE);
             }
         });
         /******************************************************************************************/

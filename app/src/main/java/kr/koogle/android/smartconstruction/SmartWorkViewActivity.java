@@ -1122,7 +1122,7 @@ public class SmartWorkViewActivity extends AppCompatActivity {
         if (id == R.id.action_settings) {
 
             // 쓰기 권한 체크
-            if( !SmartSingleton.smartWork.strId.equals(pref.getValue("pref_user_id","")) ) {
+            if( !pref.getValue("pref_user_type","").equals("employee") ) {
                 new MaterialDialog.Builder(SmartWorkViewActivity.this).content("현장소장만 등록이 가능합니다.").positiveText("확인")
                         .onAny(new MaterialDialog.SingleButtonCallback() {
                             @Override
@@ -1211,7 +1211,7 @@ public class SmartWorkViewActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 Toast.makeText(getApplicationContext(), "네트워크 상태가 좋지 않습니다!!!", Toast.LENGTH_SHORT).show();
-                Log.d("Error", t.getMessage());
+                //Log.d("Error", t.getMessage());
 
                 md.dismiss();
             }

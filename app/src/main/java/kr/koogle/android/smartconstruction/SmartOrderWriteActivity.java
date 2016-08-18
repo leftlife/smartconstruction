@@ -463,7 +463,7 @@ public class SmartOrderWriteActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(Call<ResponseBody> call, Throwable t) {
-                    Log.e("Upload error:", t.getMessage());
+                    //Log.e("Upload error:", t.getMessage());
 
                     md.dismiss();
                 }

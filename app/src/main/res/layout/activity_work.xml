@@ -98,7 +98,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"
-        android:src="@android:drawable/ic_input_add"
+        android:src="@drawable/ico_edit_blue"
         app:layout_anchor="@id/app_bar_work"
         app:layout_anchorGravity="bottom|end" />
 

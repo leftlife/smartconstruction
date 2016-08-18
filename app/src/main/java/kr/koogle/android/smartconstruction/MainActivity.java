@@ -1,12 +1,12 @@
 package kr.koogle.android.smartconstruction;
 
 import android.annotation.TargetApi;
+import android.support.annotation.NonNull;
 import android.content.ClipData;
 import android.os.Build;
 import android.os.Bundle;
 import android.content.Intent;
 import android.os.Handler;
-import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.NavigationView;

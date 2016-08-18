@@ -9,7 +9,7 @@
         app:showAsAction="always" /-->
     <item
         android:id="@+id/action_settings"
-        android:icon="@drawable/ico_edit_white"
+        android:icon="@drawable/img_camera_white"
         android:orderInCategory="100"
         android:title="@string/action_settings"
         app:showAsAction="always" />

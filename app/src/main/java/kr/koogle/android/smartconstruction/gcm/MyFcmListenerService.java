@@ -48,7 +48,7 @@ public class MyFcmListenerService extends FirebaseMessagingService {
         else
         {
             // 큰 아이콘
-            Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ico_face);
+            Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ico_noti);
 
             // 알림 사운드
             Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -62,8 +62,8 @@ public class MyFcmListenerService extends FirebaseMessagingService {
 
             // 노티피케이션 빌더 : 위에서 생성한 이미지나 텍스트, 사운드 등을 설정해 줍니다.
             NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
-                    .setSmallIcon(android.R.drawable.ic_menu_gallery)
-                    .setTicker("새로운 공지사항 등록")
+                    .setSmallIcon(R.drawable.ico_noti_small)
+                    .setTicker(title)
                     .setLargeIcon(bitmap)
                     //.setSmallIcon(2)
                     .setContentTitle(title)
