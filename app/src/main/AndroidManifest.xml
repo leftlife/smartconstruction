@@ -37,7 +37,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".MainActivity" android:screenOrientation="portrait">
+        <activity android:name=".MainActivity" android:screenOrientation="portrait" android:launchMode="singleTask">
         </activity>
 
         <activity android:name=".LoginActivity" android:theme="@style/AppTheme.Light.Login" android:screenOrientation="portrait" android:windowSoftInputMode="stateHidden" />
@@ -55,6 +55,13 @@
         <activity android:name=".CameraMovActivity" android:theme="@style/AppTheme.Light.Camera" android:screenOrientation="portrait" />
         <activity android:name=".CameraPicListActivity" android:theme="@style/AppTheme.Light.Camera" android:screenOrientation="portrait" />
         <activity android:name=".SettingsActivity" android:theme="@style/AppTheme.Light.Settings" android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".PopupActivity"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
+        </activity>
 
         <service
             android:name=".gcm.MyFcmListenerService">

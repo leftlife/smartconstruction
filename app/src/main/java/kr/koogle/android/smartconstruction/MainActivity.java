@@ -217,9 +217,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
-        // 삼성런처에서만 가능한 벳지 카운트
-        ShortcutBadger.applyCount(this, 0);
-
         // 닫힐때 한번 더 확인
         backPressCloseHandler = new BackPressCloseHandler(this);
 

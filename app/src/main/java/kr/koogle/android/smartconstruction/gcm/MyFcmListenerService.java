@@ -6,10 +6,12 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 
@@ -22,7 +24,9 @@ import java.util.Map;
 
 import kr.koogle.android.smartconstruction.IntroActivity;
 import kr.koogle.android.smartconstruction.MainActivity;
+import kr.koogle.android.smartconstruction.PopupActivity;
 import kr.koogle.android.smartconstruction.R;
+import me.leolin.shortcutbadger.ShortcutBadger;
 
 public class MyFcmListenerService extends FirebaseMessagingService {
     /**
@@ -65,7 +69,6 @@ public class MyFcmListenerService extends FirebaseMessagingService {
                     .setSmallIcon(R.drawable.ico_noti_small)
                     .setTicker(title)
                     .setLargeIcon(bitmap)
-                    //.setSmallIcon(2)
                     .setContentTitle(title)
                     .setContentText(msg)
                     .setAutoCancel(true)
@@ -77,6 +80,24 @@ public class MyFcmListenerService extends FirebaseMessagingService {
 
             // 노티피케이션을 생성합니다.
             notificationManager.notify(0 /* ID of notification 알림 지울때 사용 */, notificationBuilder.build());
+
+            // 삼성런처에서만 가능한 벳지 카운트
+            // ShortcutBadger.applyCount(this, 1);
+            Intent intentBadger = new Intent("android.intent.action.BADGE_COUNT_UPDATE");
+            // 패키지 네임과 클래스 네임 설정
+            intentBadger.putExtra("badge_count_package_name", getApplicationContext().getPackageName());
+            intentBadger.putExtra("badge_count_class_name", "kr.koogle.android.smartconstruction.IntroActivity");
+            // 업데이트 카운트
+            intentBadger.putExtra("badge_count", 1);
+            sendBroadcast(intentBadger);
+
+            // 팝업 호출시 (푸시 리시버에서 호출)
+            Intent intentPopup = new Intent(this, PopupActivity.class);
+            intentPopup.putExtra("title", title);
+            intentPopup.putExtra("content", msg);
+            intentPopup.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);   // 이거 안해주면 안됨
+            this.startActivity(intentPopup);
+
         }
     }
 
@@ -125,6 +146,40 @@ public class MyFcmListenerService extends FirebaseMessagingService {
         }
 
         return isRunning;
+    }
+
+    // 뱃지 카운트 하기
+    public void updateIconBadgeCount(Context context, int count) {
+
+        Intent intent = new Intent("android.intent.action.BADGE_COUNT_UPDATE");
+
+        // Component를 정의
+        intent.putExtra("badge_count_package_name", context.getPackageName());
+        intent.putExtra("badge_count_class_name", getLauncherClassName(context));
+
+        // 카운트를 넣어준다.
+        intent.putExtra("badge_count", count);
+
+        // Version이 3.1이상일 경우에는 Flags를 설정하여 준다.
+        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.GINGERBREAD_MR1) {
+            intent.setFlags(0x00000020);
+        }
+
+        // send
+        sendBroadcast(intent);
+    }
+    private String getLauncherClassName(Context context) {
+
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_LAUNCHER);
+        intent.setPackage(getPackageName());
+
+        List<ResolveInfo> resolveInfoList = getPackageManager().queryIntentActivities(intent, 0);
+        if(resolveInfoList != null && resolveInfoList.size() > 0) {
+            return resolveInfoList.get(0).activityInfo.name;
+        }
+
+        return "";
     }
 
 }

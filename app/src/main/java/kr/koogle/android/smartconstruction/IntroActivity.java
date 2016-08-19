@@ -42,6 +42,17 @@ public class IntroActivity extends Activity {
             }
             // 이 token을 서버에 전달 한다.
         }
+
+        // 삼성런처에서만 가능한 벳지 카운트
+        // ShortcutBadger.applyCount(this, 0);
+        Intent intentBadger = new Intent("android.intent.action.BADGE_COUNT_UPDATE");
+        // 패키지 네임과 클래스 네임 설정
+        intentBadger.putExtra("badge_count_package_name", getComponentName().getPackageName());
+        intentBadger.putExtra("badge_count_class_name", getComponentName().getClassName());
+        // 업데이트 카운트
+        intentBadger.putExtra("badge_count", 0);
+        sendBroadcast(intentBadger);
+
         /******************************************************************************************/
         // pref_access_token 값이 일치하는지 메인에서 한번 확인
         //Log.d(TAG, "pref_access_token : " + pref.getValue("pref_access_token", ""));
