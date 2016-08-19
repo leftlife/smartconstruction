@@ -79,7 +79,9 @@ public class SmartClientAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
             ImageView ivImage = userViewHolder.image;
             TextView tvTitle = userViewHolder.title;
+            TextView tvBuild = userViewHolder.build;
             TextView tvDate = userViewHolder.date;
+            TextView tvWriter = userViewHolder.writer;
 
             /*
             Picasso.with(getContext())
@@ -88,7 +90,9 @@ public class SmartClientAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                     .into(ivImage);
             */
             tvTitle.setText(smartClient.strTitle);
-            tvDate.setText(smartClient.datWrite);
+            tvBuild.setText(smartClient.strCate1);
+            tvWriter.setText(smartClient.strUserId);
+            tvDate.setText(smartClient.datWrite.substring(0, 10));
 
         } else if (holder instanceof LoadingViewHolder) {
             LoadingViewHolder loadingViewHolder = (LoadingViewHolder) holder;
@@ -133,6 +137,8 @@ public class SmartClientAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         public ImageView image;
         public TextView title;
+        public TextView build;
+        public TextView writer;
         public TextView date;
         private Context context;
 
@@ -140,7 +146,9 @@ public class SmartClientAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             super(itemView);
             image = (ImageView) itemView.findViewById(R.id.r_sbc_btn_image);
             title = (TextView) itemView.findViewById(R.id.r_sbc_title);
+            build = (TextView) itemView.findViewById(R.id.r_sbc_build);
             date = (TextView) itemView.findViewById(R.id.r_sbc_date);
+            writer = (TextView) itemView.findViewById(R.id.r_sbc_writer);
 
             this.context = context;
 
