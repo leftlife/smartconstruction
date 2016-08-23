@@ -54,10 +54,10 @@
 
         <EditTextPreference
             android:key="pref_version"
-            android:title="스마트 현장관리 버전"
-            android:dialogTitle="스마트 현장관리 버전정보"
-            android:summary="1.0.0"
-            android:defaultValue="1.0.0"
+            android:title="스마트 건설관리 버전"
+            android:dialogTitle="스마트 건설관리 버전정보"
+            android:summary="1.0.2"
+            android:defaultValue="1.0.2"
             android:editable="false"/>
 
     </PreferenceCategory>

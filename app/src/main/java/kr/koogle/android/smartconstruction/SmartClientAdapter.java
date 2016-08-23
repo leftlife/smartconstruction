@@ -90,8 +90,20 @@ public class SmartClientAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                     .into(ivImage);
             */
             tvTitle.setText(smartClient.strTitle);
-            tvBuild.setText(smartClient.strCate1);
-            tvWriter.setText(smartClient.strUserId);
+            tvBuild.setText("미등록 현장");
+            if (!SmartSingleton.arrSmartBuilds.isEmpty()) {
+                for (int i = 0; i < SmartSingleton.arrSmartBuilds.size(); i++) {
+                    if( SmartSingleton.arrSmartBuilds.get(i).strCode.equals(smartClient.strCate1) )
+                        tvBuild.setText(SmartSingleton.arrSmartBuilds.get(i).strName);
+                }
+            }
+            tvWriter.setText("건축주");
+            if (!SmartSingleton.arrSmartEmployees.isEmpty()) {
+                for (int i = 0; i < SmartSingleton.arrSmartEmployees.size(); i++) {
+                    if( SmartSingleton.arrSmartEmployees.get(i).strId.equals(smartClient.strUserId) )
+                        tvWriter.setText(SmartSingleton.arrSmartEmployees.get(i).strName);
+                }
+            }
             tvDate.setText(smartClient.datWrite.substring(0, 10));
 
         } else if (holder instanceof LoadingViewHolder) {

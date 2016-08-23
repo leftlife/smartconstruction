@@ -80,7 +80,9 @@ public class SmartOrderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
             ImageView ivImage = userViewHolder.image;
             TextView tvTitle = userViewHolder.title;
+            TextView tvBuild = userViewHolder.build;
             TextView tvDate = userViewHolder.date;
+            TextView tvWriter = userViewHolder.writer;
 
             /*
             Picasso.with(getContext())
@@ -89,7 +91,21 @@ public class SmartOrderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     .into(ivImage);
             */
             tvTitle.setText(smartOrder.strContent); // Html.fromHtml(smartOrder.strContent)
-            tvDate.setText(smartOrder.datWrite);
+            tvBuild.setText("미등록 현장");
+            if (!SmartSingleton.arrSmartBuilds.isEmpty()) {
+                for (int i = 0; i < SmartSingleton.arrSmartBuilds.size(); i++) {
+                    if( SmartSingleton.arrSmartBuilds.get(i).strCode.equals(smartOrder.strBuildCode) )
+                        tvBuild.setText(SmartSingleton.arrSmartBuilds.get(i).strName);
+                }
+            }
+            tvWriter.setText("건축주");
+            if (!SmartSingleton.arrSmartEmployees.isEmpty()) {
+                for (int i = 0; i < SmartSingleton.arrSmartEmployees.size(); i++) {
+                    if( SmartSingleton.arrSmartEmployees.get(i).strId.equals(smartOrder.strUserId) )
+                        tvWriter.setText(SmartSingleton.arrSmartEmployees.get(i).strName);
+                }
+            }
+            tvDate.setText(smartOrder.datWrite.substring(0, 10));
 
         } else if (holder instanceof LoadingViewHolder) {
             LoadingViewHolder loadingViewHolder = (LoadingViewHolder) holder;
@@ -145,17 +161,20 @@ public class SmartOrderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     // 뷰홀더 클래스 ###############################################################################
     public static class UserViewHolder extends RecyclerView.ViewHolder  { // implements View.OnClickListener
 
-        private Context context;
         public ImageView image;
         public TextView title;
-        public TextView content;
+        public TextView build;
+        public TextView writer;
         public TextView date;
+        private Context context;
 
         public UserViewHolder(Context context, final View itemView) {
             super(itemView);
             image = (ImageView) itemView.findViewById(R.id.r_sbc_btn_image);
             title = (TextView) itemView.findViewById(R.id.r_sbc_title);
+            build = (TextView) itemView.findViewById(R.id.r_sbc_build);
             date = (TextView) itemView.findViewById(R.id.r_sbc_date);
+            writer = (TextView) itemView.findViewById(R.id.r_sbc_writer);
 
             this.context = context;
 

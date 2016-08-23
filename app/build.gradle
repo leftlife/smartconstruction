@@ -8,7 +8,7 @@ android {
         applicationId "kr.koogle.android.smartconstruction"
         minSdkVersion 16
         targetSdkVersion 21
-        versionCode 8
+        versionCode 9
         versionName "1.0.2"
 
         multiDexEnabled true
@@ -70,6 +70,7 @@ dependencies {
     compile 'org.jsoup:jsoup:1.9.2'
     compile 'org.sufficientlysecure:html-textview:1.8'
     compile 'com.pnikosis:materialish-progress:1.7'
+    compile 'com.veinhorn.scrollgalleryview:library:1.0.5'
 }
 
 apply plugin: 'com.google.gms.google-services'

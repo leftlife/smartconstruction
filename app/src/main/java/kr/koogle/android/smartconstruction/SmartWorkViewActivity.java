@@ -239,6 +239,8 @@ public class SmartWorkViewActivity extends AppCompatActivity {
             public void onItemClick(View view, int position) {
                 final String intId = String.valueOf(SmartSingleton.smartWork.arrSmartPhotos.get(position).intId);
                 adapterPhoto.notifyItemChanged(position);
+                Intent intentGallery = new Intent(SmartWorkViewActivity.this, GalleryActivity.class);
+                startActivity(intentGallery);
             }
         });
         /***************************************************************************/
