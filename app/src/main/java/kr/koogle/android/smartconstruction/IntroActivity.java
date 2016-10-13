@@ -21,7 +21,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class IntroActivity extends Activity {
-    private static final String TAG = "IntroActivity";
+    private static final String TAG = "Intro";
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
     @Override
