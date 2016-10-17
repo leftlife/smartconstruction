@@ -31,7 +31,7 @@ import retrofit2.Response;
 
 public class SmartBuildFragment extends Fragment {
 
-    private static final String TAG = "SmartBuildFragment";
+    private static final String TAG = "SmartBuild";
     private RbPreference pref;
     private View rootView;
     private SmartBuildAdapter adapter;

@@ -48,7 +48,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class SmartWorkActivity extends AppCompatActivity {
-    private static final String TAG = "SmartWorkActivity";
+    private static final String TAG = "SmartWork";
     private RbPreference pref;
 
     public static RecyclerView recyclerView;

@@ -32,7 +32,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class SmartClientFragment extends Fragment {
-    private static final String TAG = "SmartClientFragment";
+    private static final String TAG = "SmartClient";
     private RbPreference pref;
 
     public static RecyclerView recyclerView;

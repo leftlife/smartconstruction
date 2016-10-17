@@ -33,7 +33,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class SmartOrderFragment extends Fragment {
-    private static final String TAG = "SmartOrderFragment";
+    private static final String TAG = "SmartOrder";
     private RbPreference pref;
 
     public static RecyclerView recyclerView;

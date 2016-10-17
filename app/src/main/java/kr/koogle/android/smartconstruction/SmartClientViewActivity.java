@@ -61,7 +61,7 @@ import retrofit2.Response;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
 public class SmartClientViewActivity extends AppCompatActivity {
-    private static final String TAG = "SmartClientViewActivity";
+    private static final String TAG = "SmartClientView";
     private RbPreference pref;
 
     @Bind(R.id.txt_client_view_title) TextView _txtTitle;

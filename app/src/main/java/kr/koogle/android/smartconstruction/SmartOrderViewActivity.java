@@ -62,7 +62,7 @@ import retrofit2.Response;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
 public class SmartOrderViewActivity extends AppCompatActivity {
-    private static final String TAG = "SmartOrderViewActivity";
+    private static final String TAG = "SmartOrderView";
     private RbPreference pref;
 
     @Bind(R.id.txt_order_view_writer) TextView _txtWriter;
@@ -160,7 +160,7 @@ public class SmartOrderViewActivity extends AppCompatActivity {
             }
         });
 
-        // 건축주 협의 등록버튼
+        // 작업 지시 등록버튼
         _btnModify.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -170,7 +170,7 @@ public class SmartOrderViewActivity extends AppCompatActivity {
             }
         });
 
-        // 건축주 협의 삭제버튼
+        // 작업 지시 삭제버튼
         _btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

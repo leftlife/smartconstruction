@@ -95,7 +95,7 @@ import static android.Manifest.permission.RECORD_AUDIO;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 public class CameraMovActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener, DatePickerDialog.OnDateSetListener {
-    private static final String TAG = "CameraMovActivity";
+    private static final String TAG = "CameraMov";
     private RbPreference pref;
     private static final FlashMode[] FLASH_MODES={
             FlashMode.ALWAYS,

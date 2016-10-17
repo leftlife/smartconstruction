@@ -45,7 +45,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class SmartOrderWriteActivity extends AppCompatActivity {
-    private static final String TAG = "SmartOrderWriteActivity";
+    private static final String TAG = "SmartOrderWrite";
     private RbPreference pref;
 
     //private SmartOrder smartOrder;

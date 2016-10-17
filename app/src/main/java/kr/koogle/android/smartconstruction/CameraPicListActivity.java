@@ -43,7 +43,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class CameraPicListActivity extends AppCompatActivity {
-    private static final String TAG = "CameraPicListActivity";
+    private static final String TAG = "CameraPicList";
     private RbPreference pref;
 
     private static boolean isLoading;

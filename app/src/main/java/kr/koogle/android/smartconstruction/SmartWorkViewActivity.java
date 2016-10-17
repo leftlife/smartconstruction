@@ -66,7 +66,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class SmartWorkViewActivity extends AppCompatActivity {
-    private static final String TAG = "SmartWorkViewActivity";
+    private static final String TAG = "SmartWorkView";
     private RbPreference pref;
 
     @Bind(R.id.txt_work_view_build_name) TextView _txtBuildName;

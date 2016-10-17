@@ -35,7 +35,7 @@
 
         <SwitchPreference
             android:key="pref_push_order"
-            android:title="업무지시 등록 알림"
+            android:title="작업지시 등록 알림"
             android:defaultValue="true"
             android:summary="업무지시가 등록되면 알려드립니다." />
 

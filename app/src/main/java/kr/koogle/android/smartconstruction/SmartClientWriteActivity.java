@@ -44,7 +44,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class SmartClientWriteActivity extends AppCompatActivity {
-    private static final String TAG = "SmartClientWriteActivity";
+    private static final String TAG = "SmartClientWrite";
     private RbPreference pref;
 
     //private SmartClient smartClient;

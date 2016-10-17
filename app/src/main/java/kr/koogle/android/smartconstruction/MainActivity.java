@@ -56,8 +56,8 @@ import static android.Manifest.permission.CAMERA;
 import static android.Manifest.permission.RECORD_AUDIO;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, SmartFragment.OnHeadlineSelectedListener {
-    private static final String TAG = "MainActivity";
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+    private static final String TAG = "Main";
     private static BackPressCloseHandler backPressCloseHandler;
     private static RbPreference pref;
 
@@ -427,13 +427,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     //  ############## Fragment 통신 ##################  // SmartFragment 용
+    /*
     public void onArticleSelected(int position) {
         SmartFragment smartFragment = (SmartFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_smart);
         if(smartFragment != null) {
             // Framgment 통신 사용 !!! -> OneFragment
             smartFragment.updateArticleView(position);
         } else {
-            /*
             OneFragment newFragment = new OneFragment();
             Bundle args = new Bundle();
             args.putString("strId", "leftlife");
@@ -443,9 +443,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             transaction.replace(R.id.container, newFragment);
             transaction.addToBackStack(null);
             transaction.commit();
-            */
         }
     }
+    */
 
     /*
      * 엑티비티 생명주기 관련 함수 ************************************************************************
