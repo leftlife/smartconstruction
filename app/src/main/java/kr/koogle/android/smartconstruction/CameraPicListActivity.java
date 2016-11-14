@@ -152,12 +152,13 @@ public class CameraPicListActivity extends AppCompatActivity {
             public void onItemClick(View view, int position) {
                 Log.d("onItemClick", "onItemClick : " + view.getId() + " ----------------------------------------------");
 
+                int intId = 0;
                 switch(view.getId()) {
 
                     case R.id.btn_row_camera_pic_delete:
                         // 사진 삭제 !!
                         FileUploadService service = ServiceGenerator.createService(FileUploadService.class);
-                        int intId = SmartSingleton.arrSmartPhotos.get(position).intId;
+                        intId = SmartSingleton.arrSmartPhotos.get(position).intId;
                         Call<ResponseBody> call = service.deleteUpload(intId);
                         Toast.makeText(CameraPicListActivity.this, "intId : " + intId, Toast.LENGTH_SHORT).show();
 
@@ -197,21 +198,39 @@ public class CameraPicListActivity extends AppCompatActivity {
 
                     case R.id. btn_row_camera_pic_add:
                         // 클릭된 사진정보 부모 엑티비티에 전달
+                        /*
+                        // 객체 넘기는 방식으로 변경!!
                         intId = SmartSingleton.arrSmartPhotos.get(position).intId;
-                        final String strURL = SmartSingleton.arrSmartPhotos.get(position).strURL;
+                        final String strBBS = SmartSingleton.arrSmartPhotos.get(position).strBBS;
+                        final String strBBSId = SmartSingleton.arrSmartPhotos.get(position).strBBSId;
+                        final int intLevel = SmartSingleton.arrSmartPhotos.get(position).intLevel;
+                        final int intOrder = SmartSingleton.arrSmartPhotos.get(position).intOrder;
+                        final String strType = SmartSingleton.arrSmartPhotos.get(position).strType;
+
+                        final String strSiteId = SmartSingleton.arrSmartPhotos.get(position).strSiteId;
+                        final String strWriter = SmartSingleton.arrSmartPhotos.get(position).strWriter;
+                        final String strNameOrigin = SmartSingleton.arrSmartPhotos.get(position).strNameOrigin;
                         final String strName = SmartSingleton.arrSmartPhotos.get(position).strName;
+                        final String strURL = SmartSingleton.arrSmartPhotos.get(position).strURL;
                         final String strThumbnail = SmartSingleton.arrSmartPhotos.get(position).strThumbnail;
 
                         final String strBuildCode = SmartSingleton.arrSmartPhotos.get(position).strBuildCode;
-                        final String strBuildName = SmartSingleton.arrSmartPhotos.get(position).strBuildName;
+                        final String strBuildDate = SmartSingleton.arrSmartPhotos.get(position).strBuildDate;
                         final String strLavorCode = SmartSingleton.arrSmartPhotos.get(position).strLavorCode;
+                        final String strLavor2Code = SmartSingleton.arrSmartPhotos.get(position).strLavor2Code;
+                        final String strBuildName = SmartSingleton.arrSmartPhotos.get(position).strBuildName;
                         final String strLocation = SmartSingleton.arrSmartPhotos.get(position).strLocation;
                         final String strMemo = SmartSingleton.arrSmartPhotos.get(position).strMemo;
+
+                        final int intWidth = SmartSingleton.arrSmartPhotos.get(position).intWidth;
+                        final int intHeight = SmartSingleton.arrSmartPhotos.get(position).intHeight;
+                        final int intSize = SmartSingleton.arrSmartPhotos.get(position).intSize;
+                        final String strLat = SmartSingleton.arrSmartPhotos.get(position).strLat;
+                        final String strLng = SmartSingleton.arrSmartPhotos.get(position).strLng;
                         final String datRegist = SmartSingleton.arrSmartPhotos.get(position).datRegist;
                         adapter.notifyItemChanged(position);
 
                         intentGet.putExtra("intId", String.valueOf(intId));
-                        intentGet.putExtra("strFileURL", strURL + strThumbnail);
                         intentGet.putExtra("strURL", strURL);
                         intentGet.putExtra("strName", strName);
                         intentGet.putExtra("strThumbnail", strThumbnail);
@@ -221,6 +240,15 @@ public class CameraPicListActivity extends AppCompatActivity {
                         intentGet.putExtra("strLocation", strLocation);
                         intentGet.putExtra("strMemo", strMemo);
                         intentGet.putExtra("datRegist", datRegist);
+
+                        intentGet.putExtra("strFileURL", strURL + strThumbnail);
+                        */
+                        // intent 객체에서 smartPhoto 객체 보냄!!
+                        intentGet.putExtra("smartPhoto", SmartSingleton.arrSmartPhotos.get(position));
+                        // ArrayList 로 보낼 때!!
+                        //ArrayList <SmartPhoto> arrSmartPhoto = new ArrayList<SmartPhoto>();
+                        //intentGet.putParcelableArrayListExtra("arrSmartPhoto", arrSmartPhoto);
+
                         CameraPicListActivity.this.setResult(RESULT_OK, intentGet);
                         finish();
                         break;

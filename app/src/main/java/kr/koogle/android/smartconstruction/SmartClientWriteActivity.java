@@ -35,6 +35,7 @@ import kr.koogle.android.smartconstruction.http.SmartBuild;
 import kr.koogle.android.smartconstruction.http.SmartClient;
 import kr.koogle.android.smartconstruction.http.SmartComment;
 import kr.koogle.android.smartconstruction.http.SmartFile;
+import kr.koogle.android.smartconstruction.http.SmartPhoto;
 import kr.koogle.android.smartconstruction.http.SmartService;
 import kr.koogle.android.smartconstruction.http.SmartSingleton;
 import kr.koogle.android.smartconstruction.util.RbPreference;
@@ -179,8 +180,12 @@ public class SmartClientWriteActivity extends AppCompatActivity {
                 case 22001: // 첨부파일에 사진 추가하기
 
                     if (data != null) {
-                        final int intId = Integer.valueOf(data.getStringExtra("intId"));
-                        final String strFileURL = data.getStringExtra("strFileURL");
+                        // intent 객체에서 smartPhoto 객체 받아옴!!
+                        Bundle bundle = data.getExtras();
+                        SmartPhoto smartPhoto = bundle.getParcelable("smartPhoto");
+
+                        final int intId = smartPhoto.intId;
+                        final String strFileURL = smartPhoto.strURL + smartPhoto.strThumbnail;
                         //Log.d("aaaa", "strFileURL : " + data.getStringExtra("strFileURL"));
                         if (!strFileURL.isEmpty()) {
                             if(SmartSingleton.smartClient.arrFiles.size() == 0) SmartSingleton.smartClient.arrFiles.add(new SmartFile());
@@ -205,7 +210,7 @@ public class SmartClientWriteActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.menu_save, menu);
         return true;
     }
 
@@ -360,7 +365,7 @@ public class SmartClientWriteActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(Call<ResponseBody> call, Throwable t) {
-                    Log.e("Upload error:", t.getMessage());
+                    //Log.e("Upload error:", t.getMessage());
 
                     md.dismiss();
                 }

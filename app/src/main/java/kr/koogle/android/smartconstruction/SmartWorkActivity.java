@@ -146,6 +146,10 @@ public class SmartWorkActivity extends AppCompatActivity {
 
         loadBackdrop();
 
+        // 현장 선택시 코드/이름값 저장!!
+        SmartSingleton.smartBuild.strCode = getIntent().getExtras().getString("strBuildCode");
+        SmartSingleton.smartBuild.strName = getIntent().getExtras().getString("strBuildName");
+
         // SmartBuildFragment 에서 넘어온 값 받기 !!
         if ( strBuildCode.equals(getIntent().getExtras().getString("strBuildCode")) ) { // 새로운 현장이 아니면
             isNewBuild = false;
@@ -222,6 +226,7 @@ public class SmartWorkActivity extends AppCompatActivity {
 
     // Pull to Refresh 4-3
     public void fetchTimelineAsync(int page) {
+        SmartSingleton.arrSmartWorks.clear();
         adapter.clear();
         addRows();
     }
@@ -269,11 +274,10 @@ public class SmartWorkActivity extends AppCompatActivity {
         /******************************************************************************************/
         // SmartBuild 값 불러오기 (진행중인 현장)
         SmartService smartService = ServiceGenerator.createService(SmartService.class, pref.getValue("pref_access_token", ""));
-
         final Map<String, String> mapOptions = new HashMap<String, String>();
         mapOptions.put("offset", String.valueOf(layoutManager.getItemCount()));
-        Call<ArrayList<SmartWork>> call = smartService.getSmartWorks(strBuildCode, mapOptions);
 
+        Call<ArrayList<SmartWork>> call = smartService.getSmartWorks(strBuildCode, mapOptions);
         call.enqueue(new Callback<ArrayList<SmartWork>>() {
             @Override
             public void onResponse(Call<ArrayList<SmartWork>> call, Response<ArrayList<SmartWork>> response) {
@@ -289,7 +293,7 @@ public class SmartWorkActivity extends AppCompatActivity {
                         //adapter.notifyItemRangeInserted(curSize, responses.size());
                         adapter.notifyDataSetChanged();
                     } else {
-                        Snackbar.make(SmartWorkActivity.recyclerView, "마지막 리스트 입니다.", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                        //Snackbar.make(SmartWorkActivity.recyclerView, "마지막 리스트 입니다.", Snackbar.LENGTH_LONG).setAction("Action", null).show();
                     }
                 } else {
                     Toast.makeText(getApplication(), "데이터가 정확하지 않습니다.", Toast.LENGTH_SHORT).show();
@@ -321,7 +325,7 @@ public class SmartWorkActivity extends AppCompatActivity {
         final CollapsingToolbarLayout collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout_work);
         collapsingToolbar.setTitle(strWorkTitleTop);
 
-        final int myDrawable = R.drawable.img_intro;
+        final int myDrawable = R.drawable.img_no_image; // 상단 초기 이미지 설정!!
         final ImageView iv = (ImageView)findViewById(R.id.img_work_top);
         if (iv != null) {
             iv.setImageResource(myDrawable);

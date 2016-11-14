@@ -39,8 +39,10 @@ import org.sufficientlysecure.htmltextview.HtmlTextView;
 import org.w3c.dom.Text;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -78,6 +80,7 @@ public class SmartWorkViewActivity extends AppCompatActivity {
     @Bind(R.id.btn_work_view_add_labor) ImageView _btnAddLabor;
     @Bind(R.id.btn_work_view_add_material) ImageView _btnAddMaterial;
     @Bind(R.id.btn_work_view_add_equipment) ImageView _btnAddEquipment;
+    @Bind(R.id.btn_work_view_add_memo) ImageView _btnAddMemo;
     @Bind(R.id.btn_work_view_add_photo) ImageView _btnAddPhoto;
 
     // row_work_view_labor
@@ -87,7 +90,7 @@ public class SmartWorkViewActivity extends AppCompatActivity {
     @Bind(R.id.txt_work_view_labor_count) EditText _txtWorkViewLaborCount;
     @Bind(R.id.txt_work_view_labor_unit) TextView _txtWorkViewLaborUnit;
     @Bind(R.id.txt_work_view_labor_memo) EditText _txtWorkViewLaborMemo;
-    @Bind(R.id.btn_work_view_labor_add) Button _btnWorkViewLaborAdd;
+    @Bind(R.id.btn_work_view_labor_add) ImageView _btnWorkViewLaborAdd;
 
     // row_work_view_material
     @Bind(R.id.ll_work_view_add_material) LinearLayout _llWorkViewAddMaterial;
@@ -96,7 +99,7 @@ public class SmartWorkViewActivity extends AppCompatActivity {
     @Bind(R.id.txt_work_view_material_count) EditText _txtWorkViewMaterialCount;
     @Bind(R.id.txt_work_view_material_unit) TextView _txtWorkViewMaterialUnit;
     @Bind(R.id.txt_work_view_material_memo) EditText _txtWorkViewMaterialMemo;
-    @Bind(R.id.btn_work_view_material_add) Button _btnWorkViewMaterialAdd;
+    @Bind(R.id.btn_work_view_material_add) ImageView _btnWorkViewMaterialAdd;
 
     // row_work_view_equipment
     @Bind(R.id.ll_work_view_add_equipment) LinearLayout _llWorkViewAddEquipment;
@@ -105,7 +108,7 @@ public class SmartWorkViewActivity extends AppCompatActivity {
     @Bind(R.id.txt_work_view_equipment_count) EditText _txtWorkViewEquipmentCount;
     @Bind(R.id.txt_work_view_equipment_unit) TextView _txtWorkViewEquipmentUnit;
     @Bind(R.id.txt_work_view_equipment_memo) EditText _txtWorkViewEquipmentMemo;
-    @Bind(R.id.btn_work_view_equipment_add) Button _btnWorkViewEquipmentAdd;
+    @Bind(R.id.btn_work_view_equipment_add) ImageView _btnWorkViewEquipmentAdd;
 
     public static RecyclerView recyclerViewLabor;
     private SmartWorkLaborAdapter adapterLabor;
@@ -128,6 +131,7 @@ public class SmartWorkViewActivity extends AppCompatActivity {
     // intent 로 넘어온 값 받기
     private Intent intent;
     private String strBuildCode;
+    private String strBuildName;
     private String strWorkCode;
 
     // UTILITY METHODS
@@ -255,6 +259,29 @@ public class SmartWorkViewActivity extends AppCompatActivity {
             wheel.spin();
 
             writeWork();
+        } else {
+            // 신규 등록시 기본값 넣기!!
+            strBuildCode = SmartSingleton.smartBuild.strCode;
+            SmartSingleton.smartWork.strBuildCode = SmartSingleton.smartBuild.strCode;
+            _txtBuildName.setText(SmartSingleton.smartBuild.strName);
+
+            String date = new SimpleDateFormat("yyyy'.'MM'.'dd").format(new Date());
+            SmartSingleton.smartWork.strDate = date;
+            _txtDate.setText(date);
+
+            for (SmartCategory sc : SmartSingleton.arrWeatherCategorys) {
+                if (sc.strCode.equals(String.valueOf(0))) {
+                    _txtWeather.setText(sc.strName);
+                }
+            }
+            SmartSingleton.smartWork.intWeather = 0;
+
+            _btnDelete.setVisibility(View.VISIBLE);
+            _btnAddLabor.setVisibility(View.VISIBLE);
+            _btnAddMaterial.setVisibility(View.VISIBLE);
+            _btnAddEquipment.setVisibility(View.VISIBLE);
+            _btnAddMemo.setVisibility(View.VISIBLE);
+            _btnAddPhoto.setVisibility(View.VISIBLE);
         }
 
         // 툴바 세팅
@@ -408,6 +435,28 @@ public class SmartWorkViewActivity extends AppCompatActivity {
                 } else {
                     _llWorkViewAddMaterial.setVisibility(View.VISIBLE);
                 }
+            }
+        });
+        // 특기사항 등록 부분 노출
+        _btnAddMemo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new MaterialDialog.Builder(SmartWorkViewActivity.this)
+                        .title("특기사항")
+                        //.content("특기사항을 입력하세요.")
+                        .inputType(InputType.TYPE_CLASS_TEXT |
+                                InputType.TYPE_TEXT_VARIATION_PERSON_NAME |
+                                InputType.TYPE_TEXT_FLAG_MULTI_LINE)
+                        .inputRange(2, 1000)
+                        .positiveText("작성완료")
+                        .input(_txtMemo.getText().toString(), _txtMemo.getText().toString(), false, new MaterialDialog.InputCallback() {
+                            @Override
+                            public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
+                                SmartSingleton.smartWork.strMemo = input.toString();
+                                _txtMemo.setText(input);
+                            }
+                        }).show();
+
             }
         });
         // 장비현황 등록 부분 노출
@@ -819,12 +868,14 @@ public class SmartWorkViewActivity extends AppCompatActivity {
                             _btnAddLabor.setVisibility(View.VISIBLE);
                             _btnAddMaterial.setVisibility(View.VISIBLE);
                             _btnAddEquipment.setVisibility(View.VISIBLE);
+                            _btnAddMemo.setVisibility(View.VISIBLE);
                             _btnAddPhoto.setVisibility(View.VISIBLE);
                         } else {
                             _btnDelete.setVisibility(View.GONE);
                             _btnAddLabor.setVisibility(View.GONE);
                             _btnAddMaterial.setVisibility(View.GONE);
                             _btnAddEquipment.setVisibility(View.GONE);
+                            _btnAddMemo.setVisibility(View.GONE);
                             _btnAddPhoto.setVisibility(View.GONE);
                         }
                     } else {
@@ -1106,10 +1157,11 @@ public class SmartWorkViewActivity extends AppCompatActivity {
         mInputMethodManager.hideSoftInputFromWindow(editText.getWindowToken(), 0);
     }
 
+    // 상단 우측 메뉴
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.menu_save, menu);
         return true;
     }
 
@@ -1240,6 +1292,8 @@ public class SmartWorkViewActivity extends AppCompatActivity {
             case 2001: // 사진 추가하기
 
                 if( data != null) {
+                    /*
+                    // 객체 넘기는 방식으로 변경!!
                     final String intId = data.getStringExtra("intId");
                     final String strURL = data.getStringExtra("strURL");
                     final String strName = data.getStringExtra("strName");
@@ -1262,6 +1316,13 @@ public class SmartWorkViewActivity extends AppCompatActivity {
                     smartPhoto.strLocation = strLocation;
                     smartPhoto.strMemo = strMemo;
                     smartPhoto.datRegist = datRegist;
+                    */
+                    // intent 객체에서 smartPhoto 객체 받아옴!!
+                    Bundle bundle = data.getExtras();
+                    SmartPhoto smartPhoto = bundle.getParcelable("smartPhoto");
+                    // ArrayList 로 받아올 때!!
+                    //Intent intent = getIntent();
+                    //arrSmartPhoto = intent.getParcelableArrayListExtra("arrSmartPhoto");
 
                     SmartSingleton.smartWork.arrSmartPhotos.add(smartPhoto);
                     adapterPhoto.notifyItemRangeInserted(adapterPhoto.getItemCount(), 1);

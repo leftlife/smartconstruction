@@ -171,7 +171,7 @@ public class CameraMovActivity extends AppCompatActivity implements TimePickerDi
         imgPicture = (ImageView) findViewById(R.id.img_picture);
         inputBuildName = (TextView) findViewById(R.id.input_build_name);
         inputBuildKind = (TextView) findViewById(R.id.input_build_kind);
-        inputLocation = (TextView) findViewById(R.id.input_location);
+        //inputLocation = (TextView) findViewById(R.id.input_location);
         inputMemo = (TextView) findViewById(R.id.input_memo);
         inputDate = (TextView) findViewById(R.id.input_date);
 
@@ -422,7 +422,7 @@ public class CameraMovActivity extends AppCompatActivity implements TimePickerDi
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.menu_save, menu);
         return true;
     }
 

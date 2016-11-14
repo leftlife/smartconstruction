@@ -98,10 +98,10 @@ public class SmartBuildFragment extends Fragment {
 
         StaggeredGridLayoutManager gridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         */
-/*
+        /*
         RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST);
         rvSmartBuilds.addItemDecoration(itemDecoration);
-*/
+        */
         if(SmartSingleton.arrSmartBuilds.isEmpty()) {
             /******************************************************************************************/
             addItems();
@@ -224,7 +224,6 @@ public class SmartBuildFragment extends Fragment {
 
     public void addItems() {
         // SmartBuild 값 불러오기 (진행중인 현장)
-        Log.d(TAG, "SmartService.checkLoginToken 실행!! / pref_access_token : " + pref.getValue("pref_access_token", ""));
         SmartService smartService = ServiceGenerator.createService(SmartService.class, pref.getValue("pref_access_token", ""));
         Call<ArrayList<SmartBuild>> call = smartService.getSmartBuilds();
 

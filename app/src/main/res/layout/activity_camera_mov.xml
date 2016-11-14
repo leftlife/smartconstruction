@@ -128,11 +128,11 @@
                             android:layout_height="wrap_content"
                             android:textSize="14sp"
                             android:inputType="textAutoComplete"
-                            android:hint="공종을 입력하세요." />
+                            android:hint="공종을 선택하세요." />
                     </android.support.design.widget.TextInputLayout>
                 </LinearLayout>
 
-                <LinearLayout
+                <!--LinearLayout
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -157,7 +157,7 @@
                             android:inputType="textAutoComplete"
                             android:hint="위치를 입력하세요." />
                     </android.support.design.widget.TextInputLayout>
-                </LinearLayout>
+                </LinearLayout-->
 
                 <LinearLayout
                     android:orientation="horizontal"

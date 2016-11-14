@@ -184,15 +184,11 @@ public class SmartClientFragment extends Fragment {
     public void addItems() {
         /******************************************************************************************/
         // SmartClient 값 불러오기 (진행중인 현장)
-        Log.d(TAG, "SmartService.getSmartBBSClients 실행!! / pref_access_token : " + pref.getValue("pref_access_token", ""));
         SmartService smartService = ServiceGenerator.createService(SmartService.class, pref.getValue("pref_access_token", ""));
         final Map<String, String> mapOptions = new HashMap<String, String>();
         mapOptions.put("offset", String.valueOf(layoutManager.getItemCount()));
 
-        Log.d(TAG, "getSmartBBSClient START !!!");
         Call<ArrayList<SmartClient>> call = smartService.getSmartBBSClients();
-        Log.d(TAG, "getSmartBBSClient END !!!");
-
         call.enqueue(new Callback<ArrayList<SmartClient>>() {
             @Override
             public void onResponse(Call<ArrayList<SmartClient>> call, Response<ArrayList<SmartClient>> response) {
@@ -217,7 +213,7 @@ public class SmartClientFragment extends Fragment {
                             rmSmartBBSOrder.removeView(viewEmpty);
                         }
 
-                        Snackbar.make(SmartClientFragment.recyclerView, "마지막 리스트 입니다.", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                        //Snackbar.make(SmartClientFragment.recyclerView, "마지막 리스트 입니다.", Snackbar.LENGTH_LONG).setAction("Action", null).show();
                     }
                 } else {
                     Toast.makeText(getContext(), "데이터가 정확하지 않습니다.", Toast.LENGTH_SHORT).show();

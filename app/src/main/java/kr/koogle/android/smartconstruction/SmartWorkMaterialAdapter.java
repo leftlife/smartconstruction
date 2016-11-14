@@ -111,7 +111,7 @@ public class SmartWorkMaterialAdapter extends RecyclerView.Adapter<RecyclerView.
 
             TextView txtTitle = userViewHolder.txtTitle;
             TextView txtDetail = userViewHolder.txtDetail;
-            Button btnDelete = userViewHolder.btnDelete;
+            ImageView btnDelete = userViewHolder.btnDelete;
             Button btnModify = userViewHolder.btnModify;
 
             /*
@@ -122,8 +122,11 @@ public class SmartWorkMaterialAdapter extends RecyclerView.Adapter<RecyclerView.
                         .into(ivImage);
             }
             */
+            String strDetail = row.strCate1;
+            if(!row.strCate2.equals("")) strDetail +=  " | " + row.strCate2;
+            strDetail +=  " | " + row.intCount + " " + row.strUnit;
+            txtDetail.setText(strDetail);
             txtTitle.setText(row.strMemo);
-            txtDetail.setText(row.strCate1);
 
             if( !SmartSingleton.smartWork.strId.equals(pref.getValue("pref_user_id","")) ) {
                 btnDelete.setVisibility(View.GONE);
@@ -178,7 +181,7 @@ public class SmartWorkMaterialAdapter extends RecyclerView.Adapter<RecyclerView.
         public int position;
         public TextView txtTitle;
         public TextView txtDetail;
-        public Button btnDelete;
+        public ImageView btnDelete;
         public Button btnModify;
         // 내부 이벤트 적용을 위한 코드 3-1
         public ImageView commentDelete;
@@ -189,7 +192,7 @@ public class SmartWorkMaterialAdapter extends RecyclerView.Adapter<RecyclerView.
             this.context = context;
             txtTitle = (TextView) itemView.findViewById(R.id.txt_work_view_labor_title);
             txtDetail = (TextView) itemView.findViewById(R.id.txt_work_view_labor_detail);
-            btnDelete = (Button) itemView.findViewById(R.id.btn_work_view_labor_delete);
+            btnDelete = (ImageView) itemView.findViewById(R.id.btn_work_view_labor_delete);
             btnModify = (Button) itemView.findViewById(R.id.btn_work_view_labor_modify);
 
             /***************************************************************************/

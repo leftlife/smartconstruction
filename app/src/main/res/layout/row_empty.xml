@@ -15,7 +15,7 @@
             android:layout_height="200dp"
             android:id="@+id/emp_txt_image"
             android:layout_gravity="center_horizontal"
-            android:src="@drawable/img_intro"
+            android:src="@drawable/img_man_gray"
             android:layout_marginTop="100dp" />
     </LinearLayout>
 

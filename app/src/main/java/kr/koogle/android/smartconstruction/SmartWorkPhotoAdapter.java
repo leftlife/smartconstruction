@@ -114,7 +114,7 @@ public class SmartWorkPhotoAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             TextView txtLocation = userViewHolder.txtLocation;
             TextView txtDate = userViewHolder.txtDate;
             TextView txtMemo = userViewHolder.txtMemo;
-            Button btnDelete = userViewHolder.btnDelete;
+            ImageView btnDelete = userViewHolder.btnDelete;
             Button btnModify = userViewHolder.btnModify;
 
             if( !row.strThumbnail.isEmpty() ) {
@@ -125,7 +125,7 @@ public class SmartWorkPhotoAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             }
 
             txtLabor.setText(row.strLavorCode);
-            txtLocation.setText(row.strLocation);
+            //txtLocation.setText(row.strLocation);
             txtDate.setText(row.datRegist);
             txtMemo.setText(row.strMemo);
 
@@ -185,7 +185,7 @@ public class SmartWorkPhotoAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         public TextView txtLocation;
         public TextView txtDate;
         public TextView txtMemo;
-        public Button btnDelete;
+        public ImageView btnDelete;
         public Button btnModify;
         // 내부 이벤트 적용을 위한 코드 3-1
         public ImageView commentDelete;
@@ -197,9 +197,9 @@ public class SmartWorkPhotoAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             imgPhoto = (ImageView) itemView.findViewById(R.id.img_work_view_photo);
             txtLabor = (TextView) itemView.findViewById(R.id.txt_work_view_photo_labor);
             txtMemo = (TextView) itemView.findViewById(R.id.txt_work_view_photo_memo);
-            txtLocation = (TextView) itemView.findViewById(R.id.txt_work_view_photo_location);
+            //txtLocation = (TextView) itemView.findViewById(R.id.txt_work_view_photo_location);
             txtDate = (TextView) itemView.findViewById(R.id.txt_work_view_photo_date);
-            btnDelete = (Button) itemView.findViewById(R.id.btn_work_view_photo_delete);
+            btnDelete = (ImageView) itemView.findViewById(R.id.btn_work_view_photo_delete);
             btnModify = (Button) itemView.findViewById(R.id.btn_work_view_photo_modify);
 
             /***************************************************************************/

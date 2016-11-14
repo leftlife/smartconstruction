@@ -46,6 +46,7 @@ import kr.koogle.android.smartconstruction.http.SmartBuild;
 import kr.koogle.android.smartconstruction.http.SmartEmployee;
 import kr.koogle.android.smartconstruction.http.SmartOrder;
 import kr.koogle.android.smartconstruction.http.SmartComment;
+import kr.koogle.android.smartconstruction.http.SmartPhoto;
 import kr.koogle.android.smartconstruction.http.SmartService;
 import kr.koogle.android.smartconstruction.http.SmartSingleton;
 import kr.koogle.android.smartconstruction.http.SmartWork;
@@ -480,8 +481,12 @@ public class SmartOrderViewActivity extends AppCompatActivity {
             case 32006: // 댓글에서 사진 추가하기
 
                 if( data != null) {
-                    final String intId = data.getStringExtra("intId");
-                    final String strFileURL = data.getStringExtra("strFileURL");
+                    // intent 객체에서 smartPhoto 객체 받아옴!!
+                    Bundle bundle = data.getExtras();
+                    SmartPhoto smartPhoto = bundle.getParcelable("smartPhoto");
+
+                    final String intId = String.valueOf(smartPhoto.intId);
+                    final String strFileURL = smartPhoto.strURL + smartPhoto.strThumbnail;
                     if (!strFileURL.isEmpty()) {
                         commentPhotoCode = intId; // 답글 이미지 코드값 저장 !!
                         Picasso.with(SmartOrderViewActivity.this)

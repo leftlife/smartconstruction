@@ -36,6 +36,7 @@ import kr.koogle.android.smartconstruction.http.SmartEmployee;
 import kr.koogle.android.smartconstruction.http.SmartOrder;
 import kr.koogle.android.smartconstruction.http.SmartComment;
 import kr.koogle.android.smartconstruction.http.SmartFile;
+import kr.koogle.android.smartconstruction.http.SmartPhoto;
 import kr.koogle.android.smartconstruction.http.SmartService;
 import kr.koogle.android.smartconstruction.http.SmartSingleton;
 import kr.koogle.android.smartconstruction.util.RbPreference;
@@ -278,8 +279,12 @@ public class SmartOrderWriteActivity extends AppCompatActivity {
                 case 32001: // 첨부파일에 사진 추가하기
 
                     if (data != null) {
-                        final int intId = Integer.valueOf(data.getStringExtra("intId"));
-                        final String strFileURL = data.getStringExtra("strFileURL");
+                        // intent 객체에서 smartPhoto 객체 받아옴!!
+                        Bundle bundle = data.getExtras();
+                        SmartPhoto smartPhoto = bundle.getParcelable("smartPhoto");
+
+                        final int intId = smartPhoto.intId;
+                        final String strFileURL = smartPhoto.strURL + smartPhoto.strThumbnail;
                         //Log.d("aaaa", "strFileURL : " + data.getStringExtra("strFileURL"));
                         if (!strFileURL.isEmpty()) {
                             if(SmartSingleton.smartOrder.arrFiles.size() == 0) SmartSingleton.smartOrder.arrFiles.add(new SmartFile());
@@ -304,7 +309,7 @@ public class SmartOrderWriteActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.menu_save, menu);
         return true;
     }
 

@@ -44,16 +44,13 @@
         android:visibility="gone"
         android:background="#ffffff" />
 
-    <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
-        android:text="삭제"
+    <ImageView
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:id="@+id/btn_work_view_labor_delete"
-        android:layout_alignParentRight="true"
-        android:textSize="11dp"
-        android:layout_marginRight="15dp"
+        android:src="@drawable/ico_delete_white"
+        android:layout_marginRight="18dp"
         android:layout_marginTop="8dp"
-        android:background="#ffffff" />
+        android:layout_alignParentRight="true"/>
 
 </RelativeLayout>

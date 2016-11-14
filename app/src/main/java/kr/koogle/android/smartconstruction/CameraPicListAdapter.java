@@ -113,7 +113,7 @@ public class CameraPicListAdapter extends RecyclerView.Adapter<RecyclerView.View
             }
             tvBuildName.setText(row.strBuildName);
             tvLaborName.setText(row.strLavorCode);
-            tvLocation.setText(row.strLocation);
+            //tvLocation.setText(row.strLocation);
             tvContent.setText(row.strMemo);
             tvDate.setText(row.datRegist);
 
@@ -173,7 +173,7 @@ public class CameraPicListAdapter extends RecyclerView.Adapter<RecyclerView.View
             picPhoto = (ImageView) itemView.findViewById(R.id.r_camera_pic_photo);
             buildName = (TextView) itemView.findViewById(R.id.r_camera_pic_build_name);
             laborName = (TextView) itemView.findViewById(R.id.r_camera_pic_labor_name);
-            location = (TextView) itemView.findViewById(R.id.r_camera_pic_location);
+            //location = (TextView) itemView.findViewById(R.id.r_camera_pic_location);
             content = (TextView) itemView.findViewById(R.id.r_camera_pic_content);
             date = (TextView) itemView.findViewById(R.id.r_camera_pic_date);
 

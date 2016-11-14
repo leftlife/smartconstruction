@@ -153,7 +153,7 @@ public class CameraPicActivity extends AppCompatActivity implements TimePickerDi
         // 사진 상세내용 저장 !!
         inputBuildName = (TextView) findViewById(R.id.input_build_name);
         inputBuildKind = (TextView) findViewById(R.id.input_build_kind);
-        inputLocation = (TextView) findViewById(R.id.input_location);
+        //inputLocation = (TextView) findViewById(R.id.input_location);
         inputMemo = (TextView) findViewById(R.id.input_memo);
         inputDate = (TextView) findViewById(R.id.input_date);
 
@@ -387,7 +387,7 @@ public class CameraPicActivity extends AppCompatActivity implements TimePickerDi
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.menu_save, menu);
         return true;
     }
 
@@ -434,6 +434,7 @@ public class CameraPicActivity extends AppCompatActivity implements TimePickerDi
                     }).show();
             return;
         }
+        /*
         if( inputLocation.getText().toString().trim().equals("") ) {
             new MaterialDialog.Builder(CameraPicActivity.this).content("위치를 먼저 입력해 주세요.").positiveText("확인")
                     .onAny(new MaterialDialog.SingleButtonCallback() {
@@ -443,6 +444,7 @@ public class CameraPicActivity extends AppCompatActivity implements TimePickerDi
                     }).show();
             return;
         }
+        */
         if( inputMemo.getText().toString().trim().equals("") ) {
             new MaterialDialog.Builder(CameraPicActivity.this).content("내용을 먼저 입력해 주세요.").positiveText("확인")
                     .onAny(new MaterialDialog.SingleButtonCallback() {

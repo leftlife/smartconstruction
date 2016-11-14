@@ -36,12 +36,12 @@
         "source": "C:\\androidproject\\SmartConstruction\\cam2\\build\\intermediates\\bundles\\debug\\res\\drawable-hdpi-v4\\cwac_cam2_ic_flash_off.png"
     },
     {
-        "merged": "C:\\androidproject\\SmartConstruction\\cam2\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-hdpi-v4\\cwac_cam2_ic_close_white.png",
-        "source": "C:\\androidproject\\SmartConstruction\\cam2\\build\\intermediates\\bundles\\debug\\res\\drawable-hdpi-v4\\cwac_cam2_ic_close_white.png"
-    },
-    {
         "merged": "C:\\androidproject\\SmartConstruction\\cam2\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-hdpi-v4\\cwac_cam2_ic_flash_on.png",
         "source": "C:\\androidproject\\SmartConstruction\\cam2\\build\\intermediates\\bundles\\debug\\res\\drawable-hdpi-v4\\cwac_cam2_ic_flash_on.png"
+    },
+    {
+        "merged": "C:\\androidproject\\SmartConstruction\\cam2\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-hdpi-v4\\cwac_cam2_ic_close_white.png",
+        "source": "C:\\androidproject\\SmartConstruction\\cam2\\build\\intermediates\\bundles\\debug\\res\\drawable-hdpi-v4\\cwac_cam2_ic_close_white.png"
     },
     {
         "merged": "C:\\androidproject\\SmartConstruction\\cam2\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-hdpi-v4\\cwac_cam2_ic_refresh_white.png",

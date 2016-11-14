@@ -541,12 +541,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     break;
 
                 case 1: // 건축주 협의
+
                     intent = new Intent(MainActivity.this, SmartClientWriteActivity.class);
                     intent.putExtra("intId", 0);
                     startActivityForResult(intent, 20001);
                     break;
 
-                case 2: // 작업지시
+                case 2: // 작업 지시
+
                     intent = new Intent(MainActivity.this, SmartOrderWriteActivity.class);
                     intent.putExtra("intId", 0);
                     startActivityForResult(intent, 30001);
