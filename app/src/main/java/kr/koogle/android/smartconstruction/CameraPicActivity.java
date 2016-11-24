@@ -598,7 +598,7 @@ public class CameraPicActivity extends AppCompatActivity implements TimePickerDi
                         uploadType = "modify";
                         inputBuildName.setText(SmartSingleton.smartPhoto.strBuildName);
                         inputBuildKind.setText(SmartSingleton.smartPhoto.strLavorCode);
-                        inputLocation.setText(SmartSingleton.smartPhoto.strLocation);
+                        //inputLocation.setText(SmartSingleton.smartPhoto.strLocation);
                         inputMemo.setText(SmartSingleton.smartPhoto.strMemo);
                         inputDate.setText(SmartSingleton.smartPhoto.strBuildDate);
                         if ( !SmartSingleton.smartPhoto.strThumbnail.isEmpty() ) {
@@ -643,7 +643,7 @@ public class CameraPicActivity extends AppCompatActivity implements TimePickerDi
         // MultipartBody.Part 에 업로드 할 파일 추가 !!
         MultipartBody.Part body = MultipartBody.Part.createFormData("userfile1", file.getName(), requestFile);
 
-        SmartSingleton.smartPhoto.strLocation = inputLocation.getText().toString();
+        //SmartSingleton.smartPhoto.strLocation = inputLocation.getText().toString();
         SmartSingleton.smartPhoto.strMemo = inputMemo.getText().toString();
         // multipart request 에 전달할 값 추가 !!
         Map<String, RequestBody> querys = new HashMap<>();
@@ -652,7 +652,7 @@ public class CameraPicActivity extends AppCompatActivity implements TimePickerDi
         RequestBody rbBuildCode = RequestBody.create(MediaType.parse("multipart/form-data"), SmartSingleton.smartPhoto.strBuildCode);
         RequestBody rbBuildName = RequestBody.create(MediaType.parse("multipart/form-data"), SmartSingleton.smartPhoto.strBuildName);
         RequestBody rbBuildKind = RequestBody.create(MediaType.parse("multipart/form-data"), SmartSingleton.smartPhoto.strLavorCode);
-        RequestBody rbLocation = RequestBody.create(MediaType.parse("multipart/form-data"), SmartSingleton.smartPhoto.strLocation);
+        //RequestBody rbLocation = RequestBody.create(MediaType.parse("multipart/form-data"), SmartSingleton.smartPhoto.strLocation);
         RequestBody rbMemo = RequestBody.create(MediaType.parse("multipart/form-data"), SmartSingleton.smartPhoto.strMemo);
         RequestBody rbDate = RequestBody.create(MediaType.parse("multipart/form-data"), SmartSingleton.smartPhoto.strBuildDate);
         RequestBody rbLng = RequestBody.create(MediaType.parse("multipart/form-data"), String.valueOf(SmartSingleton.getInstance().strLng));
@@ -662,7 +662,7 @@ public class CameraPicActivity extends AppCompatActivity implements TimePickerDi
         querys.put("strBuildCode", rbBuildCode);
         querys.put("strBuildName", rbBuildName);
         querys.put("strLavorCode", rbBuildKind);
-        querys.put("strLocation", rbLocation);
+        //querys.put("strLocation", rbLocation);
         querys.put("strMemo", rbMemo);
         querys.put("strBuildDate", rbDate);
         querys.put("strLng", rbLng);
@@ -705,7 +705,7 @@ public class CameraPicActivity extends AppCompatActivity implements TimePickerDi
         /******************************************************************************************/
         FileUploadService service = ServiceGenerator.createService(FileUploadService.class);
 
-        SmartSingleton.smartPhoto.strLocation = inputLocation.getText().toString();
+        //SmartSingleton.smartPhoto.strLocation = inputLocation.getText().toString();
         SmartSingleton.smartPhoto.strMemo = inputMemo.getText().toString();
         // multipart request 에 전달할 값 추가 !!
         Map<String, RequestBody> querys = new HashMap<>();
@@ -714,7 +714,7 @@ public class CameraPicActivity extends AppCompatActivity implements TimePickerDi
         RequestBody rbBuildCode = RequestBody.create(MediaType.parse("multipart/form-data"), SmartSingleton.smartPhoto.strBuildCode);
         RequestBody rbBuildName = RequestBody.create(MediaType.parse("multipart/form-data"), SmartSingleton.smartPhoto.strBuildName);
         RequestBody rbBuildKind = RequestBody.create(MediaType.parse("multipart/form-data"), SmartSingleton.smartPhoto.strLavorCode);
-        RequestBody rbLocation = RequestBody.create(MediaType.parse("multipart/form-data"), SmartSingleton.smartPhoto.strLocation);
+        //RequestBody rbLocation = RequestBody.create(MediaType.parse("multipart/form-data"), SmartSingleton.smartPhoto.strLocation);
         RequestBody rbMemo = RequestBody.create(MediaType.parse("multipart/form-data"), SmartSingleton.smartPhoto.strMemo);
         RequestBody rbDate = RequestBody.create(MediaType.parse("multipart/form-data"), SmartSingleton.smartPhoto.strBuildDate);
         RequestBody rbLng = RequestBody.create(MediaType.parse("multipart/form-data"), String.valueOf(SmartSingleton.getInstance().strLng));
@@ -724,7 +724,7 @@ public class CameraPicActivity extends AppCompatActivity implements TimePickerDi
         querys.put("strBuildCode", rbBuildCode);
         querys.put("strBuildName", rbBuildName);
         querys.put("strLavorCode", rbBuildKind);
-        querys.put("strLocation", rbLocation);
+        //querys.put("strLocation", rbLocation);
         querys.put("strMemo", rbMemo);
         querys.put("strBuildDate", rbDate);
         querys.put("strLng", rbLng);
